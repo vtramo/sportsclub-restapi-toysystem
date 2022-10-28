@@ -1,0 +1,840 @@
+openapi: 3.0.1
+info:
+  title: WePlay API
+  version: '1.0'
+tags:
+  - name: Login
+    description: Login API
+  - name: Sports Facilities
+    description: API for managing sports facilities
+  - name: Sports Fields
+    description: API for managing sports fields
+  - name: Users
+    description: API for managing users
+  - name: Reservations
+    description: API for managing sports fields reservations
+  - name: Reservations Status
+    description: API for managing the status of the reservations
+  - name: Notifications
+    description: API for managing notifications
+  - name: Reservations Rating
+    description: API for reservation rating managment
+
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      summary: >
+        Log in to the application
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: >
+            Session information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BearerToken'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+
+  /sports-facilities:
+    get:
+      tags:
+        - Sports Facilities
+      summary: >
+        Gets the list of sports facilities
+      operationId: getSportsFacilities
+      parameters:
+        - name: filter_by_owner_id
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ID'
+        - name: total_sports_field.gt
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: total_sports_field.lt
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: >
+            The list of sports facilities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/SportsFacility'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+
+  /sports-facilities/{sportsFacilityId}:
+    get:
+      tags:
+        - Sports Facilities
+      summary: >
+        Gets a sports facility by ID
+      operationId: getSportsFacilityById
+      parameters:
+        - name: sportsFacilityId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: >
+            The sports facility identified by the provided ID
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SportsFacility'
+                properties:
+                  sportsFields:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/SportsField'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+  /sports-facilities/{sportsFacilityId}/sports-fields:
+    post:
+      tags:
+        - Sports Facilities
+      summary: >
+        Creates a sports field for the sports 
+        facility identified by the ID provided
+      operationId: createSportsField
+      parameters:
+        - name: sportsFacilityId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SportsField'
+      responses:
+        '201':
+          description: >
+            The created sports facility
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SportsFacility'
+
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+  /sports-fields:
+    get:
+      summary: >
+        Gets the list of sports fields
+      operationId: getSportsFields
+      tags:
+        - Sports Fields
+      parameters:
+        - name: filter_by_sport
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SportEnum'
+        - name: sort_by_rating
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ['asc', 'desc']
+      responses:
+        '200':
+          description: >
+            The list of sports fields
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/SportsField'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+
+  /sports-fields/{sportsFieldId}:
+    get:
+      tags:
+        - Sports Fields
+      summary: >
+        Gets a sports field by ID
+      operationId: getSportsFieldsById
+      parameters:
+        - name: sportsFieldId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: >
+            The sports field identified by the ID provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SportsField'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+  /users:
+    post:
+      tags:
+        - Users
+      summary: >
+        Register a new user
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: >
+            The user created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+
+  /users/{userId}:
+    get:
+      tags:
+        - Users
+      summary: >
+        Gets a user by ID
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: >
+            The user identified by the provided ID
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+  /users/{userId}/notifications:
+    get:
+      tags:
+        - Users
+      summary: >
+        Gets the list of notifications of an user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+        - name: has_been_read
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: >
+            'The list of notifications associated to the provided user'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+  /reservations:
+    get:
+      tags:
+        - Reservations
+      summary: >
+        Gets a list of sports fields reservations
+      operationId: getReservations
+      parameters:
+        - name: filter_by_state
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ReservationStateEnum'
+        - name: filter_by_sport
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SportEnum'
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ['created_at.desc', 'created_at.asc']
+        - name: filter_by_date
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: filter_by_start_date
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: filter_by_end_date
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: filter_by_sports_field_id
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ID'
+        - name: filter_by_sports_facility_id
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: >
+            The list of reservations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Reservation'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+    post:
+      tags:
+        - Reservations
+      summary: >
+        Requests a reservation for a sports field
+      operationId: requestReservation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+      responses:
+        '201':
+          description: The reservation created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Reservation'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+
+  /reservations/{reservationId}:
+    get:
+      tags:
+        - Reservations
+      summary: >
+        Gets the reservation identified by the ID provided
+      parameters:
+        - name: reservationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: A reservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+  /reservations/{reservationId}/status:
+    put:
+      tags:
+        - Reservations Status
+      summary: >
+        Updates the status of the reservation identified by the ID provided
+      parameters:
+        - name: reservationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationStatus'
+      responses:
+        '201':
+          description: >
+            The new actual status of the reservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationStatus'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+
+    get:
+      tags:
+        - Reservations Status
+      summary: >
+        Gets the status of the reservation identified by the ID provided
+      parameters:
+        - name: reservationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: >
+            The actual status of the reservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationStatus'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+  /reservations/{reservationId}/rating:
+    get:
+      tags:
+        - Reservations Rating
+      summary: >
+        Gets the rating of the reservation identified by the ID provided
+      parameters:
+        - name: reservationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: >
+            The evaluation for the reservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationRating'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+  /notifications/{notificationId}:
+    get:
+      tags:
+        - Notifications
+      summary: >
+        Gets a notification by ID
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: >
+            'The list of notifications associated to the provided user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+    put:
+      tags:
+        - Notifications
+      summary: >
+        Updates a notification
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '200':
+          description: >
+            The updated notification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+components:
+  schemas:
+    ID:
+      type: integer
+      format: int64
+      readOnly: true
+    Date:
+      type: string
+      format: date-time
+    DateRange:
+      type: object
+      required:
+        - startDate
+        - endDate
+      properties:
+        startDate:
+          $ref: '#/components/schemas/Date'
+        endDate:
+          $ref: '#/components/schemas/Date'
+    SportEnum:
+      type: string
+      enum: ['soccer', 'basket', 'volleyball', 'tennis']
+    BaseSportsField:
+      type: object
+      required:
+        - id
+        - sportsFacilityId
+        - name
+        - sport
+        - isIndoor
+        - priceList
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        sportsFacilityId:
+          $ref: '#/components/schemas/ID'
+        name:
+          type: string
+        sport:
+          $ref: '#/components/schemas/SportEnum'
+        isIndoor:
+          type: boolean
+        priceList:
+          $ref: '#/components/schemas/SportsFieldPriceList'
+    SoccerField:
+      allOf:
+        - $ref: '#/components/schemas/BaseSportsField'
+        - type: object
+          required:
+            - soccerFieldType
+          properties:
+            soccerFieldType:
+              type: string
+              enum: ['5 a side', '8 a side', '11 a side']
+    VolleyballField:
+      allOf:
+        - $ref: '#/components/schemas/BaseSportsField'
+        - type: object
+    BasketballField:
+      allOf:
+        - $ref: '#/components/schemas/BaseSportsField'
+        - type: object
+    TennisField:
+      allOf:
+        - $ref: '#/components/schemas/BaseSportsField'
+        - type: object
+          properties:
+            tennisFieldType:
+              type: string
+              enum: ['red clay', 'grass', 'cement']
+    SportsField:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/BasketballField'
+        - $ref: '#/components/schemas/VolleyballField'
+        - $ref: '#/components/schemas/SoccerField'
+        - $ref: '#/components/schemas/TennisField'
+      discriminator:
+        propertyName: sport
+        mapping:
+          soccer:     '#/components/schemas/SoccerField'
+          basket:     '#/components/schemas/BasketballField'
+          volleyball: '#/components/schemas/VolleyballField'
+          tennis:     '#/components/schemas/TennisField'
+    SportsFieldPriceList:
+      type: object
+      properties:
+        pricePerPerson:
+          type: number
+          format: float
+    SportsFacility:
+      type: object
+      required:
+        - name
+        - id
+        - ownerId
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        ownerId:
+          $ref: '#/components/schemas/ID'
+        name:
+          type: string
+        totalSportsFields:
+          type: integer
+        address:
+          $ref: '#/components/schemas/Address'
+        phone:
+          type: string
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - password
+        - address
+        - email
+        - creditCard
+        - firstName
+        - lastName
+        - fiscalCode
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+        address:
+          $ref: '#/components/schemas/Address'
+        email:
+          type: string
+        creditCard:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        fiscalCode:
+          type: string
+    Reservation:
+      type: object
+      required:
+        - id
+        - sportsFieldId
+        - ownerId
+        - dateRange
+        - state
+        - price
+        - createdAt
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        sportsFieldId:
+          $ref: '#/components/schemas/ID'
+        ownerId:
+          $ref: '#/components/schemas/ID'
+        dateRange:
+          $ref: '#/components/schemas/DateRange'
+        state:
+          allOf:
+            - $ref: '#/components/schemas/ReservationStateEnum'
+          readOnly: true
+        price:
+          type: number
+          format: float
+          readOnly: true
+        createdAt:
+          $ref: '#/components/schemas/Date'
+    ReservationStateEnum:
+      type: string
+      enum: ['rejected', 'pending', 'accepted']
+    ReservationStatus:
+      type: object
+      required:
+        - reservationId
+        - state
+      properties:
+        reservationId:
+          $ref: '#/components/schemas/ID'
+        state:
+          $ref: '#/components/schemas/ReservationStateEnum'
+    ReservationRating:
+      type: object
+      required:
+        - reservationId
+        - rating
+      properties:
+        reservationId:
+          $ref: '#/components/schemas/ID'
+        rating:
+          $ref: '#/components/schemas/RatingEnum'
+        description:
+          type: string
+    RatingEnum:
+      type: string
+      enum: ['unrated', 'zero', 'one', 'two', 'three', 'four', 'five']
+    Notification:
+      type: object
+      required:
+        - id
+        - ownerId
+        - description
+        - createdAt
+        - hasBeenRead
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        ownerId:
+          $ref: '#/components/schemas/ID'
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: data-time
+        hasBeenRead:
+          type: boolean
+    Address:
+      type: object
+      required:
+        - state
+        - city
+        - streetName
+        - streetNumber
+        - postcode
+      properties:
+        state:
+          type: string
+        city:
+          type: string
+        streetName:
+          type: string
+        streetNumber:
+          type: string
+        postcode:
+          type: string
+    Error:
+      required:
+        - detail
+        - status
+        - title
+      properties:
+        detail:
+          description: |
+            A human readable explanation specific to this occurrence of the
+            problem.
+          example: Connection to database timed out
+          type: string
+        status:
+          description: |
+            The HTTP status code generated by the origin server for this occurrence
+            of the problem.
+          example: 404
+          exclusiveMaximum: true
+          format: int32
+          maximum: 600
+          minimum: 100
+          type: integer
+        title:
+          description: |
+            A short, summary of the problem type. Written in english and readable
+            for engineers (usually not suited for non technical stakeholders and
+            not localized);
+          example: Service Unavailable
+          type: string
+      type: object
+    BearerToken:
+      type: object
+      required:
+        - userId
+        - bearer
+      properties:
+        userId:
+          $ref: '#/components/schemas/ID'
+        bearer:
+          type: string
+
+  parameters:
+    FilterByRangeDateQueryParam:
+      name: filter_by_range_date
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/DateRange'
+
+  responses:
+    400BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    404NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

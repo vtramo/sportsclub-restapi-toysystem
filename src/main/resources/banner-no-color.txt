@@ -1,0 +1,17 @@
+
+                                                                                                                                  
+   :+oooo+++/-   -/oooo+++//  +oooooooo+:`  .oooo/      /oooo. `:+oooo++//- `ooo+`     oooo/ :ooooooooooooo-   `:+ooooo+-`        
+ :NMMMMMMMMMMd .mMMMMMMMMMMM` mMMMMMMMMMMNo  mMMMM.    .MMMMd /NMMMMMMMMMMh .MMMMm.    MMMMd oMMMMMMMMMMMMMo .hMMMMMMMMMMNo       
+ dMMMMmdddddds sMMMMNddddddd` mMMMMhhhNMMMM: :MMMMy    hMMMM- mMMMMmdddddds .MMMMMN:   MMMMd /hhhhMMMMNhhhh/`mMMMMdysyNMMMMo      
+ mMMMM         yMMMM:         mMMMM   +MMMMo  hMMMM-  -MMMMs  mMMMN         .MMMMMMMo  MMMMd      MMMMm     /MMMMy    `NMMMN      
+ mMMMMddddhh+  yMMMMMMMMNNh   mMMMM++omMMMM:  .NMMMh  dMMMN`  mMMMMMMMMNNs  .MMMMNMMMh.MMMMd      MMMMm     oMMMM/     dMMMM.     
+ mMMMMMMMMMMy  yMMMMMMMMMMd   mMMMMMMMMMMm/    oMMMM:/MMMM/   mMMMMMMMMMMs  .MMMMy:NMMNMMMMd      MMMMm     oMMMM/     dMMMM.     
+ mMMMM/::::-.  yMMMM/``       mMMMM+oMMMMo      mMM /\ MMd    mMMMN```      .MMMMy .dMMMMMMd      MMMMm     /MMMMy    `NMMMN      
+ mMMMM         yMMMMmyyyyyyy` mMMMM  +MMMM+     :M /▒▒\ M:    mMMMMdyyyyyyo .MMMMy   sMMMMMd      MMMMm     `mMMMMdssyNMMMMo      
+ mMMMM         -NMMMMMMMMMMM` mMMMM   sMMMM/     f/▒▒▒▒\e     oMMMMMMMMMMMh .MMMMy    /NMMMd      MMMMm      .hMMMMMMMMMMMo`      
+ +oooo          `/ossssooo++  +oooo    ooooo     /▒▒▒▒▒▒\      ./osssoooo+: `oooo/     -ooo+      oooo+        ./+ossso+:`    (R) 
+                                                                                                                                  
+                                                                      ~~ | Empower your business at https://fervento.software | ~~
+                                                                                                                                  
+:: ${IMPLEMENTATION_TITLE}   -   ${IMPLEMENTATION_VERSION} #${IMPLEMENTATION_BUILD_NUMBER}
+:: Spring Boot   -   ${spring-boot.formatted-version}

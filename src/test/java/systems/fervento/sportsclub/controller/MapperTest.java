@@ -1,0 +1,91 @@
+package systems.fervento.sportsclub.controller;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import systems.fervento.sportsclub.data.*;
+import systems.fervento.sportsclub.mapper.*;
+import systems.fervento.sportsclub.entity.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@SpringBootTest
+public class MapperTest {
+    AddressDataMapper addressDataMapper = AddressDataMapper.INSTANCE;
+    UserDataMapper userDataMapper = UserDataMapper.INSTANCE;
+    SportsFacilityDataMapper sportsFacilityDataMapper = SportsFacilityDataMapper.INSTANCE;
+    SportsFieldDataMapper sportsFieldDataMapper = SportsFieldDataMapper.INSTANCE;
+    SportsFieldPriceListDataMapper sportsFieldPriceListDataMapper = SportsFieldPriceListDataMapper.INSTANCE;
+
+    Address address;
+    UserEntity userEntity;
+    SportsFieldEntity sportsFieldEntity;
+    SportsFacilityEntity sportsFacilityEntity;
+    SportsFieldPriceListEntity sportsFieldPriceListEntity;
+
+    @BeforeEach
+    void setup() {
+        address = new Address();
+        address.setStreetNumber("32");
+        address.setStreetName("Via Vittorio Bachelet");
+        City city = new City();
+        city.setCountry("Italia");
+        city.setName("Afragola (NA)");
+        city.setPostalCode("80021");
+        address.setCity(city);
+
+        userEntity = new UserEntity();
+        userEntity.setUsername("bonek");
+        userEntity.setId(10L);
+        userEntity.setPassword("ciao");
+        userEntity.setFirstName("Vincenzo");
+        userEntity.setLastName("Tramo");
+        userEntity.setFiscalCode("TRMVCN99C11E791Y");
+        userEntity.setHomeAddress(address);
+
+        sportsFacilityEntity = new SportsFacilityEntity("Sports Club 2022", "666");
+        sportsFacilityEntity.setOwner(userEntity);
+        sportsFacilityEntity.setAddress(address);
+
+        sportsFieldEntity = new SoccerFieldEntity("Eden", SoccerFieldType.ELEVEN_A_SIDE, true);
+        sportsFieldEntity.setSportsFacility(sportsFacilityEntity);
+
+        sportsFieldPriceListEntity = new SportsFieldPriceListEntity(75.0f, 5.0f);
+        sportsFieldEntity.setPriceList(sportsFieldPriceListEntity);
+    }
+
+    @Test
+    void testMappingAddress() {
+        AddressData addressData = addressDataMapper.map(address);
+        assertEquals("Italia", addressData.getCountry());
+    }
+
+    @Test
+    void testMappingUser() {
+        UserData userData = userDataMapper.map(userEntity);
+        assertEquals("80021", userData.getHomeAddress().getPostalCode());
+        assertEquals(userEntity.getRegisteredOn(), userData.getRegisteredOn());
+    }
+
+    @Test
+    void testMappingSportsFacility() {
+        SportsFacilityData sportsFacilityData = sportsFacilityDataMapper.map(sportsFacilityEntity);
+        assertEquals("Afragola (NA)", sportsFacilityData.getAddress().getCity());
+    }
+
+    @Test
+    void testMappingSportsField() {
+        SportsFieldData sportsFieldData = sportsFieldDataMapper.toSportsFieldData(sportsFieldEntity);
+        assertTrue(sportsFieldData instanceof SoccerFieldData);
+        assertEquals(sportsFieldData.getSportsFacility().getId(), sportsFacilityEntity.getId());
+        assertEquals(sportsFieldData.getPriceList().getId(), sportsFieldPriceListEntity.getId());
+    }
+
+    @Test
+    void testMappingSportsFieldPriceList() {
+        SportsFieldPriceListData sportsFieldPriceListData = sportsFieldPriceListDataMapper.map(sportsFieldPriceListEntity);
+        assertEquals(sportsFieldEntity.getId(), sportsFieldPriceListData.getSportsField().getId());
+        assertEquals(sportsFieldPriceListData.getPriceIndoor(), sportsFieldPriceListEntity.getPriceIndoor());
+    }
+}

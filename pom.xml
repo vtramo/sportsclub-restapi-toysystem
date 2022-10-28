@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.fervento</groupId>
+    <artifactId>systems.fervento.polisportiva</artifactId>
+    <version>1.0-SNAPSHOT</version> <!--POM_VERSION_LINE//-->
+
+    <!--
+	If you need to extend another parent,
+	use:
+	   <relativePath>./resources/spring-boot-2.1.1-release_parent.xml</relativePath>
+	and modify that POM to extend your source.
+    //-->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.4.RELEASE</version> <!--NON COMMENTARE!!//-->
+    </parent>
+
+    <properties>
+        <!-- Keep always consistent "springboot.release" with parent.version! //-->
+        <springboot.release>2.2.4.RELEASE</springboot.release>
+        <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
+        <resource.delimiter>@</resource.delimiter> <!-- delimiter that doesn't clash with Spring ${} placeholders -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <springfox-version>3.0.0</springfox-version>
+        <docker-repository>fervento.dev/systems.fervento.sportsclub</docker-repository>
+        <docker-tag>${project.version}</docker-tag>
+        <application.mainclass>systems.fervento.sportsclub.SportsClubApp</application.mainclass>
+        <application.debug.port>56055</application.debug.port>
+        <main.basedir>${basedir}</main.basedir>
+        <dockerfile-maven-version>1.4.10</dockerfile-maven-version>
+        <swagger-codegen-version>4.2.3</swagger-codegen-version>
+        <lombok.version>1.18.24</lombok.version>
+        <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>useLastCommittedRevision</id>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <useLastCommittedRevision>true</useLastCommittedRevision>
+                            <shortRevisionLength>8</shortRevisionLength>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.codehaus.mojo</groupId>-->
+            <!--                <artifactId>versions-maven-plugin</artifactId>-->
+            <!--                <version>2.7</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>compile</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>display-dependency-updates</goal>-->
+            <!--                            <goal>display-plugin-updates</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--                <configuration>-->
+            <!--                    <excludes>-->
+            <!--                        <exclude>javax.servlet:javax.servlet-api</exclude>-->
+            <!--                        <exclude>com.google.guava:guava</exclude> &lt;!&ndash; avoid android version &ndash;&gt;-->
+            <!--                    </excludes>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <!-- This is needed when using Lombok 1.18.16 and above -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                        <!-- Mapstruct should follow the lombok path(s) -->
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <!--            <plugin>-->
+            <!--                <artifactId>maven-enforcer-plugin</artifactId>-->
+            <!--                <version>1.4.1</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>enforce-maven</id>-->
+            <!--                        <goals>-->
+            <!--                            <goal>enforce</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <rules>-->
+            <!--&lt;!&ndash;                                <requireMavenVersion>&ndash;&gt;-->
+            <!--&lt;!&ndash;                                    <version>3.5</version>&ndash;&gt;-->
+            <!--&lt;!&ndash;                                </requireMavenVersion>&ndash;&gt;-->
+            <!--                                <requirePluginVersions>-->
+            <!--                                    <message>Best Practice is to always define plugin versions!</message>-->
+            <!--                                    <banLatest>true</banLatest>-->
+            <!--                                    <banRelease>true</banRelease>-->
+            <!--                                    <phases>clean,deploy,verify,appengine:run,appengine:deploy,appengine:update,appengine:devappaserver,site</phases>-->
+            <!--                                </requirePluginVersions>-->
+            <!--                            </rules>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${swagger-codegen-version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <id>swagger-gen-java-api</id>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api.openapi.yml</inputSpec>
+                            <apiPackage>systems.fervento.sportsclub.openapi.api</apiPackage>
+                            <modelPackage>systems.fervento.sportsclub.openapi.model</modelPackage>
+                            <output>${project.basedir}/target/generated-sources/openapi/</output>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generatorName>spring</generatorName>
+                    <configOptions>
+                        <sourceFolder>src/gen/java/main</sourceFolder>
+                        <useBeanValidation>true</useBeanValidation>
+                        <dateLibrary>java8</dateLibrary>
+                        <serializableModel>true</serializableModel>
+                        <interfaceOnly>true</interfaceOnly>
+                        <java8>true</java8>
+                    </configOptions>
+                    <typeMappings>
+                        <typeMapping>OffsetDateTime=java.time.ZonedDateTime</typeMapping>
+                    </typeMappings>
+                    <importMappings>
+                        <importMapping>java.time.OffsetDateTime=java.time.ZonedDateTime</importMapping>
+                    </importMappings>
+                    <addCompileSourceRoot>true</addCompileSourceRoot>
+                    <generateSupportingFiles>true</generateSupportingFiles>
+                    <generateModels>true</generateModels>
+                </configuration>
+            </plugin>
+            <!--
+                    Delombok di default processa i file contenuti nella
+                    folder "src/main/lombok".
+
+                    Siccome non e' una bunoa practice, abilitare per debug
+                    il plugin nelle folder seguenti.
+
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>${lombok.version}.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+
+                        <configuration>
+                            <addOutputDirectory>false</addOutputDirectory>
+                            <sourceDirectory>src/main/java</sourceDirectory>
+                        </configuration>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            //-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-stream</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-stream-test-support</artifactId>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <version>${lombok.version}</version>
+        </dependency>
+
+        <!--SpringFox dependencies -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox-version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mapstruct</groupId>
+                    <artifactId>mapstruct</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox-version}</version>
+        </dependency>
+
+        <!-- Bean Validation API support -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+
+        <!--
+            https://github.com/FasterXML/jackson-modules-java8
+            Jackson 3.0 changes things as it requires Java 8 to work and can thereby directly supported features.
+
+            Because of this parameter-names and datatypes modules are merged into jackson-databind and need not be
+            registered; datetime module (JavaTimeModule) remains separate module due to its size and configurability
+            options.
+
+            So you will only need to separately add "Java 8 Date/time" module
+        //-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>fervento-central</id>
+            <name>artifactory-fervento-releases</name>
+            <url>https://artifactory.fervento.dev/artifactory/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>fervento-snapshots</id>
+            <name>artifactory-fervento-snapshots</name>
+            <url>https://artifactory.fervento.dev/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>fervento-central</id>
+            <name>libs-release</name>
+            <url>https://artifactory.fervento.dev/artifactory/libs-release</url>
+        </repository>
+        <repository>
+            <id>fervento-snapshots</id>
+            <name>libs-snapshot</name>
+            <url>https://artifactory.fervento.dev/artifactory/libs-snapshot</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>fervento-central</id>
+            <name>libs-release</name>
+            <url>https://artifactory.fervento.dev/artifactory/libs-release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>fervento-snapshots</id>
+            <name>libs-snapshot</name>
+            <url>https://artifactory.fervento.dev/artifactory/libs-snapshot</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <scm>
+        <url>file:///${project.basedir}</url>
+        <connection>scm:git:file:///${project.basedir}</connection>
+        <developerConnection>scm:git:file:///${project.basedir}</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <!--
+                    Unpacking fat jar to be included in docker
+                    ***
+                    It is important to start from fat jar because of the plugin
+                    of spring boots that do config filtering and other features
+                    (e.g. service filtering)
+
+                    https://spring.io/guides/gs/spring-boot-docker/
+                    https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${project.groupId}</groupId>
+                                            <artifactId>${project.artifactId}</artifactId>
+                                            <version>${project.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Build Docker image -->
+                    <!--<plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>dockerfile-maven-plugin</artifactId>
+                        <version>${dockerfile-maven-version}</version>
+                        <executions>
+                            <execution>
+                                <id>docker-build</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <phase>install</phase>
+                            </execution>
+                            <execution>
+                                <id>docker-push</id>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                                <phase>deploy</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <repository>${docker-repository}</repository>
+                            <tag>${docker-tag}</tag>
+                            <buildArgs>
+                                <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                                <APPLICATION_MAINCLASS>${application.mainclass}</APPLICATION_MAINCLASS>
+                                <DEBUG_PORT>${application.debug.port}</DEBUG_PORT>
+                                <IMPLEMENTATION_TITLE>${project.artifactId}</IMPLEMENTATION_TITLE>
+                                <IMPLEMENTATION_VERSION>${project.version}</IMPLEMENTATION_VERSION>
+                                <IMPLEMENTATION_BUILD_NUMBER>${buildNumber}</IMPLEMENTATION_BUILD_NUMBER>
+                            </buildArgs>
+                        </configuration>
+                    </plugin>-->
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

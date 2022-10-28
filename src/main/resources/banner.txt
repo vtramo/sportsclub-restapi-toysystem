@@ -1,0 +1,19 @@
+
+
+${AnsiColor.WHITE}                                                                                                                                   
+${AnsiColor.WHITE}    :+oooo+++/-   -/oooo+++//  +oooooooo+:`  .oooo/      /oooo. `:+oooo++//- `ooo+`     oooo/ :ooooooooooooo-   `:+ooooo+-`        
+${AnsiColor.WHITE}  :NMMMMMMMMMMd .mMMMMMMMMMMM` mMMMMMMMMMMNo  mMMMM.    .MMMMd /NMMMMMMMMMMh .MMMMm.    MMMMd oMMMMMMMMMMMMMo .hMMMMMMMMMMNo       
+${AnsiColor.WHITE}  dMMMMmdddddds sMMMMNddddddd` mMMMMhhhNMMMM: :MMMMy    hMMMM- mMMMMmdddddds .MMMMMN:   MMMMd /hhhhMMMMNhhhh/`mMMMMdysyNMMMMo      
+${AnsiColor.WHITE}  mMMMM         yMMMM:         mMMMM   +MMMMo  hMMMM-  -MMMMs  mMMMN         .MMMMMMMo  MMMMd      MMMMm     /MMMMy    `NMMMN      
+${AnsiColor.WHITE}  mMMMMddddhh+  yMMMMMMMMNNh   mMMMM++omMMMM:  .NMMMh  dMMMN`  mMMMMMMMMNNs  .MMMMNMMMh.MMMMd      MMMMm     oMMMM/     dMMMM.     
+${AnsiColor.WHITE}  mMMMMMMMMMMy  yMMMMMMMMMMd   mMMMMMMMMMMm/    oMMMM:/MMMM/   mMMMMMMMMMMs  .MMMMy:NMMNMMMMd      MMMMm     oMMMM/     dMMMM.     
+${AnsiColor.WHITE}  mMMMM/::::-.  yMMMM/``       mMMMM+oMMMMo      mMM ${AnsiColor.RED}/\${AnsiColor.WHITE} MMd    mMMMN```      .MMMMy .dMMMMMMd      MMMMm     /MMMMy    `NMMMN      
+${AnsiColor.WHITE}  mMMMM         yMMMMmyyyyyyy` mMMMM  +MMMM+     :M ${AnsiColor.RED}/▒▒\${AnsiColor.WHITE} M:    mMMMMdyyyyyyo .MMMMy   sMMMMMd      MMMMm     `mMMMMdssyNMMMMo      
+${AnsiColor.WHITE}  mMMMM         -NMMMMMMMMMMM` mMMMM   sMMMM/     f${AnsiColor.RED}/▒▒▒▒\${AnsiColor.WHITE}e     oMMMMMMMMMMMh .MMMMy    /NMMMd      MMMMm      .hMMMMMMMMMMMo`      
+${AnsiColor.WHITE}  +oooo          `/ossssooo++  +oooo    ooooo     ${AnsiColor.RED}/▒▒▒▒▒▒\${AnsiColor.WHITE}      ./osssoooo+: `oooo/     -ooo+      oooo+        ./+ossso+:`    (R) 
+${AnsiColor.WHITE}                                                                                                                                   
+${AnsiColor.YELLOW}                                                                      ~~ | Empower your business at https://fervento.software | ~~
+                                                                                                                                  
+
+${Ansi.BLUE}:: ${IMPLEMENTATION_TITLE}   -   ${IMPLEMENTATION_VERSION} #${IMPLEMENTATION_BUILD_NUMBER}
+${Ansi.DEFAULT}:: Spring Boot   -   ${spring-boot.formatted-version}

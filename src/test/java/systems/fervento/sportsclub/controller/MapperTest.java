@@ -45,8 +45,8 @@ public class MapperTest {
         userEntity.setHomeAddress(address);
 
         sportsFacilityEntity = new SportsFacilityEntity("Sports Club 2022", "666");
-        sportsFacilityEntity.setOwner(userEntity);
         sportsFacilityEntity.setAddress(address);
+        userEntity.addSportsFacility(sportsFacilityEntity);
 
         sportsFieldEntity = new SoccerFieldEntity("Eden", SoccerFieldType.ELEVEN_A_SIDE, true);
         sportsFieldEntity.setSportsFacility(sportsFacilityEntity);
@@ -68,6 +68,7 @@ public class MapperTest {
         UserData userData = userDataMapper.map(userEntity);
         assertEquals("80021", userData.getHomeAddress().getPostalCode());
         assertEquals(userEntity.getRegisteredOn(), userData.getRegisteredOn());
+        assertEquals(userEntity.getSportsFacilities().size(), userData.getSportsFacilities().size());
     }
 
     @Test

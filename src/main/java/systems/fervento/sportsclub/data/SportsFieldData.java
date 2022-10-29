@@ -1,10 +1,10 @@
 package systems.fervento.sportsclub.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@EqualsAndHashCode(exclude = "sportsFacility")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class SportsFieldData {

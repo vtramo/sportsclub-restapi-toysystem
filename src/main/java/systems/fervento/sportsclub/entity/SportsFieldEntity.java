@@ -54,8 +54,6 @@ public abstract class SportsFieldEntity {
         priceList.setSportsField(this);
     }
 
-    public void addReservation() {}
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

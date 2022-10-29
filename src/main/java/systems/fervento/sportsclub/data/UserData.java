@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -18,5 +19,7 @@ public class UserData {
     private String email;
     private String fiscalCode;
     private AddressData homeAddress;
+/*    private Set<BillingDetailsData> allBillingDetails;*/
+    private Set<SportsFacilityData> sportsFacilities;
     private LocalDateTime registeredOn;
 }

@@ -51,6 +51,8 @@ public class MapperTest {
         sportsFieldEntity = new SoccerFieldEntity("Eden", SoccerFieldType.ELEVEN_A_SIDE, true);
         sportsFieldEntity.setSportsFacility(sportsFacilityEntity);
 
+        sportsFacilityEntity.getSportsFields().add(sportsFieldEntity);
+
         sportsFieldPriceListEntity = new SportsFieldPriceListEntity(75.0f, 5.0f);
         sportsFieldEntity.setPriceList(sportsFieldPriceListEntity);
     }
@@ -72,6 +74,7 @@ public class MapperTest {
     void testMappingSportsFacility() {
         SportsFacilityData sportsFacilityData = sportsFacilityDataMapper.map(sportsFacilityEntity);
         assertEquals("Afragola (NA)", sportsFacilityData.getAddress().getCity());
+        assertEquals(1, sportsFacilityData.getSportsFields().size());
     }
 
     @Test

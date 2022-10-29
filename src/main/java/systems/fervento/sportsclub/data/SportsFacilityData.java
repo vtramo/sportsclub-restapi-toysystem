@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +15,5 @@ public class SportsFacilityData {
     private String phone;
     private UserData owner;
     private AddressData address;
+    private Set<SportsFieldData> sportsFields;
 }

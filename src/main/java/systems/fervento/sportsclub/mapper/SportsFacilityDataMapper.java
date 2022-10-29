@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.SportsFacilityData;
 import systems.fervento.sportsclub.entity.SportsFacilityEntity;
 
-@Mapper(uses = {AddressDataMapper.class, UserDataMapper.class})
+@Mapper(uses = {AddressDataMapper.class, UserDataMapper.class, SportsFieldDataMapper.class})
 public interface SportsFacilityDataMapper {
     SportsFacilityDataMapper INSTANCE = Mappers.getMapper(SportsFacilityDataMapper.class);
 

@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.*;
 import systems.fervento.sportsclub.entity.*;
 
-@Mapper(uses = {AddressDataMapper.class, SportsFieldPriceListData.class})
+@Mapper(uses = {AddressDataMapper.class, SportsFieldPriceListData.class, BillingDetailsDataMapper.class})
 public interface SportsFieldDataMapper {
     SportsFieldDataMapper INSTANCE = Mappers.getMapper(SportsFieldDataMapper.class);
 

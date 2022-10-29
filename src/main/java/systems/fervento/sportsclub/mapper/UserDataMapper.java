@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.UserData;
 import systems.fervento.sportsclub.entity.UserEntity;
 
-@Mapper(uses = {AddressDataMapper.class, SportsFieldDataMapper.class})
+@Mapper(uses = {AddressDataMapper.class, SportsFieldDataMapper.class, BillingDetailsDataMapper.class})
 public interface UserDataMapper {
     UserDataMapper INSTANCE = Mappers.getMapper(UserDataMapper.class);
 
@@ -14,6 +14,7 @@ public interface UserDataMapper {
     default UserData map(UserEntity userEntity) {
         return map(userEntity, new CycleAvoidingMappingContext());
     }
+
     UserData map(
         UserEntity userEntity,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext

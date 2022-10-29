@@ -8,14 +8,14 @@ import systems.fervento.sportsclub.data.AddressData;
 import systems.fervento.sportsclub.entity.Address;
 
 @Mapper
-public abstract class AddressDataMapper {
-    public static final AddressDataMapper INSTANCE = Mappers.getMapper(AddressDataMapper.class);
+public interface AddressDataMapper {
+    AddressDataMapper INSTANCE = Mappers.getMapper(AddressDataMapper.class);
 
     @Mapping(source = "city.name", target = "city")
     @Mapping(source = "city.country", target = "country")
     @Mapping(source = "city.postalCode", target = "postalCode")
-    public abstract AddressData map(Address address);
+    AddressData map(Address address);
 
     @InheritInverseConfiguration
-    public abstract Address map(AddressData addressData);
+    Address map(AddressData addressData);
 }

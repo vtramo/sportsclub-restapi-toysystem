@@ -1,15 +1,11 @@
 package systems.fervento.sportsclub.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class BillingDetailsData {
     private Long id;
-    private UserData owner;
+    private Long ownerId;
 }

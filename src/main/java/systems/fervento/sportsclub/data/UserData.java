@@ -19,7 +19,7 @@ public class UserData {
     private String email;
     private String fiscalCode;
     private AddressData homeAddress;
-/*    private Set<BillingDetailsData> allBillingDetails;*/
+    private Set<BillingDetailsData> allBillingDetails;
     private Set<SportsFacilityData> sportsFacilities;
     private LocalDateTime registeredOn;
 }

@@ -75,6 +75,7 @@ public class MapperTest {
         assertEquals("80021", userData.getHomeAddress().getPostalCode());
         assertEquals(userEntity.getRegisteredOn(), userData.getRegisteredOn());
         assertEquals(userEntity.getSportsFacilities().size(), userData.getSportsFacilities().size());
+        assertEquals(userEntity.getAllBillingDetails().size(), userData.getAllBillingDetails().size());
     }
 
     @Test
@@ -102,7 +103,7 @@ public class MapperTest {
     @Test
     void testMappingBillingDetails() {
         BillingDetailsEntity billingDetailsEntity = userEntity.getAllBillingDetails().iterator().next();
-        BillingDetailsData billingDetailsData = billingDetailsDataMapper.convertToBillingDetailsData(billingDetailsEntity);
+        BillingDetailsData billingDetailsData = billingDetailsDataMapper.toBillingDetailsData(billingDetailsEntity);
         assertEquals(billingDetailsData.getId(), billingDetailsEntity.getId());
     }
 }

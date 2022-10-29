@@ -17,12 +17,15 @@ public class MapperTest {
     SportsFacilityDataMapper sportsFacilityDataMapper = SportsFacilityDataMapper.INSTANCE;
     SportsFieldDataMapper sportsFieldDataMapper = SportsFieldDataMapper.INSTANCE;
     SportsFieldPriceListDataMapper sportsFieldPriceListDataMapper = SportsFieldPriceListDataMapper.INSTANCE;
+    BillingDetailsDataMapper billingDetailsDataMapper = BillingDetailsDataMapper.INSTANCE;
 
     Address address;
     UserEntity userEntity;
     SportsFieldEntity sportsFieldEntity;
     SportsFacilityEntity sportsFacilityEntity;
     SportsFieldPriceListEntity sportsFieldPriceListEntity;
+
+    CreditCardEntity creditCardEntity;
 
     @BeforeEach
     void setup() {
@@ -43,6 +46,9 @@ public class MapperTest {
         userEntity.setLastName("Tramo");
         userEntity.setFiscalCode("TRMVCN99C11E791Y");
         userEntity.setHomeAddress(address);
+
+        creditCardEntity = new CreditCardEntity("AAAAAAAAAAAAAAAA", "BBBBB", "CCCC");
+        userEntity.addBillingDetails(creditCardEntity);
 
         sportsFacilityEntity = new SportsFacilityEntity("Sports Club 2022", "666");
         sportsFacilityEntity.setAddress(address);
@@ -91,5 +97,12 @@ public class MapperTest {
         SportsFieldPriceListData sportsFieldPriceListData = sportsFieldPriceListDataMapper.map(sportsFieldPriceListEntity);
         assertEquals(sportsFieldEntity.getId(), sportsFieldPriceListData.getSportsField().getId());
         assertEquals(sportsFieldPriceListData.getPriceIndoor(), sportsFieldPriceListEntity.getPriceIndoor());
+    }
+
+    @Test
+    void testMappingBillingDetails() {
+        BillingDetailsEntity billingDetailsEntity = userEntity.getAllBillingDetails().iterator().next();
+        BillingDetailsData billingDetailsData = billingDetailsDataMapper.convertToBillingDetailsData(billingDetailsEntity);
+        assertEquals(billingDetailsData.getId(), billingDetailsEntity.getId());
     }
 }

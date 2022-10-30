@@ -18,7 +18,7 @@ tags:
   - name: Notifications
     description: API for managing notifications
   - name: Reservations Rating
-    description: API for reservation rating managment
+    description: API for reservation rating management
 
 paths:
   /login:
@@ -613,7 +613,7 @@ components:
     SportsFieldPriceList:
       type: object
       properties:
-        pricePerPerson:
+        pricePerHour:
           type: number
           format: float
     SportsFacility:

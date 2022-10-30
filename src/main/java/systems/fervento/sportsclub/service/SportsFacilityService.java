@@ -2,10 +2,13 @@ package systems.fervento.sportsclub.service;
 
 import org.springframework.stereotype.Service;
 import systems.fervento.sportsclub.data.SportsFacilityData;
+import systems.fervento.sportsclub.entity.SportsFacilityEntity;
+import systems.fervento.sportsclub.exception.ResourceNotFoundException;
 import systems.fervento.sportsclub.mapper.SportsFacilityDataMapper;
 import systems.fervento.sportsclub.repository.SportsFacilityRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toUnmodifiableList;
 
@@ -40,5 +43,12 @@ public class SportsFacilityService {
             .stream()
             .map(sportsFacilityDataMapper::map)
             .collect(toUnmodifiableList());
+    }
+
+    public SportsFacilityData getById(Long sportsFacilityId) {
+        final Optional<SportsFacilityEntity> sportsFacilityEntity = sportsFacilityRepository.findById(sportsFacilityId);
+        return sportsFacilityEntity
+            .map(sportsFacilityDataMapper::map)
+            .orElseThrow(() -> new ResourceNotFoundException("There is no sports facility with this id!"));
     }
 }

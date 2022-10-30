@@ -42,4 +42,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .map(violation -> violation.getPropertyPath() + " " + violation.getMessage() + "!")
             .reduce("", (s1, s2) -> s1 + (s1.isEmpty() ? "" : " ") + s2);
     }
+
+    @ExceptionHandler(value = {ResourceNotFoundException.class})
+    public ResponseEntity<Error> handleResourceNotFoundException(
+        ResourceNotFoundException resourceNotFoundException
+    ) {
+        final var error = new Error();
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.detail(resourceNotFoundException.getMessage());
+        error.setTitle("Resource not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
 }

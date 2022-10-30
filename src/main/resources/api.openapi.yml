@@ -143,7 +143,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SportsFacility'
+                $ref: '#/components/schemas/SportsField'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '404':

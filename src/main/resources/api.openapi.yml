@@ -536,6 +536,7 @@ components:
       type: integer
       format: int64
       readOnly: true
+      minimum: 0
     Date:
       type: string
       format: date-time

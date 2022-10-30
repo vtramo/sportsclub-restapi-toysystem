@@ -72,4 +72,32 @@ public class SportsFacilityApiTest extends SpringDataJpaTest {
                 .andExpect(jsonPath("$", hasSize(1)));
         }
     }
+
+    @Nested
+    @DisplayName("Endpoint /sports-facilities/{sportsFacilityId}")
+    class SportsFacilityByIdEndPoint {
+        @Test
+        @DisplayName("when GET /sports-facilities/-1 then 400 BAD REQUEST")
+        void testGetSportsFacilitiesByInvalidId() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/sports-facilities/-1"))
+                .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("when GET /sports-facilities/0 then 404 NOT FOUND")
+        void testGetSportsFacilityByNonExistentId() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/sports-facilities/0"))
+                .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("when GET /sports-facilities/1001 then 200 OK and return a sports facility")
+        void testGetSportsFacilityByValidId() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/sports-facilities/" + sportsFacilityEntity1.getId()))
+                .andExpect(status().isOk());
+        }
+    }
 }

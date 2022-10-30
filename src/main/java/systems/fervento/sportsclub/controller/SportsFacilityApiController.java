@@ -66,6 +66,10 @@ public class SportsFacilityApiController implements SportsFacilitiesApi {
 
     @Override
     public ResponseEntity<SportsFacility> getSportsFacilityById(Long sportsFacilityId) {
-        return SportsFacilitiesApi.super.getSportsFacilityById(sportsFacilityId);
+        return ResponseEntity.ok(
+            sportsFacilityApiMapper.map(
+                sportsFacilityService.getById(sportsFacilityId)
+            )
+        );
     }
 }

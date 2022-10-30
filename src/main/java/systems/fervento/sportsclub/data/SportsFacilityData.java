@@ -15,5 +15,6 @@ public class SportsFacilityData {
     private String phone;
     private UserData owner;
     private AddressData address;
+    private int totalSportsField;
     private Set<SportsFieldData> sportsFields;
 }

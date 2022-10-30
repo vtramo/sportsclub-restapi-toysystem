@@ -97,7 +97,8 @@ public class SportsFacilityApiTest extends SpringDataJpaTest {
         void testGetSportsFacilityByValidId() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
                 .get("/sports-facilities/" + sportsFacilityEntity1.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sportsFields", hasSize(1)));
         }
     }
 }

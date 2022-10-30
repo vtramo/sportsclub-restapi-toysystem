@@ -110,14 +110,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/SportsFacility'
-                properties:
-                  sportsFields:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/SportsField'
+                $ref: '#/components/schemas/SportsFacilityWithSportsFields'
         '404':
           $ref: '#/components/responses/404NotFound'
 
@@ -640,6 +633,16 @@ components:
           $ref: '#/components/schemas/Address'
         phone:
           type: string
+    SportsFacilityWithSportsFields:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/SportsFacility'
+      properties:
+        sportsFields:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/SportsField'
     User:
       type: object
       required:

@@ -196,3 +196,11 @@ $RECYCLE.BIN/
 /nbproject/
 /target/
 .m2/
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/compiler.xml
+/.idea/encodings.xml
+/.idea/jarRepositories.xml
+/.idea/jpa-buddy.xml
+/.idea/misc.xml
+/.idea/sqldialects.xml
+/.idea/vcs.xml

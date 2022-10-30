@@ -144,7 +144,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SportsFacility'
-
         '400':
           $ref: '#/components/responses/400BadRequest'
         '404':
@@ -616,6 +615,7 @@ components:
         pricePerHour:
           type: number
           format: float
+          minimum: 0
     SportsFacility:
       type: object
       required:

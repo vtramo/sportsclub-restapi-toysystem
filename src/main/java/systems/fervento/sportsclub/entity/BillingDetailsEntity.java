@@ -1,10 +1,11 @@
 package systems.fervento.sportsclub.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -18,7 +19,6 @@ public abstract class BillingDetailsEntity {
     @GeneratedValue(generator = "ID_GENERATOR")
     private Long id;
 
-    @NotNull
     @ManyToOne
     private UserEntity owner;
 

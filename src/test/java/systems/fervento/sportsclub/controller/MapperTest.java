@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import systems.fervento.sportsclub.data.*;
 import systems.fervento.sportsclub.mapper.*;
 import systems.fervento.sportsclub.entity.*;
+import systems.fervento.sportsclub.openapi.model.SportsFacility;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,13 +19,13 @@ public class MapperTest {
     SportsFieldDataMapper sportsFieldDataMapper = SportsFieldDataMapper.INSTANCE;
     SportsFieldPriceListDataMapper sportsFieldPriceListDataMapper = SportsFieldPriceListDataMapper.INSTANCE;
     BillingDetailsDataMapper billingDetailsDataMapper = BillingDetailsDataMapper.INSTANCE;
+    SportsFacilityApiMapper sportsFacilityApiMapper = SportsFacilityApiMapper.INSTANCE;
 
     Address address;
     UserEntity userEntity;
     SportsFieldEntity sportsFieldEntity;
     SportsFacilityEntity sportsFacilityEntity;
     SportsFieldPriceListEntity sportsFieldPriceListEntity;
-
     CreditCardEntity creditCardEntity;
 
     @BeforeEach
@@ -81,8 +82,10 @@ public class MapperTest {
     @Test
     void testMappingSportsFacility() {
         SportsFacilityData sportsFacilityData = sportsFacilityDataMapper.map(sportsFacilityEntity);
+        SportsFacility sportsFacility = sportsFacilityApiMapper.map(sportsFacilityData);
         assertEquals("Afragola (NA)", sportsFacilityData.getAddress().getCity());
         assertEquals(1, sportsFacilityData.getSportsFields().size());
+        assertEquals(sportsFacility.getId(), sportsFacilityData.getId());
     }
 
     @Test

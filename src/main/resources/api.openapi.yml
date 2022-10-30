@@ -113,6 +113,8 @@ paths:
                 $ref: '#/components/schemas/SportsFacilityWithSportsFields'
         '404':
           $ref: '#/components/responses/404NotFound'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
 
   /sports-facilities/{sportsFacilityId}/sports-fields:
     post:

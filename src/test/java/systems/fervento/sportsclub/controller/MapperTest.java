@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import systems.fervento.sportsclub.data.*;
-import systems.fervento.sportsclub.mapper.*;
 import systems.fervento.sportsclub.entity.*;
+import systems.fervento.sportsclub.mapper.*;
 import systems.fervento.sportsclub.openapi.model.SportsFacility;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -86,6 +86,7 @@ public class MapperTest {
         assertEquals("Afragola (NA)", sportsFacilityData.getAddress().getCity());
         assertEquals(1, sportsFacilityData.getSportsFields().size());
         assertEquals(sportsFacility.getId(), sportsFacilityData.getId());
+        assertEquals(sportsFacilityData.getTotalSportsField(), 1);
     }
 
     @Test

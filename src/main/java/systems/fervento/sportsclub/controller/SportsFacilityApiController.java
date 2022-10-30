@@ -8,6 +8,7 @@ import systems.fervento.sportsclub.exception.PreconditionViolationException;
 import systems.fervento.sportsclub.mapper.SportsFacilityApiMapper;
 import systems.fervento.sportsclub.openapi.api.SportsFacilitiesApi;
 import systems.fervento.sportsclub.openapi.model.SportsFacility;
+import systems.fervento.sportsclub.openapi.model.SportsFacilityWithSportsFields;
 import systems.fervento.sportsclub.openapi.model.SportsField;
 import systems.fervento.sportsclub.service.SportsFacilityService;
 
@@ -65,9 +66,9 @@ public class SportsFacilityApiController implements SportsFacilitiesApi {
     }
 
     @Override
-    public ResponseEntity<SportsFacility> getSportsFacilityById(Long sportsFacilityId) {
+    public ResponseEntity<SportsFacilityWithSportsFields> getSportsFacilityById(Long sportsFacilityId) {
         return ResponseEntity.ok(
-            sportsFacilityApiMapper.map(
+            sportsFacilityApiMapper.mapToSportsFacilityWithSportsFields(
                 sportsFacilityService.getById(sportsFacilityId)
             )
         );

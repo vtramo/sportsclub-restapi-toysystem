@@ -33,7 +33,7 @@ public class SportsFacilityApiController implements SportsFacilitiesApi {
     }
 
     @Override
-    public ResponseEntity<SportsFacility> createSportsField(Long sportsFacilityId, SportsField sportsField) {
+    public ResponseEntity<SportsField> createSportsField(Long sportsFacilityId, SportsField sportsField) {
         return SportsFacilitiesApi.super.createSportsField(sportsFacilityId, sportsField);
     }
 

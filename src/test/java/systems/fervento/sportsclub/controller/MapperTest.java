@@ -10,7 +10,7 @@ import systems.fervento.sportsclub.openapi.model.SportsFacility;
 import systems.fervento.sportsclub.openapi.model.SportsFacilityWithSportsFields;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -101,6 +101,7 @@ public class MapperTest {
         assertTrue(sportsFieldData instanceof SoccerFieldData);
         assertEquals(sportsFieldData.getSportsFacility().getId(), sportsFacilityEntity.getId());
         assertEquals(sportsFieldData.getPriceList().getId(), sportsFieldPriceListEntity.getId());
+        assertThat(((SoccerFieldData) sportsFieldData).getSoccerFieldType(), is(equalTo("ELEVEN_A_SIDE")));
     }
 
     @Test

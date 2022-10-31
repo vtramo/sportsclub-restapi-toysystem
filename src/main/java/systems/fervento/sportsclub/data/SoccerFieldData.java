@@ -1,7 +1,6 @@
 package systems.fervento.sportsclub.data;
 
 import lombok.*;
-import systems.fervento.sportsclub.entity.SoccerFieldType;
 
 @Setter
 @Getter
@@ -9,5 +8,5 @@ import systems.fervento.sportsclub.entity.SoccerFieldType;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SoccerFieldData extends SportsFieldData {
-    private SoccerFieldType soccerFieldType;
+    private String soccerFieldType;
 }

@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,7 +69,8 @@ public class SportsFacilityApiTest extends SpringDataJpaTest {
             mockMvc.perform(MockMvcRequestBuilders
                 .get("/sports-facilities?total_sports_field.gt=0"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].totalSportsFields", is(equalTo(1))));
         }
     }
 
@@ -98,7 +99,8 @@ public class SportsFacilityApiTest extends SpringDataJpaTest {
             mockMvc.perform(MockMvcRequestBuilders
                 .get("/sports-facilities/" + sportsFacilityEntity1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sportsFields", hasSize(1)));
+                .andExpect(jsonPath("$.sportsFields", hasSize(1)))
+                .andExpect(jsonPath("$.totalSportsFields", is(equalTo(1))));
         }
     }
 }

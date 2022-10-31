@@ -6,8 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import systems.fervento.sportsclub.data.*;
 import systems.fervento.sportsclub.entity.*;
 import systems.fervento.sportsclub.mapper.*;
+import systems.fervento.sportsclub.openapi.model.SportEnum;
 import systems.fervento.sportsclub.openapi.model.SportsFacility;
 import systems.fervento.sportsclub.openapi.model.SportsFacilityWithSportsFields;
+import systems.fervento.sportsclub.openapi.model.SportsField;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -20,13 +22,14 @@ public class MapperTest {
     UserDataMapper userDataMapper = UserDataMapper.INSTANCE;
     SportsFacilityDataMapper sportsFacilityDataMapper = SportsFacilityDataMapper.INSTANCE;
     SportsFieldDataMapper sportsFieldDataMapper = SportsFieldDataMapper.INSTANCE;
+    SportsFieldApiMapper sportsFieldApiMapper = SportsFieldApiMapper.INSTANCE;
     SportsFieldPriceListDataMapper sportsFieldPriceListDataMapper = SportsFieldPriceListDataMapper.INSTANCE;
     BillingDetailsDataMapper billingDetailsDataMapper = BillingDetailsDataMapper.INSTANCE;
     SportsFacilityApiMapper sportsFacilityApiMapper = SportsFacilityApiMapper.INSTANCE;
 
     Address address;
     UserEntity userEntity;
-    SportsFieldEntity sportsFieldEntity;
+    SportsFieldEntity sportsFieldEntity, sportsFieldEntity2;
     SportsFacilityEntity sportsFacilityEntity;
     SportsFieldPriceListEntity sportsFieldPriceListEntity;
     CreditCardEntity creditCardEntity;
@@ -60,6 +63,8 @@ public class MapperTest {
 
         sportsFieldEntity = new SoccerFieldEntity("Eden", SoccerFieldType.ELEVEN_A_SIDE, true);
         sportsFieldEntity.setSportsFacility(sportsFacilityEntity);
+
+        sportsFieldEntity2 = new TennisFieldEntity("Tennis Club", TennisFieldType.CEMENT, false);
 
         sportsFacilityEntity.getSportsFields().add(sportsFieldEntity);
 
@@ -98,10 +103,17 @@ public class MapperTest {
     @Test
     void testMappingSportsField() {
         SportsFieldData sportsFieldData = sportsFieldDataMapper.toSportsFieldData(sportsFieldEntity);
+        SportsField sportsField = sportsFieldApiMapper.map(sportsFieldData);
         assertTrue(sportsFieldData instanceof SoccerFieldData);
         assertEquals(sportsFieldData.getSportsFacility().getId(), sportsFacilityEntity.getId());
         assertEquals(sportsFieldData.getPriceList().getId(), sportsFieldPriceListEntity.getId());
         assertThat(((SoccerFieldData) sportsFieldData).getSoccerFieldType(), is(equalTo("ELEVEN_A_SIDE")));
+        assertThat(sportsField.getSport(), is(equalTo(SportEnum.SOCCER)));
+        assertThat(sportsField.getPriceList(), is(notNullValue()));
+        assertThat(sportsField.getPriceList().getPricePerHour(), is(equalTo(75.0f)));
+        SportsFieldData sportsFieldData2 = sportsFieldDataMapper.toSportsFieldData(sportsFieldEntity2);
+        SportsField sportsField2 = sportsFieldApiMapper.map(sportsFieldData2);
+        assertThat(sportsField2.getSport(), is(equalTo(SportEnum.TENNIS)));
     }
 
     @Test

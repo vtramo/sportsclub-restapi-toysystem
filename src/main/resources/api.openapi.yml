@@ -636,15 +636,14 @@ components:
         phone:
           type: string
     SportsFacilityWithSportsFields:
-      type: object
       allOf:
         - $ref: '#/components/schemas/SportsFacility'
-      properties:
-        sportsFields:
-          type: array
-          items:
-            allOf:
-              - $ref: '#/components/schemas/SportsField'
+        - type: object
+          properties:
+            sportsFields:
+              type: array
+              items:
+                $ref: '#/components/schemas/SportsField'
     User:
       type: object
       required:

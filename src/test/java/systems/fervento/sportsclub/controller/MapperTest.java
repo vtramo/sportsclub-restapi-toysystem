@@ -7,7 +7,10 @@ import systems.fervento.sportsclub.data.*;
 import systems.fervento.sportsclub.entity.*;
 import systems.fervento.sportsclub.mapper.*;
 import systems.fervento.sportsclub.openapi.model.SportsFacility;
+import systems.fervento.sportsclub.openapi.model.SportsFacilityWithSportsFields;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -83,10 +86,13 @@ public class MapperTest {
     void testMappingSportsFacility() {
         SportsFacilityData sportsFacilityData = sportsFacilityDataMapper.map(sportsFacilityEntity);
         SportsFacility sportsFacility = sportsFacilityApiMapper.map(sportsFacilityData);
+        SportsFacilityWithSportsFields sportsFacilityWithSportsFields =
+                sportsFacilityApiMapper.mapToSportsFacilityWithSportsFields(sportsFacilityData);
         assertEquals("Afragola (NA)", sportsFacilityData.getAddress().getCity());
         assertEquals(1, sportsFacilityData.getSportsFields().size());
         assertEquals(sportsFacility.getId(), sportsFacilityData.getId());
         assertEquals(sportsFacilityData.getTotalSportsField(), 1);
+        assertThat(sportsFacilityWithSportsFields.getSportsFields(), hasSize(1));
     }
 
     @Test

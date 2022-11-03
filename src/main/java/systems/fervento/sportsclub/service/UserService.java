@@ -1,22 +1,28 @@
 package systems.fervento.sportsclub.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import systems.fervento.sportsclub.data.UserData;
+import systems.fervento.sportsclub.mapper.UserDataMapper;
+import systems.fervento.sportsclub.mapper.UserEntityMapper;
 import systems.fervento.sportsclub.repository.UserRepository;
 
-@Slf4j
+import java.util.Objects;
+
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
-    /*private final UserDataMapper userDataMapper = UserDataMapper.INSTANCE;*/
+
+    private final UserDataMapper userDataMapper = UserDataMapper.INSTANCE;
+    private final UserEntityMapper userEntityMapper = UserEntityMapper.INSTANCE;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    /*public Optional<UserData> getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .map(userDataMapper::map);
-    }*/
+    public UserData registerUser(UserData user) {
+        Objects.requireNonNull(user);
+        var userEntity = userEntityMapper.mapToUserEntity(user);
+        userRepository.save(userEntity);
+        return userDataMapper.map(userEntity);
+    }
 }

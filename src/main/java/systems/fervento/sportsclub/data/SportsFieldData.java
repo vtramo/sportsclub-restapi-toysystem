@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public abstract class SportsFieldData {
     private Long id;
+    private Long sportsFacilityId;
     private String name;
     private boolean isIndoor;
     private SportsFieldPriceListData priceList;

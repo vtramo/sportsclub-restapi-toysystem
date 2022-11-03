@@ -1,6 +1,9 @@
 package systems.fervento.sportsclub.controller;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.io.Serializable;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -101,6 +106,43 @@ public class SportsFacilityApiTest extends SpringDataJpaTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sportsFields", hasSize(1)))
                 .andExpect(jsonPath("$.totalSportsFields", is(equalTo(1))));
+        }
+    }
+
+    @Nested
+    @DisplayName("Endpoint /sports-facilities/{sportsFacilityId}/sports-fields")
+    class SportsFacilityByIdSportsFields {
+
+        class SportsFieldRequestBody implements Serializable {
+            String name;
+            String sport;
+            boolean isIndoor;
+            PriceList priceList = new PriceList();
+            class PriceList {
+                float pricePerHour;
+            }
+        }
+
+        @Test
+        @DisplayName("when POST /sports-facilities/1001/sports-fields with a valid body then 201 CREATED and return a sports field")
+        void testPostSportsFacilitiesByValidIdWithValidSportsFieldBody() throws Exception {
+            var sportsFieldRequestBody = new SportsFieldRequestBody();
+            sportsFieldRequestBody.name = "Sports 2022";
+            sportsFieldRequestBody.sport = "basket";
+            sportsFieldRequestBody.isIndoor = true;
+            sportsFieldRequestBody.priceList.pricePerHour = 75.0f;
+
+            mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            var objectWriter = mapper.writer().withDefaultPrettyPrinter();
+            var sportsFieldRequestBodyJsonString = objectWriter.writeValueAsString(sportsFieldRequestBody);
+
+            mockMvc.perform(MockMvcRequestBuilders
+                .post("/sports-facilities/" + sportsFacilityEntity1.getId() + "/sports-fields")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(sportsFieldRequestBodyJsonString))
+                .andExpect(jsonPath("$.sportsFacilityId", is(equalTo(sportsFacilityEntity1.getId().intValue()))))
+                .andExpect(jsonPath("$.sport", is(equalTo("BasketballField"))));
         }
     }
 }

@@ -1,9 +1,6 @@
 package systems.fervento.sportsclub.mapper;
 
-import org.mapstruct.BeforeMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.*;
 import systems.fervento.sportsclub.openapi.model.*;
@@ -12,62 +9,86 @@ import systems.fervento.sportsclub.openapi.model.*;
 public interface SportsFieldApiMapper {
     SportsFieldApiMapper INSTANCE = Mappers.getMapper(SportsFieldApiMapper.class);
 
-    default SportsField map(SportsFieldData sportsFieldData) {
+    default SportsField mapToSportsFieldApi(SportsFieldData sportsFieldData) {
         if (sportsFieldData instanceof SoccerFieldData) {
-            return map((SoccerFieldData) sportsFieldData);
+            return mapToSportsFieldApi((SoccerFieldData) sportsFieldData);
         } else if (sportsFieldData instanceof VolleyballFieldData) {
-            return map((VolleyballFieldData) sportsFieldData);
+            return mapToSportsFieldApi((VolleyballFieldData) sportsFieldData);
         } else if (sportsFieldData instanceof BasketballFieldData) {
-            return map((BasketballFieldData) sportsFieldData);
+            return mapToSportsFieldApi((BasketballFieldData) sportsFieldData);
         } else if (sportsFieldData instanceof TennisFieldData) {
-            return map((TennisFieldData) sportsFieldData);
+            return mapToSportsFieldApi((TennisFieldData) sportsFieldData);
         } else {
             return null;
         }
     }
-    @DoIgnore
-    default SportEnum fromValue(String sport) {
-        return SportEnum.fromValue(sport);
-    }
+
     @BeforeMapping
-    default void beforeMappingSoccerFieldDataSetType(@MappingTarget SportsField sportsField, SoccerFieldData soccerFieldData) {
-        SportsField.SoccerFieldTypeEnum soccerFieldType;
+    default void beforeMappingSoccerFieldDataSetType(@MappingTarget SoccerField soccerField, SoccerFieldData soccerFieldData) {
+        SoccerField.SoccerFieldTypeEnum soccerFieldType;
         if ("ELEVEN_A_SIDE".equals(soccerFieldData.getSoccerFieldType())) {
-            soccerFieldType = SportsField.SoccerFieldTypeEnum._11_A_SIDE;
+            soccerFieldType = SoccerField.SoccerFieldTypeEnum._11_A_SIDE;
         } else if ("EIGHT_A_SIDE".equals(soccerFieldData.getSoccerFieldType())) {
-            soccerFieldType = SportsField.SoccerFieldTypeEnum._8_A_SIDE;
+            soccerFieldType = SoccerField.SoccerFieldTypeEnum._8_A_SIDE;
         } else if ("FIVE_A_SIDE".equals(soccerFieldData.getSoccerFieldType())) {
-            soccerFieldType = SportsField.SoccerFieldTypeEnum._5_A_SIDE;
+            soccerFieldType = SoccerField.SoccerFieldTypeEnum._5_A_SIDE;
         } else {
             throw new IllegalArgumentException();
         }
-        sportsField.setSoccerFieldType(soccerFieldType);
+        soccerField.setSoccerFieldType(soccerFieldType);
     }
 
-    @Mapping(target = "sport", expression = "java(fromValue(\"soccer\"))")
-    @Mapping(target = "tennisFieldType", ignore = true)
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
-    @Mapping(target = "soccerFieldType", ignore = true)
-    SportsField map(SoccerFieldData soccerFieldData);
+    @Mapping(target = "sport", ignore = true)
+    SoccerField mapToSportsFieldApi(SoccerFieldData soccerFieldData);
 
-    @Mapping(target = "tennisFieldType", ignore = true)
-    @Mapping(target = "soccerFieldType", ignore = true)
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
-    @Mapping(target = "sport", expression = "java(fromValue(\"basket\"))")
-    SportsField map(BasketballFieldData basketballFieldData);
+    @Mapping(target = "sport", ignore = true)
+    BasketballField mapToSportsFieldApi(BasketballFieldData basketballFieldData);
 
-    @Mapping(target = "soccerFieldType", ignore = true)
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
-    @Mapping(target = "sport", expression = "java(fromValue(\"tennis\"))")
-    SportsField map(TennisFieldData tennisFieldData);
+    @Mapping(target = "sport", ignore = true)
+    TennisField mapToSportsFieldApi(TennisFieldData tennisFieldData);
 
-    @Mapping(target = "soccerFieldType", ignore = true)
-    @Mapping(target = "tennisFieldType", ignore = true)
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
-    @Mapping(target = "sport", expression = "java(fromValue(\"volleyball\"))")
-    SportsField map(VolleyballFieldData volleyballFieldData);
+    @Mapping(target = "sport", ignore = true)
+    VolleyballField mapToSportsFieldApi(VolleyballFieldData volleyballFieldData);
+    
+    default SportsFieldData mapToSportsFieldData(SportsField sportsField) {
+        if (sportsField instanceof SoccerField) {
+            return mapToSportsFieldData((SoccerField) sportsField);
+        } else if (sportsField instanceof TennisField) {
+            return mapToTennisFieldData((TennisField) sportsField);
+        } else if (sportsField instanceof BasketballField) {
+            return mapToBasketballFieldData((BasketballField) sportsField);
+        } else if (sportsField instanceof VolleyballField) {
+            return mapToVolleyballFieldData((VolleyballField) sportsField);
+        } else {
+            return null;
+        }
+    }
+
+    @DoIgnore
+    @InheritInverseConfiguration
+    @Mapping(target = "sportsFacility", ignore = true)
+    VolleyballFieldData mapToVolleyballFieldData(VolleyballField sportsField);
+
+    @DoIgnore
+    @InheritInverseConfiguration
+    @Mapping(target = "sportsFacility", ignore = true)
+    TennisFieldData mapToTennisFieldData(TennisField sportsField);
+    
+    @DoIgnore
+    @InheritInverseConfiguration
+    @Mapping(target = "sportsFacility", ignore = true)
+    SoccerFieldData mapToSportsFieldData(SoccerField sportsField);
+    
+    @DoIgnore
+    @InheritInverseConfiguration
+    @Mapping(target = "sportsFacility", ignore = true)
+    BasketballFieldData mapToBasketballFieldData(BasketballField sportsField);
 }

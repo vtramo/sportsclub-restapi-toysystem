@@ -658,8 +658,6 @@ components:
           $ref: '#/components/schemas/Address'
         email:
           type: string
-        creditCard:
-          type: string
         firstName:
           type: string
         lastName:

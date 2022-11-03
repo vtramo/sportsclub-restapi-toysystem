@@ -17,7 +17,7 @@ abstract class SpringDataJpaTest {
     UserRepository userRepository;
     Address address;
     UserEntity userEntity;
-    SportsFieldEntity sportsFieldEntity;
+    SportsFieldEntity sportsFieldEntity1, sportsFieldEntity2, sportsFieldEntity3;
     SportsFacilityEntity sportsFacilityEntity1, sportsFacilityEntity2;
     SportsFieldPriceListEntity sportsFieldPriceListEntity;
     CreditCardEntity creditCardEntity;
@@ -50,17 +50,23 @@ abstract class SpringDataJpaTest {
         userEntity.addSportsFacility(sportsFacilityEntity1);
         sportsFacilityEntity1.setOwner(userEntity);
 
-        sportsFieldEntity = new SoccerFieldEntity("Eden", SoccerFieldType.ELEVEN_A_SIDE, true);
-        sportsFieldEntity.setSportsFacility(sportsFacilityEntity1);
-
-        sportsFacilityEntity1.getSportsFields().add(sportsFieldEntity);
-
-        sportsFieldPriceListEntity = new SportsFieldPriceListEntity(75.0f, 5.0f);
-        sportsFieldEntity.setPriceList(sportsFieldPriceListEntity);
-
         sportsFacilityEntity2 = new SportsFacilityEntity("New Sports Club 2022", "777");
         sportsFacilityEntity2.setAddress(address);
         sportsFacilityEntity2.setOwner(userEntity);
+
+        sportsFieldEntity1 = new SoccerFieldEntity("Eden", SoccerFieldType.ELEVEN_A_SIDE, true);
+        sportsFieldEntity2 = new BasketballFieldEntity("Basket Field", false);
+        sportsFieldEntity3 = new TennisFieldEntity("Tennis Field", TennisFieldType.CEMENT, false);
+        sportsFieldEntity1.setSportsFacility(sportsFacilityEntity1);
+        sportsFieldEntity2.setSportsFacility(sportsFacilityEntity2);
+        sportsFieldEntity3.setSportsFacility(sportsFacilityEntity2);
+
+        sportsFacilityEntity1.getSportsFields().add(sportsFieldEntity1);
+        sportsFacilityEntity2.getSportsFields().add(sportsFieldEntity2);
+        sportsFacilityEntity2.getSportsFields().add(sportsFieldEntity3);
+
+        sportsFieldPriceListEntity = new SportsFieldPriceListEntity(75.0f, 5.0f);
+        sportsFieldEntity1.setPriceList(sportsFieldPriceListEntity);
 
         userRepository.save(userEntity);
         sportsFacilityRepository.save(sportsFacilityEntity2);

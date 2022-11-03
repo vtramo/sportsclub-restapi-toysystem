@@ -26,10 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SportsFacilityApiTest extends SpringDataJpaTest {
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     ObjectMapper mapper;
-
     @Nested
     @DisplayName("Endpoint /sports-facilities")
     class SportsFacilitiesEndPoint {
@@ -65,7 +63,7 @@ public class SportsFacilityApiTest extends SpringDataJpaTest {
             mockMvc.perform(MockMvcRequestBuilders
                 .get("/sports-facilities?total_sports_field.lt=1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(0)));
         }
 
         @Test
@@ -74,7 +72,7 @@ public class SportsFacilityApiTest extends SpringDataJpaTest {
             mockMvc.perform(MockMvcRequestBuilders
                 .get("/sports-facilities?total_sports_field.gt=0"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].totalSportsFields", is(equalTo(1))));
         }
     }

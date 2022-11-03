@@ -109,7 +109,7 @@ public class SportsFacilityApiTest extends SpringDataJpaTest {
 
     @Nested
     @DisplayName("Endpoint /sports-facilities/{sportsFacilityId}/sports-fields")
-    class SportsFacilityByIdSportsFields {
+    class SportsFacilityByIdSportsFieldsEndPoint {
 
         class SportsFieldRequestBody implements Serializable {
             String name;

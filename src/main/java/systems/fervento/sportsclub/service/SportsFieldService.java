@@ -3,6 +3,7 @@ package systems.fervento.sportsclub.service;
 import org.springframework.stereotype.Service;
 import systems.fervento.sportsclub.data.SportsFieldData;
 import systems.fervento.sportsclub.entity.SportsFieldEntity;
+import systems.fervento.sportsclub.exception.ResourceNotFoundException;
 import systems.fervento.sportsclub.mapper.SportsFieldDataMapper;
 import systems.fervento.sportsclub.repository.SportsFieldRepository;
 
@@ -67,5 +68,12 @@ public class SportsFieldService {
             .sorted((inAscendingOrder) ? byRating : byRating.reversed())
             .map(sportsFieldDataMapper::mapToSportsFieldData)
             .collect(toList());
+    }
+
+    public SportsFieldData getSportsFieldById(final long sportsFieldId) {
+        return sportsFieldRepository
+            .findById(sportsFieldId)
+            .map(sportsFieldDataMapper::mapToSportsFieldData)
+            .orElseThrow(() -> new ResourceNotFoundException("There is no sports field with this id!"));
     }
 }

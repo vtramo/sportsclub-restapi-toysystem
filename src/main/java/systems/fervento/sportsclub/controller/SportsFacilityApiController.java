@@ -1,11 +1,13 @@
 package systems.fervento.sportsclub.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 import systems.fervento.sportsclub.data.SportsFacilityData;
 import systems.fervento.sportsclub.exception.PreconditionViolationException;
 import systems.fervento.sportsclub.mapper.SportsFacilityApiMapper;
+import systems.fervento.sportsclub.mapper.SportsFieldApiMapper;
 import systems.fervento.sportsclub.openapi.api.SportsFacilitiesApi;
 import systems.fervento.sportsclub.openapi.model.SportsFacility;
 import systems.fervento.sportsclub.openapi.model.SportsFacilityWithSportsFields;
@@ -22,6 +24,7 @@ public class SportsFacilityApiController implements SportsFacilitiesApi {
     private final SportsFacilityService sportsFacilityService;
 
     private final SportsFacilityApiMapper sportsFacilityApiMapper = SportsFacilityApiMapper.INSTANCE;
+    private final SportsFieldApiMapper sportsFieldApiMapper = SportsFieldApiMapper.INSTANCE;
 
     public SportsFacilityApiController(SportsFacilityService sportsFacilityService) {
         this.sportsFacilityService = sportsFacilityService;
@@ -34,7 +37,12 @@ public class SportsFacilityApiController implements SportsFacilitiesApi {
 
     @Override
     public ResponseEntity<SportsField> createSportsField(Long sportsFacilityId, SportsField sportsField) {
-        return SportsFacilitiesApi.super.createSportsField(sportsFacilityId, sportsField);
+        var sportsFieldData = sportsFieldApiMapper.mapToSportsFieldData(sportsField);
+        var createdSportsFieldData = sportsFacilityService.createSportsField(sportsFacilityId, sportsFieldData);
+        return new ResponseEntity<>(
+            sportsFieldApiMapper.mapToSportsFieldApi(createdSportsFieldData),
+            HttpStatus.CREATED
+        );
     }
 
     @Override

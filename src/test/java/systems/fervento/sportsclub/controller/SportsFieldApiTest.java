@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,6 +61,20 @@ public class SportsFieldApiTest extends SpringDataJpaTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(expectedNumberOfSportsFields)));
+        }
+    }
+
+    @Nested
+    @DisplayName("Endpoint /sports-fields/{sportsFieldId}")
+    class SportsFieldsByIdEndpoint {
+        @Test
+        @DisplayName("when GET /sports-fields/1000 then 200 OK and return a sports field")
+        void testGetSportsFieldById() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/sports-fields/" + sportsFieldEntity1.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sport", is(equalTo("SoccerField"))));
         }
     }
 }

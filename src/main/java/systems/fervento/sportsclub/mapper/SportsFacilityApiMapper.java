@@ -7,7 +7,7 @@ import systems.fervento.sportsclub.data.SportsFacilityData;
 import systems.fervento.sportsclub.openapi.model.SportsFacility;
 import systems.fervento.sportsclub.openapi.model.SportsFacilityWithSportsFields;
 
-@Mapper(uses = AddressApiMapper.class)
+@Mapper(uses = {AddressApiMapper.class, SportsFieldApiMapper.class})
 public interface SportsFacilityApiMapper {
     SportsFacilityApiMapper INSTANCE = Mappers.getMapper(SportsFacilityApiMapper.class);
 

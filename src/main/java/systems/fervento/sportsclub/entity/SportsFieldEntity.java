@@ -3,6 +3,7 @@ package systems.fervento.sportsclub.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "field_type")
+@DiscriminatorColumn(name = "sport")
 public abstract class SportsFieldEntity {
     @Id
     @GeneratedValue(generator = "ID_GENERATOR")
@@ -24,6 +25,9 @@ public abstract class SportsFieldEntity {
     @NotBlank
     @Column(unique = true)
     private String name;
+
+    @Formula(value = "sport")
+    private String sport;
 
     private boolean isIndoor;
 

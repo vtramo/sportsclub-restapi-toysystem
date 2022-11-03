@@ -85,8 +85,7 @@ paths:
               schema:
                 type: array
                 items:
-                  allOf:
-                    - $ref: '#/components/schemas/SportsFacility'
+                  $ref: '#/components/schemas/SportsFacility'
         '400':
           $ref: '#/components/responses/400BadRequest'
 
@@ -131,15 +130,11 @@ paths:
           schema:
             $ref: '#/components/schemas/ID'
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SportsField'
+        $ref: '#/components/requestBodies/SportsFieldRequestBody'
       responses:
         '201':
           description: >
-            The created sports facility
+            The created sports field
           content:
             application/json:
               schema:
@@ -177,8 +172,7 @@ paths:
               schema:
                 type: array
                 items:
-                  allOf:
-                    - $ref: '#/components/schemas/SportsField'
+                  $ref: '#/components/schemas/SportsField'
         '400':
           $ref: '#/components/responses/400BadRequest'
 
@@ -253,8 +247,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '404':
@@ -349,8 +342,7 @@ paths:
               schema:
                 type: array
                 items:
-                  allOf:
-                    - $ref: '#/components/schemas/Reservation'
+                  $ref: '#/components/schemas/Reservation'
         '400':
           $ref: '#/components/responses/400BadRequest'
     post:
@@ -372,8 +364,7 @@ paths:
               schema:
                 type: array
                 items:
-                  allOf:
-                    - $ref: '#/components/schemas/Reservation'
+                  $ref: '#/components/schemas/Reservation'
         '400':
           $ref: '#/components/responses/400BadRequest'
 
@@ -564,7 +555,7 @@ components:
         name:
           type: string
         sport:
-          $ref: '#/components/schemas/SportEnum'
+          type: string
         isIndoor:
           type: boolean
         priceList:
@@ -596,7 +587,6 @@ components:
               type: string
               enum: ['red clay', 'grass', 'cement']
     SportsField:
-      type: object
       oneOf:
         - $ref: '#/components/schemas/BasketballField'
         - $ref: '#/components/schemas/VolleyballField'
@@ -841,5 +831,14 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
+  requestBodies:
+    SportsFieldRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SportsField'
 security:
   - bearerAuth: []
+
+

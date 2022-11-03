@@ -33,7 +33,7 @@
         <application.debug.port>56055</application.debug.port>
         <main.basedir>${basedir}</main.basedir>
         <dockerfile-maven-version>1.4.10</dockerfile-maven-version>
-        <swagger-codegen-version>4.2.3</swagger-codegen-version>
+        <swagger-codegen-version>6.2.0</swagger-codegen-version>
         <lombok.version>1.18.24</lombok.version>
         <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
     </properties>

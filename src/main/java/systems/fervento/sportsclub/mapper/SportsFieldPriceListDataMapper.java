@@ -1,7 +1,6 @@
 package systems.fervento.sportsclub.mapper;
 
 import org.mapstruct.Context;
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.SportsFieldPriceListData;
@@ -16,19 +15,8 @@ public interface SportsFieldPriceListDataMapper {
         return map(sportsFieldPriceListEntity, new CycleAvoidingMappingContext());
     }
 
-    @DoIgnore
-    default SportsFieldPriceListEntity map(SportsFieldPriceListData sportsFieldPriceListData) {
-        return map(sportsFieldPriceListData, new CycleAvoidingMappingContext());
-    }
-
     SportsFieldPriceListData map(
         SportsFieldPriceListEntity sportsFieldPriceListEntity,
-        @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
-    );
-
-    @InheritInverseConfiguration
-    SportsFieldPriceListEntity map(
-        SportsFieldPriceListData sportsFieldPriceListData,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
     );
 }

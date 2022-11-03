@@ -12,12 +12,12 @@ public interface SportsFacilityDataMapper {
     SportsFacilityDataMapper INSTANCE = Mappers.getMapper(SportsFacilityDataMapper.class);
 
     @DoIgnore
-    default SportsFacilityData map(SportsFacilityEntity sportsFacilityEntity) {
-        return map(sportsFacilityEntity, new CycleAvoidingMappingContext());
+    default SportsFacilityData mapToSportsFacilityData(SportsFacilityEntity sportsFacilityEntity) {
+        return mapToSportsFacilityData(sportsFacilityEntity, new CycleAvoidingMappingContext());
     }
 
     @Mapping(target = "totalSportsField", expression = "java(sportsFacilityEntity.getSportsFields().size())")
-    SportsFacilityData map(
+    SportsFacilityData mapToSportsFacilityData(
         SportsFacilityEntity sportsFacilityEntity,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
     );

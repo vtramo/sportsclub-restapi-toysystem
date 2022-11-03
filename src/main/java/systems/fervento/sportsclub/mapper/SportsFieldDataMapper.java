@@ -1,7 +1,6 @@
 package systems.fervento.sportsclub.mapper;
 
 import org.mapstruct.Context;
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -12,28 +11,16 @@ import systems.fervento.sportsclub.entity.*;
 public interface SportsFieldDataMapper {
     SportsFieldDataMapper INSTANCE = Mappers.getMapper(SportsFieldDataMapper.class);
 
-    default SportsFieldData toSportsFieldData(
+    default SportsFieldData mapToSportsFieldData(
         SportsFieldEntity sportsFieldEntity,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
     ) {
         return convertToSportsFieldData(sportsFieldEntity, cycleAvoidingMappingContext);
     }
 
-    default SportsFieldEntity toSportsFieldEntity(
-        SportsFieldData sportsFieldData,
-        @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
-    ) {
-        return convertToSportsFieldEntity(sportsFieldData, cycleAvoidingMappingContext);
-    }
-
     @DoIgnore
-    default SportsFieldData toSportsFieldData(SportsFieldEntity sportsFieldEntity) {
+    default SportsFieldData mapToSportsFieldData(SportsFieldEntity sportsFieldEntity) {
         return convertToSportsFieldData(sportsFieldEntity, new CycleAvoidingMappingContext());
-    }
-
-    @DoIgnore
-    default SportsFieldEntity toSportsFieldEntity(SportsFieldData sportsFieldData) {
-        return convertToSportsFieldEntity(sportsFieldData, new CycleAvoidingMappingContext());
     }
 
     @DoIgnore
@@ -54,75 +41,32 @@ public interface SportsFieldDataMapper {
         }
     }
 
-    @DoIgnore
-    default SportsFieldEntity convertToSportsFieldEntity(
-        SportsFieldData sportsFieldData,
-        CycleAvoidingMappingContext cycleAvoidingMappingContext
-    ) {
-        if (sportsFieldData instanceof SoccerFieldData) {
-            return map((SoccerFieldData) sportsFieldData, cycleAvoidingMappingContext);
-        } else if (sportsFieldData instanceof VolleyballFieldData) {
-            return map((VolleyballFieldData) sportsFieldData, cycleAvoidingMappingContext);
-        } else if (sportsFieldData instanceof TennisFieldData) {
-            return map((TennisFieldData) sportsFieldData, cycleAvoidingMappingContext);
-        } else if (sportsFieldData instanceof BasketballFieldData) {
-            return map((BasketballFieldData) sportsFieldData, cycleAvoidingMappingContext);
-        } else {
-            return null;
-        }
-    }
 
     @DoIgnore
-    @Mapping(target = "soccerFieldType", source = "soccerFieldType")
+    @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     SoccerFieldData map(
         SoccerFieldEntity soccerFieldEntity,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
     );
 
     @DoIgnore
-    @InheritInverseConfiguration
-    SoccerFieldEntity map(
-        SoccerFieldData soccerFieldData,
-        @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
-    );
-
-    @DoIgnore
-    @Mapping(target = "tennisFieldType", source = "tennisFieldType")
+    @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     TennisFieldData map(
         TennisFieldEntity tennisFieldEntity,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
     );
 
     @DoIgnore
-    @InheritInverseConfiguration
-    TennisFieldEntity map(
-        TennisFieldData tennisFieldData,
-        @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
-    );
-
-    @DoIgnore
+    @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     BasketballFieldData map(
         BasketballFieldEntity basketballFieldEntity,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
     );
 
     @DoIgnore
-    @InheritInverseConfiguration
-    BasketballFieldEntity map(
-        BasketballFieldData basketballFieldData,
-        @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
-    );
-
-    @DoIgnore
+    @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     VolleyballFieldData map(
         VolleyballFieldEntity volleyballFieldEntity,
-        @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
-    );
-
-    @DoIgnore
-    @InheritInverseConfiguration
-    VolleyballFieldEntity map(
-        VolleyballFieldData volleyballFieldData,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext
     );
 }

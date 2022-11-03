@@ -1,5 +1,6 @@
 package systems.fervento.sportsclub.mapper;
 
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -12,5 +13,8 @@ public interface AddressApiMapper {
 
     @Mapping(target = "state", source = "country")
     @Mapping(target = "postcode", source = "postalCode")
-    Address map(AddressData addressData);
+    Address mapToAddressApi(AddressData addressData);
+
+    @InheritInverseConfiguration
+    AddressData mapToAddressData(Address address);
 }

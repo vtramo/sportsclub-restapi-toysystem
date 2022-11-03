@@ -62,4 +62,13 @@ public class SportsFacilityEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    public void addSportsField(final SportsFieldEntity sportsFieldEntity) {
+        Objects.requireNonNull(sportsFieldEntity);
+        sportsFields.add(sportsFieldEntity);
+        if (sportsFieldEntity.getSportsFacility() != null) {
+            throw new IllegalStateException("This SportsFieldEntity is already assigned to a SportsFacilityEntity!");
+        }
+        sportsFieldEntity.setSportsFacility(this);
+    }
 }

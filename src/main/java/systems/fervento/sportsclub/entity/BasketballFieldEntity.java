@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue(value = "basketball")
+@DiscriminatorValue(value = "basket")
 public class BasketballFieldEntity extends SportsFieldEntity {
 
     public BasketballFieldEntity(final String name, final boolean isIndoor) {

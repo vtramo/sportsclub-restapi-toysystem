@@ -2,19 +2,25 @@ package systems.fervento.sportsclub.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import systems.fervento.sportsclub.data.*;
+import systems.fervento.sportsclub.entity.Address;
 import systems.fervento.sportsclub.entity.*;
 import systems.fervento.sportsclub.mapper.*;
-import systems.fervento.sportsclub.openapi.model.SportEnum;
-import systems.fervento.sportsclub.openapi.model.SportsFacility;
-import systems.fervento.sportsclub.openapi.model.SportsFacilityWithSportsFields;
-import systems.fervento.sportsclub.openapi.model.SportsField;
+import systems.fervento.sportsclub.openapi.model.*;
+import systems.fervento.sportsclub.repository.UserRepository;
+
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class MapperTest {
@@ -25,8 +31,14 @@ public class MapperTest {
     SportsFieldApiMapper sportsFieldApiMapper = SportsFieldApiMapper.INSTANCE;
     SportsFieldPriceListDataMapper sportsFieldPriceListDataMapper = SportsFieldPriceListDataMapper.INSTANCE;
     BillingDetailsDataMapper billingDetailsDataMapper = BillingDetailsDataMapper.INSTANCE;
+
     SportsFacilityApiMapper sportsFacilityApiMapper = SportsFacilityApiMapper.INSTANCE;
 
+    @Mock
+    UserRepository mockedUserRepository;
+
+    @Autowired
+    BillingDetailsEntityMapper billingDetailsEntityMapper;
     Address address;
     UserEntity userEntity;
     SportsFieldEntity sportsFieldEntity, sportsFieldEntity2;
@@ -52,6 +64,7 @@ public class MapperTest {
         userEntity.setFirstName("Vincenzo");
         userEntity.setLastName("Tramo");
         userEntity.setFiscalCode("TRMVCN99C11E791Y");
+        userEntity.setEmail("vv.tramo@gmail.com");
         userEntity.setHomeAddress(address);
 
         creditCardEntity = new CreditCardEntity("AAAAAAAAAAAAAAAA", "BBBBB", "CCCC");
@@ -59,6 +72,7 @@ public class MapperTest {
 
         sportsFacilityEntity = new SportsFacilityEntity("Sports Club 2022", "666");
         sportsFacilityEntity.setAddress(address);
+        sportsFacilityEntity.setOwner(userEntity);
         userEntity.addSportsFacility(sportsFacilityEntity);
 
         sportsFieldEntity = new SoccerFieldEntity("Eden", SoccerFieldType.ELEVEN_A_SIDE, true);
@@ -89,7 +103,7 @@ public class MapperTest {
 
     @Test
     void testMappingSportsFacility() {
-        SportsFacilityData sportsFacilityData = sportsFacilityDataMapper.map(sportsFacilityEntity);
+        SportsFacilityData sportsFacilityData = sportsFacilityDataMapper.mapToSportsFacilityData(sportsFacilityEntity);
         SportsFacility sportsFacility = sportsFacilityApiMapper.map(sportsFacilityData);
         SportsFacilityWithSportsFields sportsFacilityWithSportsFields =
                 sportsFacilityApiMapper.mapToSportsFacilityWithSportsFields(sportsFacilityData);
@@ -102,8 +116,8 @@ public class MapperTest {
 
     @Test
     void testMappingSportsField() {
-        SportsFieldData sportsFieldData = sportsFieldDataMapper.toSportsFieldData(sportsFieldEntity);
-        SportsField sportsField = sportsFieldApiMapper.map(sportsFieldData);
+        SportsFieldData sportsFieldData = sportsFieldDataMapper.mapToSportsFieldData(sportsFieldEntity);
+        SoccerField sportsField = (SoccerField) sportsFieldApiMapper.mapToSportsFieldApi(sportsFieldData);
         assertTrue(sportsFieldData instanceof SoccerFieldData);
         assertEquals(sportsFieldData.getSportsFacility().getId(), sportsFacilityEntity.getId());
         assertEquals(sportsFieldData.getPriceList().getId(), sportsFieldPriceListEntity.getId());
@@ -111,9 +125,12 @@ public class MapperTest {
         assertThat(sportsField.getSport(), is(equalTo(SportEnum.SOCCER)));
         assertThat(sportsField.getPriceList(), is(notNullValue()));
         assertThat(sportsField.getPriceList().getPricePerHour(), is(equalTo(75.0f)));
-        SportsFieldData sportsFieldData2 = sportsFieldDataMapper.toSportsFieldData(sportsFieldEntity2);
-        SportsField sportsField2 = sportsFieldApiMapper.map(sportsFieldData2);
+
+        SportsFieldData sportsFieldData2 = sportsFieldDataMapper.mapToSportsFieldData(sportsFieldEntity2);
+        TennisField sportsField2 = (TennisField) sportsFieldApiMapper.mapToSportsFieldApi(sportsFieldData2);
         assertThat(sportsField2.getSport(), is(equalTo(SportEnum.TENNIS)));
+        SportsFieldData sportsFieldDataMappedFromSportsFieldApi = sportsFieldApiMapper.mapToSportsFieldData(sportsField2);
+        assertEquals(sportsFieldDataMappedFromSportsFieldApi, sportsFieldData2);
     }
 
     @Test
@@ -128,5 +145,10 @@ public class MapperTest {
         BillingDetailsEntity billingDetailsEntity = userEntity.getAllBillingDetails().iterator().next();
         BillingDetailsData billingDetailsData = billingDetailsDataMapper.toBillingDetailsData(billingDetailsEntity);
         assertEquals(billingDetailsData.getId(), billingDetailsEntity.getId());
+
+        MockitoAnnotations.initMocks(this);
+        when(mockedUserRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
+        BillingDetailsEntity billingDetailsEntity2 = billingDetailsEntityMapper.mapToBillingDetailsEntity(billingDetailsData);
+        assertThat(billingDetailsEntity2.getOwner().getId(), is(equalTo(billingDetailsEntity.getOwner().getId())));
     }
 }

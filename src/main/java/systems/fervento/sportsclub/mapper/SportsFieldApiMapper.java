@@ -41,6 +41,7 @@ public interface SportsFieldApiMapper {
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
     @Mapping(target = "sport", ignore = true)
+    @Mapping(target = "soccerFieldType", ignore = true)
     SoccerField mapToSportsFieldApi(SoccerFieldData soccerFieldData);
 
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")

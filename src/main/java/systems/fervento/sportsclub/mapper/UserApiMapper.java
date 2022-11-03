@@ -1,11 +1,19 @@
 package systems.fervento.sportsclub.mapper;
 
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import systems.fervento.sportsclub.data.UserData;
+import systems.fervento.sportsclub.openapi.model.User;
 
-@Mapper()
-public abstract class UserApiMapper {
-    public static final UserApiMapper INSTANCE = Mappers.getMapper(UserApiMapper.class);
+@Mapper(uses = {AddressApiMapper.class})
+public interface UserApiMapper {
+    UserApiMapper INSTANCE = Mappers.getMapper(UserApiMapper.class);
 
-    /*public abstract User map(UserData userData);*/
+    @Mapping(target = "address", source = "homeAddress")
+    User mapToUserApi(UserData userData);
+
+    @InheritInverseConfiguration
+    UserData mapToUserData(User user);
 }

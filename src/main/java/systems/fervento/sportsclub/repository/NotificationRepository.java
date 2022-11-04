@@ -9,4 +9,5 @@ import java.util.stream.Stream;
 @Repository
 public interface NotificationRepository extends JpaRepository<NotificationEntity, Long> {
     Stream<NotificationEntity> findAllByOwnerId(Long ownerId);
+    Stream<NotificationEntity> findAllByOwnerIdAndHasBeenRead(Long ownerId, boolean hasBeenRead);
 }

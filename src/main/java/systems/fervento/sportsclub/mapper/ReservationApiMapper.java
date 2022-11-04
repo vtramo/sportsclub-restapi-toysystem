@@ -5,9 +5,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 import systems.fervento.sportsclub.data.ReservationData;
 import systems.fervento.sportsclub.openapi.model.DateRange;
 import systems.fervento.sportsclub.openapi.model.Reservation;
+import systems.fervento.sportsclub.openapi.model.ReservationPage;
+
+import static java.util.stream.Collectors.toList;
 
 @Mapper
 public interface ReservationApiMapper {
@@ -18,8 +22,35 @@ public interface ReservationApiMapper {
         final var dateRange = new DateRange();
         dateRange.setStartDate(reservationData.getStartDateTime());
         dateRange.setEndDate(reservationData.getEndDateTime());
+        reservation.setDateRange(dateRange);
     }
 
     @Mapping(target = "dateRange", ignore = true)
     Reservation mapToReservationApi(ReservationData reservationData);
+
+
+    default ReservationPage mapToReservationPage(Page<ReservationData> reservationDataPage) {
+        return mapToReservationPage(1, reservationDataPage);
+    }
+
+    @Mapping(target = "pageNo", expression = "java(notificationDataPage.getNumber())")
+    @Mapping(target = "pageSize", expression = "java(notificationDataPage.getSize())")
+    @Mapping(target = "totalPages", expression = "java(notificationDataPage.getTotalPages())")
+    @Mapping(target = "totalElements", expression = "java(notificationDataPage.getTotalElements())")
+    @Mapping(target = "last", expression = "java(notificationDataPage.isLast())")
+    @Mapping(target = "reservations", ignore = true)
+    @DoIgnore
+    ReservationPage mapToReservationPage(Integer dummy, Page<ReservationData> reservationDataPage);
+
+    @AfterMapping
+    default void setPageContentToNotificationPage(
+        @MappingTarget ReservationPage reservationData,
+        Page<ReservationData> reservationDataPage
+    ) {
+        reservationData.setReservations(reservationDataPage
+            .stream()
+            .map(this::mapToReservationApi)
+            .collect(toList())
+        );
+    }
 }

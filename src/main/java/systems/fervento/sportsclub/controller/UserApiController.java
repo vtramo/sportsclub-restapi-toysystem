@@ -6,14 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 import systems.fervento.sportsclub.mapper.NotificationApiMapper;
 import systems.fervento.sportsclub.mapper.UserApiMapper;
 import systems.fervento.sportsclub.openapi.api.UsersApi;
-import systems.fervento.sportsclub.openapi.model.Notification;
+import systems.fervento.sportsclub.openapi.model.NotificationPage;
 import systems.fervento.sportsclub.openapi.model.User;
 import systems.fervento.sportsclub.service.UserService;
 
-import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.*;
 
 @RestController
 public class UserApiController implements UsersApi {
@@ -39,14 +36,18 @@ public class UserApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<List<Notification>> usersUserIdNotificationsGet(Long userId, Boolean hasBeenRead) {
+    public ResponseEntity<NotificationPage> getUserNotifications(
+        Long userId,
+        Integer pageNo,
+        Integer pageSize,
+        Boolean hasBeenRead
+    ) {
         final Optional<Boolean> hasBeenReadQueryParam = Optional.ofNullable(hasBeenRead);
+        var userNotificationsDataPage =
+                userService.getAllUserNotificationsByUserId(pageNo, pageSize, userId, hasBeenReadQueryParam);
         return ResponseEntity.ok(
-            userService
-                .getAllUserNotificationsByUserId(userId, hasBeenReadQueryParam)
-                .stream()
-                .map(notificationApiMapper::mapToNotificationApi)
-                .collect(toList())
+            notificationApiMapper
+                .mapToNotificationPage(userNotificationsDataPage)
         );
     }
 }

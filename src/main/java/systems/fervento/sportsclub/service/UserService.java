@@ -1,5 +1,8 @@
 package systems.fervento.sportsclub.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import systems.fervento.sportsclub.data.NotificationData;
@@ -12,13 +15,9 @@ import systems.fervento.sportsclub.mapper.UserEntityMapper;
 import systems.fervento.sportsclub.repository.NotificationRepository;
 import systems.fervento.sportsclub.repository.UserRepository;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class UserService {
@@ -41,7 +40,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<NotificationData> getAllUserNotificationsByUserId(
+    public Page<NotificationData> getAllUserNotificationsByUserId(
+        Integer pageNo,
+        Integer pageSize,
         final long ownerId,
         final Optional<Boolean> filterByHasBeenRead
     ) {
@@ -49,16 +50,13 @@ public class UserService {
             throw new ResourceNotFoundException("The provided id doesn't identify any user!");
         }
 
-        final Supplier<Stream<NotificationEntity>> getUserNotificationsStream = (filterByHasBeenRead.isEmpty())
-            ? () -> notificationRepository.findAllByOwnerId(ownerId)
-            : () -> notificationRepository.findAllByOwnerIdAndHasBeenRead(ownerId, filterByHasBeenRead.get());
+        final Pageable pageRequest = PageRequest.of(pageNo, pageSize);
 
-        try (final Stream<NotificationEntity> notificationsStream = getUserNotificationsStream.get()) {
-            return notificationsStream
-                .map(notificationDataMapper::mapToNotificationData)
-                .collect(toList());
-        }
+        final Supplier<Page<NotificationEntity>> getUserNotificationsPage = (filterByHasBeenRead.isEmpty())
+            ? () -> notificationRepository.findAllByOwnerId(pageRequest, ownerId)
+            : () -> notificationRepository.findAllByOwnerIdAndHasBeenRead(pageRequest, ownerId, filterByHasBeenRead.get());
+
+        return getUserNotificationsPage.get()
+            .map(notificationDataMapper::mapToNotificationData);
     }
-
-
 }

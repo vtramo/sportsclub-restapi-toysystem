@@ -261,6 +261,16 @@ paths:
         Gets the list of notifications of an user
       operationId: getUserNotifications
       parameters:
+        - name: pageNo
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 10
         - name: userId
           in: path
           required: true
@@ -277,9 +287,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Notification'
+                $ref: '#/components/schemas/NotificationPage'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '404':
@@ -761,6 +769,37 @@ components:
           type: string
         postcode:
           type: string
+    PageInfo:
+      type: object
+      required:
+        - pageNo
+        - pageSize
+        - totalElements
+        - totalPages
+        - last
+      properties:
+        pageNo:
+          type: integer
+        pageSize:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        last:
+          type: boolean
+    NotificationPage:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+      required:
+        - notifications
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
     Error:
       required:
         - detail

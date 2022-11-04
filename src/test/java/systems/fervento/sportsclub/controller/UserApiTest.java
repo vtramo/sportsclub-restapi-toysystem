@@ -18,11 +18,12 @@ import java.io.Serializable;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @DisplayName("User REST API")
-public class UserApiTest {
+public class UserApiTest extends SpringDataJpaTest {
     @Autowired
     MockMvc mockMvc;
 
@@ -32,7 +33,6 @@ public class UserApiTest {
     @Nested
     @DisplayName("Endpoint /users")
     class UsersEndpoint {
-
         class UserRequestBody implements Serializable {
             String username;
             String password;
@@ -51,6 +51,7 @@ public class UserApiTest {
         }
 
         @Test
+        @DisplayName("when POST /users with valid valid User body then 201 and return the created user")
         void testPostCreateUsersWithValidBody() throws Exception {
             var userRequestBody = new UserRequestBody();
             userRequestBody.username = "bonek";
@@ -75,9 +76,44 @@ public class UserApiTest {
                 .post("/users")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(userRequestBodyJsonString))
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(notNullValue())))
                 .andExpect(jsonPath("$.username", is(equalTo("bonek"))))
                 .andExpect(jsonPath("$.address.streetName", is(equalTo("Via Vittorio Bachelet n° 32"))));
+        }
+    }
+
+    @Nested
+    @DisplayName("Endpoint /users/{ownerId}/notifications")
+    class UserByIdNotificationsEndpoint {
+        @Test
+        @DisplayName("when GET /users/1000/notifications then 200 and return all user notifications")
+        void testGetAllUserNotificationsById() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/users/" + userEntity.getId() + "/notifications")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
+        }
+
+        @Test
+        @DisplayName("when GET /users/1000/notifications?has_been_read=true then 200 and return all read user notifications")
+        void testGetAllReadUserNotificationsById() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/users/" + userEntity.getId() + "/notifications?has_been_read=true")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+        }
+
+        @Test
+        @DisplayName("when GET /users/1000/notifications?has_been_read=false then 200 and return all unread user notifications")
+        void testGetAllUnReadUserNotificationsById() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/users/" + userEntity.getId() + "/notifications?has_been_read=false")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
         }
     }
 }

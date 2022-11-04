@@ -5,14 +5,21 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import systems.fervento.sportsclub.entity.*;
+import systems.fervento.sportsclub.repository.NotificationRepository;
 import systems.fervento.sportsclub.repository.SportsFacilityRepository;
 import systems.fervento.sportsclub.repository.UserRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class SpringDataJpaTest {
     @Autowired
     SportsFacilityRepository sportsFacilityRepository;
+    @Autowired
+    NotificationRepository notificationRepository;
+
     @Autowired
     UserRepository userRepository;
     Address address;
@@ -21,6 +28,8 @@ abstract class SpringDataJpaTest {
     SportsFacilityEntity sportsFacilityEntity1, sportsFacilityEntity2;
     SportsFieldPriceListEntity sportsFieldPriceListEntity;
     CreditCardEntity creditCardEntity;
+    List<NotificationEntity> notificationsUserEntity1;
+
     @BeforeAll
     void setupDatabase() {
         address = new Address();
@@ -68,7 +77,14 @@ abstract class SpringDataJpaTest {
         sportsFieldPriceListEntity = new SportsFieldPriceListEntity(75.0f, 5.0f);
         sportsFieldEntity1.setPriceList(sportsFieldPriceListEntity);
 
+        notificationsUserEntity1 = List.of(
+            new NotificationEntity(null, LocalDateTime.now(), true, "ciao", userEntity),
+            new NotificationEntity(null, LocalDateTime.now(), false, "ciao2", userEntity),
+            new NotificationEntity(null, LocalDateTime.now(), false, "ciao3", userEntity)
+        );
+
         userRepository.save(userEntity);
+        notificationRepository.saveAll(notificationsUserEntity1);
         sportsFacilityRepository.save(sportsFacilityEntity2);
         sportsFacilityRepository.save(sportsFacilityEntity1);
     }

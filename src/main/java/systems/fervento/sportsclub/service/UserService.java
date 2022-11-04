@@ -14,6 +14,8 @@ import systems.fervento.sportsclub.repository.UserRepository;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -39,15 +41,24 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<NotificationData> getAllUserNotificationsByUserId(final long ownerId) {
+    public List<NotificationData> getAllUserNotificationsByUserId(
+        final long ownerId,
+        final Optional<Boolean> filterByHasBeenRead
+    ) {
         if (!userRepository.existsById(ownerId)) {
             throw new ResourceNotFoundException("The provided id doesn't identify any user!");
         }
 
-        try (final Stream<NotificationEntity> notificationsStream = notificationRepository.findAllByOwnerId(ownerId)) {
+        final Supplier<Stream<NotificationEntity>> getUserNotificationsStream = (filterByHasBeenRead.isEmpty())
+            ? () -> notificationRepository.findAllByOwnerId(ownerId)
+            : () -> notificationRepository.findAllByOwnerIdAndHasBeenRead(ownerId, filterByHasBeenRead.get());
+
+        try (final Stream<NotificationEntity> notificationsStream = getUserNotificationsStream.get()) {
             return notificationsStream
                 .map(notificationDataMapper::mapToNotificationData)
                 .collect(toList());
         }
     }
+
+
 }

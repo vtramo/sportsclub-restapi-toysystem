@@ -1,6 +1,8 @@
 package systems.fervento.sportsclub.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,11 +11,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class NotificationEntity {
     @Id
@@ -21,7 +25,7 @@ public class NotificationEntity {
     private Long id;
 
     @CreationTimestamp
-    private LocalDate createdOn;
+    private LocalDateTime createdOn;
 
     private boolean hasBeenRead;
 

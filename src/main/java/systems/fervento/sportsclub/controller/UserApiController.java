@@ -3,6 +3,7 @@ package systems.fervento.sportsclub.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import systems.fervento.sportsclub.mapper.NotificationApiMapper;
 import systems.fervento.sportsclub.mapper.UserApiMapper;
 import systems.fervento.sportsclub.openapi.api.UsersApi;
 import systems.fervento.sportsclub.openapi.model.Notification;
@@ -10,12 +11,15 @@ import systems.fervento.sportsclub.openapi.model.User;
 import systems.fervento.sportsclub.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.*;
 
 @RestController
 public class UserApiController implements UsersApi {
     private final UserService userService;
-
     private final UserApiMapper userApiMapper = UserApiMapper.INSTANCE;
+    private final NotificationApiMapper notificationApiMapper = NotificationApiMapper.INSTANCE;
 
     public UserApiController(UserService userService) {
         this.userService = userService;
@@ -36,6 +40,13 @@ public class UserApiController implements UsersApi {
 
     @Override
     public ResponseEntity<List<Notification>> usersUserIdNotificationsGet(Long userId, Boolean hasBeenRead) {
-        return UsersApi.super.usersUserIdNotificationsGet(userId, hasBeenRead);
+        final Optional<Boolean> hasBeenReadQueryParam = Optional.ofNullable(hasBeenRead);
+        return ResponseEntity.ok(
+            userService
+                .getAllUserNotificationsByUserId(userId, hasBeenReadQueryParam)
+                .stream()
+                .map(notificationApiMapper::mapToNotificationApi)
+                .collect(toList())
+        );
     }
 }

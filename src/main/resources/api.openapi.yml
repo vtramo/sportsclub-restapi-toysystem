@@ -259,6 +259,7 @@ paths:
         - Users
       summary: >
         Gets the list of notifications of an user
+      operationId: getUserNotifications
       parameters:
         - name: userId
           in: path

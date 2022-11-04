@@ -349,9 +349,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Reservation'
+                $ref: '#/components/schemas/ReservationPage'
         '400':
           $ref: '#/components/responses/400BadRequest'
     post:
@@ -800,6 +798,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Notification'
+    ReservationPage:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+      required:
+        - reservations
+      properties:
+        reservations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reservation'
+
     Error:
       required:
         - detail

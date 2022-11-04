@@ -87,13 +87,15 @@ public class UserApiTest extends SpringDataJpaTest {
     @DisplayName("Endpoint /users/{ownerId}/notifications")
     class UserByIdNotificationsEndpoint {
         @Test
-        @DisplayName("when GET /users/1000/notifications then 200 and return all user notifications")
+        @DisplayName("when GET /users/1000/notifications?pageNo=0&pageSize=10 then 200 and return all user notifications")
         void testGetAllUserNotificationsById() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
                 .get("/users/" + userEntity.getId() + "/notifications")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)));
+                .andExpect(jsonPath("$.pageNo", is(equalTo(0))))
+                .andExpect(jsonPath("$.pageSize", is(equalTo(10))))
+                .andExpect(jsonPath("$.notifications", hasSize(3)));
         }
 
         @Test
@@ -103,7 +105,7 @@ public class UserApiTest extends SpringDataJpaTest {
                 .get("/users/" + userEntity.getId() + "/notifications?has_been_read=true")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$.notifications", hasSize(1)));
         }
 
         @Test
@@ -113,7 +115,7 @@ public class UserApiTest extends SpringDataJpaTest {
                 .get("/users/" + userEntity.getId() + "/notifications?has_been_read=false")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$.notifications", hasSize(2)));
         }
     }
 }

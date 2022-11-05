@@ -261,12 +261,12 @@ paths:
         Gets the list of notifications of an user
       operationId: getUserNotifications
       parameters:
-        - name: pageNo
+        - name: page_no
           in: query
           schema:
             type: integer
             default: 0
-        - name: pageSize
+        - name: page_size
           in: query
           schema:
             type: integer
@@ -301,6 +301,16 @@ paths:
         Gets a list of sports fields reservations
       operationId: getReservations
       parameters:
+        - name: page_no
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            default: 10
         - name: filter_by_state
           in: query
           required: false
@@ -316,7 +326,13 @@ paths:
           required: false
           schema:
             type: string
-            enum: ['created_at.desc', 'created_at.asc']
+            enum: ['createdAt.desc', 'createdAt.asc']
+        - name: filter_by_price
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
         - name: filter_by_date
           in: query
           required: false

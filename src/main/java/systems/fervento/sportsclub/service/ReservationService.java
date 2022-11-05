@@ -109,4 +109,18 @@ public class ReservationService {
             .map(reservationDataMapper::mapToReservationData)
             .orElseThrow(() -> new ResourceNotFoundException("A reservation with this ID doesn't exist!"));
     }
+
+    public ReservationData updateReservationStatus(final long reservationId, final String status) {
+        Objects.requireNonNull(status);
+        if (!reservationRepository.existsById(reservationId)) {
+            throw new ResourceNotFoundException("A reservation with this id doesn't exists");
+        }
+
+        return reservationDataMapper.mapToReservationData(
+            reservationRepository.updateState(
+                reservationId,
+                ReservationStatus.valueOf(status)
+            )
+        );
+    }
 }

@@ -1,11 +1,13 @@
 package systems.fervento.sportsclub.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import systems.fervento.sportsclub.data.ReservationData;
 import systems.fervento.sportsclub.mapper.ReservationApiMapper;
 import systems.fervento.sportsclub.openapi.api.ReservationsApi;
+import systems.fervento.sportsclub.openapi.model.Reservation;
 import systems.fervento.sportsclub.openapi.model.ReservationPage;
 import systems.fervento.sportsclub.openapi.model.ReservationStateEnum;
 import systems.fervento.sportsclub.openapi.model.SportEnum;
@@ -55,6 +57,16 @@ public class ReservationController implements ReservationsApi {
         return ResponseEntity.ok(
             reservationApiMapper
                 .mapToReservationPage(reservationDataPage)
+        );
+    }
+
+    @Override
+    public ResponseEntity<Reservation> requestReservation(Reservation reservation) {
+        final var reservationData = reservationApiMapper.mapToReservationData(reservation);
+        final var createdReservationData = reservationService.requestReservation(reservationData);
+        return new ResponseEntity<>(
+            reservationApiMapper.mapToReservationApi(createdReservationData),
+            HttpStatus.CREATED
         );
     }
 }

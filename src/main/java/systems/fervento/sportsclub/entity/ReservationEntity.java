@@ -76,7 +76,7 @@ public class ReservationEntity {
         this.rating = rating;
     }
 
-    private void setSportsField(final SportsFieldEntity sportsField) {
+    public void setSportsField(final SportsFieldEntity sportsField) {
         Objects.requireNonNull(sportsField);
         this.sportsField = sportsField;
     }

@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import systems.fervento.sportsclub.entity.*;
 import systems.fervento.sportsclub.repository.NotificationRepository;
+import systems.fervento.sportsclub.repository.ReservationRepository;
 import systems.fervento.sportsclub.repository.SportsFacilityRepository;
 import systems.fervento.sportsclub.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @SpringBootTest
@@ -19,6 +21,8 @@ abstract class SpringDataJpaTest {
     SportsFacilityRepository sportsFacilityRepository;
     @Autowired
     NotificationRepository notificationRepository;
+    @Autowired
+    ReservationRepository reservationRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -29,6 +33,7 @@ abstract class SpringDataJpaTest {
     SportsFieldPriceListEntity sportsFieldPriceListEntity;
     CreditCardEntity creditCardEntity;
     List<NotificationEntity> notificationsUserEntity1;
+    List<ReservationEntity> reservationsUserEntity1;
 
     @BeforeAll
     void setupDatabase() {
@@ -83,9 +88,24 @@ abstract class SpringDataJpaTest {
             new NotificationEntity(null, LocalDateTime.now(), false, "ciao3", userEntity)
         );
 
+        var dateTimeRange = new DateTimeRange(ZonedDateTime.now(), ZonedDateTime.now().plusDays(1));
+        var dateTimeRange2 = new DateTimeRange(ZonedDateTime.now().minusDays(3), ZonedDateTime.now().minusDays(2));
+        reservationsUserEntity1 = List.of(
+            new ReservationEntity(dateTimeRange, 10f, userEntity),
+            new ReservationEntity(dateTimeRange, 10f, userEntity),
+            new ReservationEntity(dateTimeRange, 10f, userEntity),
+            new ReservationEntity(dateTimeRange2, 30f, userEntity)
+        );
+        reservationsUserEntity1.get(0).setSportsField(sportsFieldEntity1);
+        reservationsUserEntity1.get(1).setSportsField(sportsFieldEntity1);
+        reservationsUserEntity1.get(2).setSportsField(sportsFieldEntity2);
+        reservationsUserEntity1.get(3).setReservationStatus(ReservationStatus.ACCEPTED);
+        reservationsUserEntity1.get(3).setSportsField(sportsFieldEntity3);
+
         userRepository.save(userEntity);
         notificationRepository.saveAll(notificationsUserEntity1);
         sportsFacilityRepository.save(sportsFacilityEntity2);
         sportsFacilityRepository.save(sportsFacilityEntity1);
+        reservationRepository.saveAll(reservationsUserEntity1);
     }
 }

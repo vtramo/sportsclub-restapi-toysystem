@@ -58,4 +58,11 @@ public class UserService {
         return getUserNotificationsPage.get()
             .map(notificationDataMapper::mapToNotificationData);
     }
+
+    public UserData getUserById(long userId) {
+        return userRepository
+            .findById(userId)
+            .map(userDataMapper::map)
+            .orElseThrow(() -> new ResourceNotFoundException("This user id doesn't identify any user!"));
+    }
 }

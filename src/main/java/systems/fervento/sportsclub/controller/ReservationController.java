@@ -69,4 +69,13 @@ public class ReservationController implements ReservationsApi {
             HttpStatus.CREATED
         );
     }
+
+    @Override
+    public ResponseEntity<Reservation> reservationsReservationIdGet(Long reservationId) {
+        return ResponseEntity.ok(
+            reservationApiMapper.mapToReservationApi(
+                reservationService.getReservationById(reservationId)
+            )
+        );
+    }
 }

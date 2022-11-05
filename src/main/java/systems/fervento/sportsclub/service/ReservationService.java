@@ -102,4 +102,11 @@ public class ReservationService {
 
         return reservationDataMapper.mapToReservationData(reservationEntity);
     }
+
+    public ReservationData getReservationById(final long reservationId) {
+        return reservationRepository
+            .findById(reservationId)
+            .map(reservationDataMapper::mapToReservationData)
+            .orElseThrow(() -> new ResourceNotFoundException("A reservation with this ID doesn't exist!"));
+    }
 }

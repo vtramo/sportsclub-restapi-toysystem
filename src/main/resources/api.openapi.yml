@@ -397,6 +397,7 @@ paths:
         - Reservations
       summary: >
         Gets the reservation identified by the ID provided
+      operationId: getReservationById
       parameters:
         - name: reservationId
           in: path

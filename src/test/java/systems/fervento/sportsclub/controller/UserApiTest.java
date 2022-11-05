@@ -87,10 +87,10 @@ public class UserApiTest extends SpringDataJpaTest {
     @DisplayName("Endpoint /users/{ownerId}/notifications")
     class UserByIdNotificationsEndpoint {
         @Test
-        @DisplayName("when GET /users/1000/notifications?pageNo=0&pageSize=10 then 200 and return all user notifications")
+        @DisplayName("when GET /users/1000/notifications?page_no=0&page_size=10 then 200 and return all user notifications")
         void testGetAllUserNotificationsById() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .get("/users/" + userEntity.getId() + "/notifications")
+                .get("/users/" + userEntity.getId() + "/notifications?page_no=0&page_size=10")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pageNo", is(equalTo(0))))

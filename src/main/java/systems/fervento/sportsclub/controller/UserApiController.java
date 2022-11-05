@@ -44,7 +44,7 @@ public class UserApiController implements UsersApi {
     ) {
         final Optional<Boolean> hasBeenReadQueryParam = Optional.ofNullable(hasBeenRead);
         var userNotificationsDataPage =
-                userService.getAllUserNotificationsByUserId(pageNo, pageSize, userId, hasBeenReadQueryParam);
+            userService.getAllUserNotificationsByUserId(pageNo, pageSize, userId, hasBeenReadQueryParam);
         return ResponseEntity.ok(
             notificationApiMapper
                 .mapToNotificationPage(userNotificationsDataPage)

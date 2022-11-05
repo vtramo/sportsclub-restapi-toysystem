@@ -24,7 +24,11 @@ public class UserApiController implements UsersApi {
 
     @Override
     public ResponseEntity<User> getUserById(Long userId) {
-        return UsersApi.super.getUserById(userId);
+        return ResponseEntity.ok(
+            userApiMapper.mapToUserApi(
+                userService.getUserById(userId)
+            )
+        );
     }
 
     @Override

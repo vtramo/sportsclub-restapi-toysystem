@@ -33,11 +33,11 @@ public interface ReservationApiMapper {
         return mapToReservationPage(1, reservationDataPage);
     }
 
-    @Mapping(target = "pageNo", expression = "java(notificationDataPage.getNumber())")
-    @Mapping(target = "pageSize", expression = "java(notificationDataPage.getSize())")
-    @Mapping(target = "totalPages", expression = "java(notificationDataPage.getTotalPages())")
-    @Mapping(target = "totalElements", expression = "java(notificationDataPage.getTotalElements())")
-    @Mapping(target = "last", expression = "java(notificationDataPage.isLast())")
+    @Mapping(target = "pageNo", expression = "java(reservationDataPage.getNumber())")
+    @Mapping(target = "pageSize", expression = "java(reservationDataPage.getSize())")
+    @Mapping(target = "totalPages", expression = "java(reservationDataPage.getTotalPages())")
+    @Mapping(target = "totalElements", expression = "java(reservationDataPage.getTotalElements())")
+    @Mapping(target = "last", expression = "java(reservationDataPage.isLast())")
     @Mapping(target = "reservations", ignore = true)
     @DoIgnore
     ReservationPage mapToReservationPage(Integer dummy, Page<ReservationData> reservationDataPage);

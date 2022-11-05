@@ -13,7 +13,8 @@
     }
 )
 
-/* Sports Facility Entity Queries */
+
+
 /*@NamedNativeQueries(value = {
     @NamedNativeQuery(
             name = "SportsFacilityEntity.findAllByTotalNumberSportsFieldsBetween",
@@ -36,14 +37,31 @@
 })*/
 
 @NamedQueries({
+
+    /* Sports Facility Entity Queries */
     @NamedQuery(
-            name = "SportsFacilityEntity.findAllByTotalNumberSportsFieldsBetween",
-            query = "SELECT sf FROM SportsFacilityEntity sf WHERE sf.sportsFields.size > :min AND sf.sportsFields.size < :max"
+        name = "SportsFacilityEntity.findAllByTotalNumberSportsFieldsBetween",
+        query = "SELECT sf FROM SportsFacilityEntity sf WHERE sf.sportsFields.size > :min AND sf.sportsFields.size < :max"
     ),
     @NamedQuery(
-            name = "SportsFacilityEntity.findAllByOwnerIdAndTotalNumberSportsFieldsBetween",
-            query = "SELECT sf FROM SportsFacilityEntity sf WHERE sf.owner.id = :ownerId " +
-                    "AND sf.sportsFields.size > :min AND sf.sportsFields.size < :max"
+        name = "SportsFacilityEntity.findAllByOwnerIdAndTotalNumberSportsFieldsBetween",
+        query = "SELECT sf FROM SportsFacilityEntity sf WHERE sf.owner.id = :ownerId " +
+                "AND sf.sportsFields.size > :min AND sf.sportsFields.size < :max"
+    ),
+
+    /* Reservation Entity Queries */
+    @NamedQuery(
+        name = "ReservationEntity.findAll",
+        query = "select r from ReservationEntity r " +
+                "where " +
+                "(:state            is null or :state               = r.reservationStatus)               and " +
+                "(:sport            is null or :sport               = r.sportsField.sport)               and " +
+                "(:createdAt        is null or :createdAt           = r.createdAt)                       and " +
+                "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
+                "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      and " +
+                "(:price            is null or :price               = r.price)                           and " +
+                "(:sportsFieldId    is null or :sportsFieldId       = r.sportsField.id)                  and " +
+                "(:sportsFacilityId is null or :sportsFacilityId    = r.sportsField.sportsFacility.id)"
     )
 })
 

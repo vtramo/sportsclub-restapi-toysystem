@@ -3,8 +3,8 @@ package systems.fervento.sportsclub.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import systems.fervento.sportsclub.data.NotificationData;
 import systems.fervento.sportsclub.data.UserData;
 import systems.fervento.sportsclub.entity.NotificationEntity;
@@ -39,7 +39,6 @@ public class UserService {
         return userDataMapper.map(userEntity);
     }
 
-    @Transactional(readOnly = true)
     public Page<NotificationData> getAllUserNotificationsByUserId(
         Integer pageNo,
         Integer pageSize,
@@ -50,7 +49,7 @@ public class UserService {
             throw new ResourceNotFoundException("The provided id doesn't identify any user!");
         }
 
-        final Pageable pageRequest = PageRequest.of(pageNo, pageSize);
+        final Pageable pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         final Supplier<Page<NotificationEntity>> getUserNotificationsPage = (filterByHasBeenRead.isEmpty())
             ? () -> notificationRepository.findAllByOwnerId(pageRequest, ownerId)

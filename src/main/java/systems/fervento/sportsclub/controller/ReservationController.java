@@ -6,11 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import systems.fervento.sportsclub.data.ReservationData;
 import systems.fervento.sportsclub.mapper.ReservationApiMapper;
+import systems.fervento.sportsclub.mapper.ReservationStatusApiMapper;
 import systems.fervento.sportsclub.openapi.api.ReservationsApi;
-import systems.fervento.sportsclub.openapi.model.Reservation;
-import systems.fervento.sportsclub.openapi.model.ReservationPage;
-import systems.fervento.sportsclub.openapi.model.ReservationStateEnum;
-import systems.fervento.sportsclub.openapi.model.SportEnum;
+import systems.fervento.sportsclub.openapi.model.*;
 import systems.fervento.sportsclub.service.ReservationService;
 
 import java.time.ZonedDateTime;
@@ -20,6 +18,7 @@ import java.util.Optional;
 public class ReservationController implements ReservationsApi {
     private final ReservationService reservationService;
     private final ReservationApiMapper reservationApiMapper = ReservationApiMapper.INSTANCE;
+    private final ReservationStatusApiMapper reservationStatusApiMapper = ReservationStatusApiMapper.INSTANCE;
 
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
@@ -71,10 +70,25 @@ public class ReservationController implements ReservationsApi {
     }
 
     @Override
-    public ResponseEntity<Reservation> reservationsReservationIdGet(Long reservationId) {
+    public ResponseEntity<Reservation> getReservationById(Long reservationId) {
         return ResponseEntity.ok(
             reservationApiMapper.mapToReservationApi(
                 reservationService.getReservationById(reservationId)
+            )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ReservationStatus> updateReservationStatus(
+        Long reservationId,
+        ReservationStatus reservationStatus
+    ) {
+        return ResponseEntity.ok(
+            reservationStatusApiMapper.mapToReservationStatus(
+                reservationService.updateReservationStatus(
+                    reservationId,
+                    reservationStatus.toString()
+                )
             )
         );
     }

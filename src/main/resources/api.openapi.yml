@@ -420,6 +420,7 @@ paths:
         - Reservations Status
       summary: >
         Updates the status of the reservation identified by the ID provided
+      operationId: updateReservationStatus
       parameters:
         - name: reservationId
           in: path

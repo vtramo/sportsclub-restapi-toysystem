@@ -1,9 +1,6 @@
 package systems.fervento.sportsclub.mapper;
 
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import systems.fervento.sportsclub.data.ReservationData;
@@ -28,6 +25,15 @@ public interface ReservationApiMapper {
     @Mapping(target = "dateRange", ignore = true)
     Reservation mapToReservationApi(ReservationData reservationData);
 
+    @AfterMapping
+    default void mapDateRange(@MappingTarget ReservationData reservationData, Reservation reservation) {
+        final var dateRange = reservation.getDateRange();
+        reservationData.setStartDateTime(dateRange.getStartDate());
+        reservationData.setEndDateTime(dateRange.getEndDate());
+    }
+
+    @InheritInverseConfiguration
+    ReservationData mapToReservationData(Reservation reservation);
 
     default ReservationPage mapToReservationPage(Page<ReservationData> reservationDataPage) {
         return mapToReservationPage(1, reservationDataPage);

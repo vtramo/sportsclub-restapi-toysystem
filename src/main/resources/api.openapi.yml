@@ -715,7 +715,9 @@ components:
           format: float
           readOnly: true
         createdAt:
-          $ref: '#/components/schemas/Date'
+          allOf:
+            - $ref: '#/components/schemas/Date'
+          readOnly: true
     ReservationStateEnum:
       type: string
       enum: ['rejected', 'pending', 'accepted']

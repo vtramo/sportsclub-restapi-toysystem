@@ -385,11 +385,11 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Reservation'
+                $ref: '#/components/schemas/Reservation'
         '400':
           $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
 
   /reservations/{reservationId}:
     get:

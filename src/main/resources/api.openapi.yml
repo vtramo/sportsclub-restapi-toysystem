@@ -701,9 +701,13 @@ components:
         id:
           $ref: '#/components/schemas/ID'
         sportsFieldId:
-          $ref: '#/components/schemas/ID'
+          allOf:
+            - $ref: '#/components/schemas/ID'
+          readOnly: false
         ownerId:
-          $ref: '#/components/schemas/ID'
+          allOf:
+            - $ref: '#/components/schemas/ID'
+          readOnly: false
         dateRange:
           $ref: '#/components/schemas/DateRange'
         state:

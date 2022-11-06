@@ -440,7 +440,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ReservationStatus'
       responses:
-        '201':
+        '200':
           description: >
             The new actual status of the reservation
           content:
@@ -455,6 +455,7 @@ paths:
         - Reservations Status
       summary: >
         Gets the status of the reservation identified by the ID provided
+      operationId: getReservationStatus
       parameters:
         - name: reservationId
           in: path
@@ -478,6 +479,7 @@ paths:
         - Reservations Rating
       summary: >
         Gets the rating of the reservation identified by the ID provided
+      operationId: getReservationRating
       parameters:
         - name: reservationId
           in: path
@@ -487,13 +489,37 @@ paths:
       responses:
         '200':
           description: >
-            The evaluation for the reservation
+            The evaluation of the reservation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReservationRating'
         '404':
           $ref: '#/components/responses/404NotFound'
+    post:
+      tags:
+        - Reservations Rating
+      summary: Evaluate a reservation
+      operationId: evaluateReservation
+      parameters:
+        - name: reservationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRating'
+        required: true
+      responses:
+        '201':
+          description: The evaluation made
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationRating'
 
   /notifications/{notificationId}:
     get:
@@ -501,6 +527,7 @@ paths:
         - Notifications
       summary: >
         Gets a notification by ID
+      operationId: getNotificationById
       parameters:
         - name: notificationId
           in: path
@@ -518,17 +545,13 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
 
+  /notifications:
     put:
       tags:
         - Notifications
       summary: >
         Updates a notification
-      parameters:
-        - name: notificationId
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/ID'
+      operationId: updateNotification
       requestBody:
         content:
           application/json:
@@ -758,8 +781,8 @@ components:
         description:
           type: string
     RatingEnum:
-      type: string
-      enum: ['unrated', 'zero', 'one', 'two', 'three', 'four', 'five']
+      type: number
+      format: float
     Notification:
       type: object
       required:
@@ -770,7 +793,9 @@ components:
         - hasBeenRead
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          allOf:
+            - $ref: '#/components/schemas/ID'
+          readOnly: false
         ownerId:
           $ref: '#/components/schemas/ID'
         description:
@@ -778,6 +803,7 @@ components:
         createdAt:
           type: string
           format: data-time
+          readOnly: true
         hasBeenRead:
           type: boolean
     Address:

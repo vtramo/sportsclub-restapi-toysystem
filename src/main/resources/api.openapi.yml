@@ -19,10 +19,8 @@ tags:
     description: API for managing notifications
   - name: Reservations Rating
     description: API for reservation rating management
-  - name: Reservations Summary
-    description: API for generating custom reservations summary
   - name: Monthly Reservations Summary
-    description: API for get monthly booking summaries
+    description: API for managing monthly reservations summaries
 paths:
   /login:
     post:
@@ -152,7 +150,7 @@ paths:
       tags:
         - Sports Facilities
       summary: >
-        Generate a custom reservations summary for the sports facility identifed by the ID provided
+        Generate a custom reservations summary for the sports facility identified by the ID provided
       operationId: generateReservationsSummary
       parameters:
         - name: sportsFacilityId
@@ -194,6 +192,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReservationsSummary'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
 
   /sports-fields:
     get:
@@ -1057,8 +1059,6 @@ components:
             $ref: '#/components/schemas/SportsReservationReport'
     ReservationsSummarySportsField:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/ReservationsSummary'
       required:
         - sportsFieldId
         - sportsFieldName
@@ -1067,6 +1067,8 @@ components:
           $ref: '#/components/schemas/ID'
         sportsFieldName:
           type: string
+      allOf:
+        - $ref: '#/components/schemas/ReservationsSummary'
     SportsReservationReport:
       type: object
       required:
@@ -1097,12 +1099,21 @@ components:
     MonthlyReservationsSummary:
       type: object
       allOf:
-        - $ref: '#/components/schemas/ReservationsSummarySportsField'
+        - $ref: '#/components/schemas/ReservationsSummary'
       required:
         - id
       properties:
         id:
           $ref: '#/components/schemas/ID'
+    MonthlyReservationsSummariesPage:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+      required:
+        - monthlyReservationsSummaries
+      properties:
+        monthlyReservationsSummaries:
+          $ref: '#/components/schemas/MonthlyReservationsSummary'
 
     Error:
       required:

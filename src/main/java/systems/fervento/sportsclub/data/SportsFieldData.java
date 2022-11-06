@@ -12,6 +12,7 @@ public abstract class SportsFieldData {
     private Long sportsFacilityId;
     private String name;
     private boolean isIndoor;
+    private double rating;
     private SportsFieldPriceListData priceList;
     private SportsFacilityData sportsFacility;
 }

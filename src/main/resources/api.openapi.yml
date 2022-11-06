@@ -259,6 +259,58 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
 
+  /sports-fields/{sportsFieldId}/reservations-summaries:
+    get:
+      tags:
+        - Sports Fields
+      summary: >
+        Generate a custom reservations summary for the sports field identified by the ID provided
+      operationId: generateSportsFieldReservationsSummary
+      parameters:
+        - name: sportsFieldId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+        - name: start_date
+          required: true
+          in: query
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - total_reservations.asc
+              - total_reservations.desc
+              - accepted_reservations.asc
+              - accepted_reservations.desc
+              - rejected_reservations.asc
+              - rejected_reservations.desc
+              - total_revenue.asc
+              - total_revenue.desc
+              - sport
+            default: total_revenue.desc
+      responses:
+        '201':
+          description: >
+            The reservation summary generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationsSummarySportsField'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
   /users:
     post:
       tags:

@@ -19,7 +19,10 @@ tags:
     description: API for managing notifications
   - name: Reservations Rating
     description: API for reservation rating management
-
+  - name: Reservations Summary
+    description: API for generating custom reservations summary
+  - name: Monthly Reservations Summary
+    description: API for get monthly booking summaries
 paths:
   /login:
     post:
@@ -143,6 +146,54 @@ paths:
           $ref: '#/components/responses/400BadRequest'
         '404':
           $ref: '#/components/responses/404NotFound'
+
+  /sports-facilities/{sportsFacilityId}/reservations-summaries:
+    get:
+      tags:
+        - Sports Facilities
+      summary: >
+        Generate a custom reservations summary for the sports facility identifed by the ID provided
+      operationId: generateReservationsSummary
+      parameters:
+        - name: sportsFacilityId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ID'
+        - name: start_date
+          required: true
+          in: query
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - total_reservations.asc
+              - total_reservations.desc
+              - accepted_reservations.asc
+              - accepted_reservations.desc
+              - rejected_reservations.asc
+              - rejected_reservations.desc
+              - total_revenue.asc
+              - total_revenue.desc
+              - sport
+            default: total_revenue.desc
+      responses:
+        '201':
+          description: >
+            The reservation summary generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationsSummary'
 
   /sports-fields:
     get:

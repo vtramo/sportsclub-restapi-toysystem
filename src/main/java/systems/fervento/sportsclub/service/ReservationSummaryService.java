@@ -2,7 +2,7 @@ package systems.fervento.sportsclub.service;
 
 import org.springframework.stereotype.Service;
 import systems.fervento.sportsclub.data.ReservationsSummaryData;
-import systems.fervento.sportsclub.data.ReservationsSummarySportsFieldData;
+import systems.fervento.sportsclub.data.SportsFieldReservationsSummaryData;
 import systems.fervento.sportsclub.data.SportsReservationReportData;
 import systems.fervento.sportsclub.entity.*;
 import systems.fervento.sportsclub.exception.PreconditionViolationException;
@@ -90,7 +90,7 @@ public class ReservationSummaryService {
         return reservationsSummaryData;
     }
 
-    public ReservationsSummarySportsFieldData generateReservationsSummaryForSportsField(
+    public SportsFieldReservationsSummaryData generateReservationsSummaryForSportsField(
         final String sortBy,
         final ZonedDateTime startDateTime,
         final ZonedDateTime endDateTime,
@@ -126,15 +126,15 @@ public class ReservationSummaryService {
                 .map(sportsReservationReportDataMapper::mapToSportsReservationReportData)
                 .collect(toList());
 
-        final ReservationsSummarySportsFieldData reservationsSummarySportsFieldData = new ReservationsSummarySportsFieldData();
-        reservationsSummarySportsFieldData.setReservationReportDataList(reservationReportsDataBySport);
-        reservationsSummarySportsFieldData.setCreatedAt(ZonedDateTime.now());
-        reservationsSummarySportsFieldData.setDescription("Reservations summary of the " + sportsFieldEntity.getName() + " sports field.");
-        reservationsSummarySportsFieldData.setSportsFacilityName(sportsFacilityEntity.getName());
-        reservationsSummarySportsFieldData.setSportsFacilityId(sportsFacilityEntity.getId());
-        reservationsSummarySportsFieldData.setSportsFieldId(sportsFieldId);
-        reservationsSummarySportsFieldData.setSportsFieldName(sportsFieldEntity.getName());
-        return reservationsSummarySportsFieldData;
+        final SportsFieldReservationsSummaryData sportsFieldReservationsSummaryData = new SportsFieldReservationsSummaryData();
+        sportsFieldReservationsSummaryData.setReservationReportDataList(reservationReportsDataBySport);
+        sportsFieldReservationsSummaryData.setCreatedAt(ZonedDateTime.now());
+        sportsFieldReservationsSummaryData.setDescription("Reservations summary of the " + sportsFieldEntity.getName() + " sports field.");
+        sportsFieldReservationsSummaryData.setSportsFacilityName(sportsFacilityEntity.getName());
+        sportsFieldReservationsSummaryData.setSportsFacilityId(sportsFacilityEntity.getId());
+        sportsFieldReservationsSummaryData.setSportsFieldId(sportsFieldId);
+        sportsFieldReservationsSummaryData.setSportsFieldName(sportsFieldEntity.getName());
+        return sportsFieldReservationsSummaryData;
     }
 
     public List<ReservationsSummaryEntity> generateAndSaveReservationsSummaryForAllSportsFacilities(

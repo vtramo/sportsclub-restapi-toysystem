@@ -307,7 +307,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReservationsSummarySportsField'
+                $ref: '#/components/schemas/SportsFieldReservationsSummary'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '404':
@@ -1063,7 +1063,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SportsReservationReport'
-    ReservationsSummarySportsField:
+    SportsFieldReservationsSummary:
       type: object
       required:
         - sportsFieldId

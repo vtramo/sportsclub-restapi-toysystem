@@ -40,23 +40,23 @@ public interface SportsFieldApiMapper {
 
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
-    @Mapping(target = "sport", ignore = true)
+    @Mapping(target = "sport", expression = "java(\"SoccerField\")")
     @Mapping(target = "soccerFieldType", ignore = true)
     SoccerField mapToSportsFieldApi(SoccerFieldData soccerFieldData);
 
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
-    @Mapping(target = "sport", ignore = true)
+    @Mapping(target = "sport", expression = "java(\"BasketballField\")")
     BasketballField mapToSportsFieldApi(BasketballFieldData basketballFieldData);
 
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
-    @Mapping(target = "sport", ignore = true)
+    @Mapping(target = "sport", expression = "java(\"TennisField\")")
     TennisField mapToSportsFieldApi(TennisFieldData tennisFieldData);
 
     @Mapping(target = "sportsFacilityId", source = "sportsFacility.id")
     @Mapping(target = "isIndoor", source = "indoor")
-    @Mapping(target = "sport", ignore = true)
+    @Mapping(target = "sport", expression = "java(\"VolleyballField\")")
     VolleyballField mapToSportsFieldApi(VolleyballFieldData volleyballFieldData);
     
     default SportsFieldData mapToSportsFieldData(SportsField sportsField) {

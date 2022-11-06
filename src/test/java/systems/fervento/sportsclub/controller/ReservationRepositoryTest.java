@@ -9,7 +9,7 @@ import systems.fervento.sportsclub.entity.ReservationStatus;
 import java.time.ZonedDateTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 
 @SpringBootTest
@@ -88,8 +88,59 @@ public class ReservationRepositoryTest extends SpringDataJpaTest {
     }
 
     @Test
-    @DisplayName("when findAll asc sorted by createdAt property then return sorted reservations")
-    void testGetAllReservationsSortedByCreatedAt() {
+    @DisplayName("when getSportsReservationsReport then return expected report")
+    void testGetSportsReservationsReport() {
+        final var sportsReservationsReports =
+            reservationRepository.generateSportsReservationsReportForSportsFacility(
+                sportsFacilityEntity2.getId(),
+                ZonedDateTime.now().minusDays(4),
+                ZonedDateTime.now().plusDays(2)
+            );
 
+        final var expectedSportsReservationReportsString =
+            "basket 1 0.0 0 0 1\n" +
+            "tennis 1 30.0 1 0 0";
+
+        final var sportsReservationReportsString = sportsReservationsReports
+            .stream()
+            .map(s -> s.getSport() + " "
+                + s.getTotalReservations() + " "
+                + s.getTotalRevenue() + " "
+                + s.getAcceptedReservations() + " "
+                + s.getRejectedReservations() + " "
+                + s.getPendingReservations()
+            )
+            .reduce("", (s1, s2) -> s1 + (s1.isEmpty() ? "" : "\n") + s2);
+
+        assertThat(sportsReservationReportsString, is(equalTo(expectedSportsReservationReportsString)));
+    }
+
+    @Test
+    @DisplayName("when getSportsFacilityReservationsReportForAllSportsFacilities then return expected reports")
+    void testGetSportsFacilityReservationsReportForAllSportsFacilities() {
+        final var sportsFacilityReservationsReports =
+            reservationRepository.generateSportsReservationsReportForAllSportsFacility(
+                ZonedDateTime.now().minusDays(4),
+                ZonedDateTime.now().plusDays(2)
+            );
+
+        final var expectedSportsFacilityReservationReportsString =
+            "1002 soccer 2 0.0 0 0 2\n" +
+            "1007 basket 1 0.0 0 0 1\n" +
+            "1007 tennis 1 30.0 1 0 0";
+
+        final var sportsFacilityReservationReportsString = sportsFacilityReservationsReports
+            .stream()
+            .map(s -> s.getSportsFacilityId() + " "
+                    + s.getSport() + " "
+                    + s.getTotalReservations() + " "
+                    + s.getTotalRevenue() + " "
+                    + s.getAcceptedReservations() + " "
+                    + s.getRejectedReservations() + " "
+                    + s.getPendingReservations()
+            )
+            .reduce("", (s1, s2) -> s1 + (s1.isEmpty() ? "" : "\n") + s2);
+
+        assertThat(sportsFacilityReservationReportsString, is(equalTo(expectedSportsFacilityReservationReportsString)));
     }
 }

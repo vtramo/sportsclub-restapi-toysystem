@@ -10,7 +10,6 @@ import systems.fervento.sportsclub.repository.ReservationRepository;
 import systems.fervento.sportsclub.repository.SportsFacilityRepository;
 import systems.fervento.sportsclub.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -83,9 +82,9 @@ abstract class SpringDataJpaTest {
         sportsFieldEntity1.setPriceList(sportsFieldPriceListEntity);
 
         notificationsUserEntity1 = List.of(
-            new NotificationEntity(null, LocalDateTime.now(), true, "ciao", userEntity),
-            new NotificationEntity(null, LocalDateTime.now(), false, "ciao2", userEntity),
-            new NotificationEntity(null, LocalDateTime.now(), false, "ciao3", userEntity)
+            new NotificationEntity(null, ZonedDateTime.now(), true, "ciao", userEntity),
+            new NotificationEntity(null, ZonedDateTime.now(), false, "ciao2", userEntity),
+            new NotificationEntity(null, ZonedDateTime.now(), false, "ciao3", userEntity)
         );
 
         var dateTimeRange = new DateTimeRange(ZonedDateTime.now(), ZonedDateTime.now().plusDays(1));
@@ -101,6 +100,23 @@ abstract class SpringDataJpaTest {
         reservationsUserEntity1.get(2).setSportsField(sportsFieldEntity2);
         reservationsUserEntity1.get(3).setReservationStatus(ReservationStatus.ACCEPTED);
         reservationsUserEntity1.get(3).setSportsField(sportsFieldEntity3);
+
+        ReservationRatingEntity reservationRatingEntity1 = new ReservationRatingEntity();
+        reservationRatingEntity1.setDescription("Wonderful");
+        reservationRatingEntity1.setScore(4);
+
+        ReservationRatingEntity reservationRatingEntity2 = new ReservationRatingEntity();
+        reservationRatingEntity2.setDescription("Beautiful");
+        reservationRatingEntity2.setScore(5);
+
+        reservationsUserEntity1.get(0).setRating(reservationRatingEntity1);
+        reservationsUserEntity1.get(1).setRating(reservationRatingEntity2);
+
+        ReservationRatingEntity reservationRatingEntity3 = new ReservationRatingEntity();
+        reservationRatingEntity3.setDescription(" ");
+        reservationRatingEntity3.setScore(3);
+
+        reservationsUserEntity1.get(3).setRating(reservationRatingEntity3);
 
         userRepository.save(userEntity);
         notificationRepository.saveAll(notificationsUserEntity1);

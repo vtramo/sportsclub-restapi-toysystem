@@ -867,6 +867,66 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Reservation'
+    ReservationsSummary:
+      type: object
+      required:
+        - sportsFacilityId
+        - sportsFacilityName
+        - description
+        - createdAt
+        - sportsReservationReports
+      properties:
+        sportsFacilityId:
+          $ref: '#/components/schemas/ID'
+        sportsFacilityName:
+          type: string
+        description:
+          type: string
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        sportsReservationReports:
+          type: array
+          items:
+            $ref: '#/components/schemas/SportsReservationReport'
+    ReservationsSummarySportsField:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ReservationsSummary'
+      required:
+        - sportsFieldId
+        - sportsFieldName
+      properties:
+        sportsFieldId:
+          $ref: '#/components/schemas/ID'
+        sportsFieldName:
+          type: string
+    SportsReservationReport:
+      type: object
+      required:
+        - totalReservations
+        - sport
+        - totalRevenue
+        - rejectedReservations
+        - acceptedReservations
+        - pendingReservations
+      properties:
+        totalReservations:
+          type: integer
+          format: int64
+        sport:
+          $ref: '#/components/schemas/SportEnum'
+        totalRevenue:
+          type: number
+          format: float
+        rejectedReservations:
+          type: integer
+          format: int64
+        acceptedReservations:
+          type: integer
+          format: int64
+        pendingReservations:
+          type: integer
+          format: int64
 
     Error:
       required:

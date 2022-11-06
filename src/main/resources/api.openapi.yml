@@ -249,7 +249,7 @@ paths:
       responses:
         '200':
           description: >
-            The user identified by the provided ID
+            The user identified by the ID provided
           content:
             application/json:
               schema:
@@ -385,6 +385,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Reservation'
+        required: true
       responses:
         '201':
           description: The reservation created
@@ -533,6 +534,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Notification'
+        required: true
       responses:
         '200':
           description: >

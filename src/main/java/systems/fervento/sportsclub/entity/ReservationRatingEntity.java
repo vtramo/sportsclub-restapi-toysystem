@@ -12,7 +12,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Entity
-public class RatingEntity {
+public class ReservationRatingEntity {
     @Id
     @GeneratedValue(generator = "reservationKeyGenerator")
     @org.hibernate.annotations.GenericGenerator(
@@ -30,14 +30,14 @@ public class RatingEntity {
     private ReservationEntity reservation;
 
     @NotNull
-    private Stars stars;
+    private float score;
 
     @NotNull
     private String description;
 
-    public RatingEntity(final ReservationEntity reservation, final Stars stars, final String description) {
+    public ReservationRatingEntity(final ReservationEntity reservation, final float score, final String description) {
         setReservation(reservation);
-        setStars(stars);
+        setScore(score);
         setDescription(description);
     }
 
@@ -47,11 +47,6 @@ public class RatingEntity {
             throw new IllegalArgumentException("This reservation already has a rating assigned!");
         }
         this.reservation = reservation;
-    }
-
-    public void setStars(final Stars stars) {
-        Objects.requireNonNull(stars);
-        this.stars = stars;
     }
 
     public void setDescription(final String description) {

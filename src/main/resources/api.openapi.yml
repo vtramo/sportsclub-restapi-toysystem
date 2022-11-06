@@ -105,7 +105,7 @@ paths:
       responses:
         '200':
           description: >
-            The sports facility identified by the provided ID
+            The sports facility identified by the ID provided
           content:
             application/json:
               schema:
@@ -157,12 +157,18 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/SportEnum'
-        - name: sort_by_rating
+        - name: sort_by
           in: query
           required: false
           schema:
             type: string
-            enum: ['asc', 'desc']
+            enum: ['rating.asc', 'rating.desc', 'name.asc']
+            default: 'name.asc'
+        - name: filter_by_owner_id
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ID'
       responses:
         '200':
           description: >

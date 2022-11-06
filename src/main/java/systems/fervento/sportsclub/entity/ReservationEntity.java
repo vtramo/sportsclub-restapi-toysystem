@@ -31,7 +31,7 @@ public class ReservationEntity {
         mappedBy = "reservation",
         cascade  = CascadeType.PERSIST
     )
-    private RatingEntity rating;
+    private ReservationRatingEntity rating;
 
     private float price;
 
@@ -68,11 +68,12 @@ public class ReservationEntity {
         this.owner = owner;
     }
 
-    public void setRating(final RatingEntity rating) {
+    public void setRating(final ReservationRatingEntity rating) {
         Objects.requireNonNull(rating);
-        if (rating.getReservation() != this) {
-            throw new IllegalArgumentException("This RatingEntity must have a reference to this ReservationEntity!");
+        if (rating.getReservation() != null) {
+            throw new IllegalArgumentException("This RatingEntity already has a reservation assigned!");
         }
+        rating.setReservation(this);
         this.rating = rating;
     }
 

@@ -674,6 +674,70 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
 
+  /monthly-reservations-summaries:
+    get:
+      tags:
+        - Monthly Reservations Summaries
+      summary: Get a list of monthly reservations summaries
+      operationId: getMonthlyReservationsSummaries
+      parameters:
+        - name: sports_facility_id
+          required: false
+          in: query
+          schema:
+            $ref: '#/components/schemas/ID'
+        - name: filter_by_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: sort_by
+          required: false
+          in: query
+          schema:
+            type: string
+            enum:
+              - date.asc
+              - date.desc
+              - total_reservations.asc
+              - total_reservations.desc
+              - accepted_reservations.asc
+              - accepted_reservations.desc
+              - rejected_reservations.asc
+              - rejected_reservations.desc
+              - total_revenue.asc
+              - total_revenue.desc
+              - sport
+            default: date.desc
+      responses:
+        '200':
+          description: A list of monthly reservations summaries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyReservationsSummariesPage'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+
+  /monthly-reservations-summaries/{monthlyReservationsSummaries}:
+    get:
+      tags:
+        - Monthly Reservations Summaries
+      summary: Get a reservations summary by ID
+      operationId: getReservationsSummaryById
+      responses:
+        '200':
+          description: A list of monthly reservations summaries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyReservationsSummariesPage'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
 components:
   schemas:
     ID:

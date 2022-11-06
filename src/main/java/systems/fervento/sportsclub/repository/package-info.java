@@ -13,31 +13,7 @@
     }
 )
 
-
-
-/*@NamedNativeQueries(value = {
-    @NamedNativeQuery(
-            name = "SportsFacilityEntity.findAllByTotalNumberSportsFieldsBetween",
-            query = "SELECT * FROM sports_facility_entity sf LEFT JOIN " +
-                    "(SELECT spf.sports_facility_id, COUNT(spf.sports_facility_id) AS tot " +
-                    "FROM sports_field_entity spf GROUP BY spf.sports_facility_id HAVING tot BETWEEN :min AND :max) AS sq " +
-                    "ON sf.id = sq.sports_facility_id WHERE COALESCE(sports_facility_id, 0) <> (CASE WHEN :min = 0 THEN -1 ELSE 0 END)",
-            resultClass = SportsFacilityEntity.class
-    ),
-    @NamedNativeQuery(
-        name = "SportsFacilityEntity.findAllByOwnerIdAndTotalNumberSportsFieldsBetween",
-        query = "SELECT * FROM sports_facility_entity sf LEFT JOIN " +
-                "(SELECT spf.sports_facility_id, COUNT(spf.sports_facility_id) AS tot " +
-                "FROM sports_field_entity spf GROUP BY spf.sports_facility_id HAVING tot BETWEEN :min AND :max) AS sq " +
-                "ON sf.id = sq.sports_facility_id " +
-                "WHERE COALESCE(sports_facility_id, 0) <> (CASE WHEN :min = 0 THEN -1 ELSE 0 END) " +
-                "AND owner_id = :ownerId",
-        resultClass = SportsFacilityEntity.class
-    )
-})*/
-
 @NamedQueries({
-
     /* Sports Facility Entity Queries */
     @NamedQuery(
         name = "SportsFacilityEntity.findAllByTotalNumberSportsFieldsBetween",
@@ -62,6 +38,46 @@
                 "(:price            is null or :price               = r.price)                           and " +
                 "(:sportsFieldId    is null or :sportsFieldId       = r.sportsField.id)                  and " +
                 "(:sportsFacilityId is null or :sportsFacilityId    = r.sportsField.sportsFacility.id)"
+    ),
+    @NamedQuery(
+        name = "ReservationEntity.generateSportsReservationsReportForSportsFacility",
+        query = "select r.sportsField.sport as sport, " +
+                "coalesce(count(r.id), 0) as totalReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then 1 else 0 end), 0)       as acceptedReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'REJECTED') then 1 else 0 end), 0)       as rejectedReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'PENDING')  then 1 else 0 end), 0)       as pendingReservations,  " +
+                "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then r.price else 0 end), 0) as totalRevenue          " +
+                "from ReservationEntity r where r.sportsField.sportsFacility.id = :sportsFacilityId      and " +
+                "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
+                "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
+                "group by sport"
+    ),
+    @NamedQuery(
+        name = "ReservationEntity.generateSportsFieldReservationsReportForSportsField",
+        query = "select r.sportsField.sport as sport, " +
+                "coalesce(count(r.id), 0) as totalReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then 1 else 0 end), 0)       as acceptedReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'REJECTED') then 1 else 0 end), 0)       as rejectedReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'PENDING')  then 1 else 0 end), 0)       as pendingReservations,  " +
+                "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then r.price else 0 end), 0) as totalRevenue          " +
+                "from ReservationEntity r where r.sportsField.id = :sportsFieldId                        and " +
+                "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
+                "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
+                "group by sport"
+    ),
+    @NamedQuery(
+        name = "ReservationEntity.generateSportsReservationsReportForAllSportsFacility",
+        query = "select r.sportsField.sportsFacility.id as sportsFacilityId, " +
+                "r.sportsField.sport as sport, " +
+                "coalesce(count(r.id), 0) as totalReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then 1 else 0 end), 0)       as acceptedReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'REJECTED') then 1 else 0 end), 0)       as rejectedReservations, " +
+                "coalesce(sum(case when (r.reservationStatus = 'PENDING')  then 1 else 0 end), 0)       as pendingReservations,  " +
+                "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then r.price else 0 end), 0) as totalRevenue          " +
+                "from ReservationEntity r where " +
+                "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
+                "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
+                "group by sportsFacilityId, sport"
     )
 })
 

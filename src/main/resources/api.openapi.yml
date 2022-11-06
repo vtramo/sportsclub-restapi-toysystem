@@ -19,7 +19,7 @@ tags:
     description: API for managing notifications
   - name: Reservations Rating
     description: API for reservation rating management
-  - name: Monthly Reservations Summary
+  - name: Monthly Reservations Summaries
     description: API for managing monthly reservations summaries
 paths:
   /login:
@@ -724,11 +724,17 @@ paths:
         '400':
           $ref: '#/components/responses/400BadRequest'
 
-  /monthly-reservations-summaries/{monthlyReservationsSummaries}:
+  /monthly-reservations-summaries/{monthlyReservationsSummaryId}:
     get:
       tags:
         - Monthly Reservations Summaries
       summary: Get a reservations summary by ID
+      parameters:
+        - name: monthlyReservationsSummaryId
+          required: true
+          in: path
+          schema:
+            $ref: '#/components/schemas/ID'
       operationId: getReservationsSummaryById
       responses:
         '200':

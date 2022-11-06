@@ -6,14 +6,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 import systems.fervento.sportsclub.data.SportsFacilityData;
 import systems.fervento.sportsclub.exception.PreconditionViolationException;
+import systems.fervento.sportsclub.mapper.ReservationSummaryApiMapper;
 import systems.fervento.sportsclub.mapper.SportsFacilityApiMapper;
 import systems.fervento.sportsclub.mapper.SportsFieldApiMapper;
 import systems.fervento.sportsclub.openapi.api.SportsFacilitiesApi;
+import systems.fervento.sportsclub.openapi.model.ReservationsSummary;
 import systems.fervento.sportsclub.openapi.model.SportsFacility;
 import systems.fervento.sportsclub.openapi.model.SportsFacilityWithSportsFields;
 import systems.fervento.sportsclub.openapi.model.SportsField;
+import systems.fervento.sportsclub.service.ReservationSummaryService;
 import systems.fervento.sportsclub.service.SportsFacilityService;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,12 +26,17 @@ import static java.util.stream.Collectors.toList;
 @RestController
 public class SportsFacilityApiController implements SportsFacilitiesApi {
     private final SportsFacilityService sportsFacilityService;
-
+    private final ReservationSummaryService reservationSummaryService;
     private final SportsFacilityApiMapper sportsFacilityApiMapper = SportsFacilityApiMapper.INSTANCE;
     private final SportsFieldApiMapper sportsFieldApiMapper = SportsFieldApiMapper.INSTANCE;
+    private final ReservationSummaryApiMapper reservationSummaryApiMapper = ReservationSummaryApiMapper.INSTANCE;
 
-    public SportsFacilityApiController(SportsFacilityService sportsFacilityService) {
+    public SportsFacilityApiController(
+        SportsFacilityService sportsFacilityService,
+        ReservationSummaryService reservationSummaryService
+    ) {
         this.sportsFacilityService = sportsFacilityService;
+        this.reservationSummaryService = reservationSummaryService;
     }
 
     @Override
@@ -79,6 +88,27 @@ public class SportsFacilityApiController implements SportsFacilitiesApi {
             sportsFacilityApiMapper.mapToSportsFacilityWithSportsFields(
                 sportsFacilityService.getById(sportsFacilityId)
             )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ReservationsSummary> generateReservationsSummary(
+        Long sportsFacilityId,
+        ZonedDateTime startDate,
+        ZonedDateTime endDate,
+        String sortBy
+    ) {
+        final var generatedReservationsSummary = reservationSummaryService
+            .generateReservationsSummaryForSportsFacility(
+                sortBy,
+                startDate,
+                endDate,
+                sportsFacilityId
+            );
+
+        return new ResponseEntity<>(
+            reservationSummaryApiMapper.mapToReservationsSummaryApi(generatedReservationsSummary),
+            HttpStatus.CREATED
         );
     }
 }

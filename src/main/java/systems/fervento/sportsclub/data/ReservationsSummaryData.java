@@ -13,6 +13,8 @@ import java.util.List;
 public class ReservationsSummaryData {
     private ZonedDateTime createdAt;
     private String description;
+    private ZonedDateTime startDateTime;
+    private ZonedDateTime endDateTime;
     private long sportsFacilityId;
     private String sportsFacilityName;
     private List<SportsReservationReportData> reservationReportDataList;

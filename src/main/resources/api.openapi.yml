@@ -927,6 +927,15 @@ components:
         pendingReservations:
           type: integer
           format: int64
+    MonthlyReservationsSummary:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ReservationsSummarySportsField'
+      required:
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
 
     Error:
       required:

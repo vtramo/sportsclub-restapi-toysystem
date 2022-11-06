@@ -1,9 +1,6 @@
 package systems.fervento.sportsclub.mapper;
 
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import systems.fervento.sportsclub.data.NotificationData;
@@ -23,6 +20,9 @@ public interface NotificationApiMapper {
     @Mapping(target = "ownerId", source = "owner.id")
     @Mapping(target = "createdAt", expression = "java(notificationData.getCreatedOn().toString())")
     Notification mapToNotificationApi(NotificationData notificationData);
+
+    @InheritInverseConfiguration
+    NotificationData mapToNotificationData(Notification notification);
 
     @Mapping(target = "pageNo", expression = "java(notificationDataPage.getNumber())")
     @Mapping(target = "pageSize", expression = "java(notificationDataPage.getSize())")

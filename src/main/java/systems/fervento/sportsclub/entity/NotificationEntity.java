@@ -11,7 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Setter
@@ -25,7 +25,7 @@ public class NotificationEntity {
     private Long id;
 
     @CreationTimestamp
-    private LocalDateTime createdOn;
+    private ZonedDateTime createdAt;
 
     private boolean hasBeenRead;
 

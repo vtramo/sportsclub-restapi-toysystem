@@ -5,9 +5,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import systems.fervento.sportsclub.data.ReservationData;
+import systems.fervento.sportsclub.data.ReservationRatingData;
 import systems.fervento.sportsclub.entity.*;
 import systems.fervento.sportsclub.exception.ResourceNotFoundException;
 import systems.fervento.sportsclub.mapper.ReservationDataMapper;
+import systems.fervento.sportsclub.mapper.ReservationRatingDataMapper;
+import systems.fervento.sportsclub.repository.ReservationRatingRepository;
 import systems.fervento.sportsclub.repository.ReservationRepository;
 import systems.fervento.sportsclub.repository.SportsFieldRepository;
 import systems.fervento.sportsclub.repository.UserRepository;
@@ -19,18 +22,21 @@ import java.util.Optional;
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final ReservationRatingRepository reservationRatingRepository;
     private final UserRepository userRepository;
     private final SportsFieldRepository sportsFieldRepository;
     private final ReservationDataMapper reservationDataMapper = ReservationDataMapper.INSTANCE;
+    private final ReservationRatingDataMapper reservationRatingDataMapper = ReservationRatingDataMapper.INSTANCE;
     private final ReservationPriceCalculatorService reservationPriceCalculatorService;
 
     public ReservationService(
         ReservationRepository reservationRepository,
-        UserRepository userService,
+        ReservationRatingRepository reservationRatingRepository, UserRepository userService,
         SportsFieldRepository sportsFieldService,
         ReservationPriceCalculatorService reservationPriceCalculatorService
     ) {
         this.reservationRepository = reservationRepository;
+        this.reservationRatingRepository = reservationRatingRepository;
         this.userRepository = userService;
         this.sportsFieldRepository = sportsFieldService;
         this.reservationPriceCalculatorService = reservationPriceCalculatorService;
@@ -122,5 +128,34 @@ public class ReservationService {
                 ReservationStatus.valueOf(status)
             )
         );
+    }
+
+    public ReservationRatingData getReservationRatingByReservationId(final long reservationId) {
+        if (!reservationRepository.existsById(reservationId)) {
+            throw new ResourceNotFoundException("A reservation with this ID doesn't exist!");
+        }
+
+        return reservationRatingRepository
+            .findById(reservationId)
+            .map(reservationRatingDataMapper::mapToReservationRatingData)
+            .orElseThrow(() -> new ResourceNotFoundException("No evaluation has been made for this reservation."));
+    }
+
+    public ReservationRatingData evaluateReservation(
+        final long reservationId,
+        final ReservationRatingData reservationRatingData
+    ) {
+        final ReservationEntity reservationEntity = reservationRepository
+            .findById(reservationId)
+            .orElseThrow(() -> new ResourceNotFoundException("A reservation with this ID doesn't exist!"));
+
+        final ReservationRatingEntity reservationRatingEntity = new ReservationRatingEntity();
+        reservationRatingEntity.setScore(reservationRatingData.getScore());
+        reservationRatingEntity.setDescription(reservationRatingData.getDescription());
+
+        reservationEntity.setRating(reservationRatingEntity);
+        reservationRepository.save(reservationEntity);
+
+        return reservationRatingDataMapper.mapToReservationRatingData(reservationRatingEntity);
     }
 }

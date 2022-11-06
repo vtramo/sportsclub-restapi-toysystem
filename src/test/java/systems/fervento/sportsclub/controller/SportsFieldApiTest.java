@@ -13,9 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,6 +59,20 @@ public class SportsFieldApiTest extends SpringDataJpaTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(expectedNumberOfSportsFields)));
+        }
+
+        @Test
+        @DisplayName("when GET /sports-fields?sort_by=rating.desc then 200 OK and return all sports fields sorted in descending order of scores")
+        void testGetSportsFieldsSortedByScore() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/sports-fields?sort_by=rating.desc")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(response -> System.out.println(response.getResponse().getContentAsString()))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].name", is(equalTo("Eden"))))
+                .andExpect(jsonPath("$[1].name", is(equalTo("Tennis Field"))))
+                .andExpect(jsonPath("$[2].name", is(equalTo("Basket Field"))))
+                .andExpect(status().isOk());
         }
     }
 

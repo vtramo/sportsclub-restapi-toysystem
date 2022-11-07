@@ -78,6 +78,15 @@
                 "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
                 "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
                 "group by sportsFacilityId, sport"
+    ),
+
+    /* Reservations Summary Entity */
+    @NamedQuery(
+        name = "ReservationsSummaryEntity.getReservationsSummaries",
+        query = "select r from ReservationsSummaryEntity r " +
+                "where (:month is null or :month = r.month) and" +
+                "      (:year is null or :year = r.year)    and" +
+                "      (:sportsFacilityId is null or :sportsFacilityId = r.sportsFacility.id)"
     )
 })
 

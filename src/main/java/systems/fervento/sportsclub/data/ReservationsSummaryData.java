@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationsSummaryData {
+    private Long id;
     private ZonedDateTime createdAt;
     private String description;
     private ZonedDateTime startDateTime;

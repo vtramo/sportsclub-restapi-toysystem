@@ -10,6 +10,8 @@ import systems.fervento.sportsclub.openapi.model.SportsFieldReservationsSummary;
 public interface SportsFieldReservationsSummaryApiMapper {
     SportsFieldReservationsSummaryApiMapper INSTANCE = Mappers.getMapper(SportsFieldReservationsSummaryApiMapper.class);
 
+    @Mapping(target = "startDate", source = "startDateTime")
+    @Mapping(target = "endDate", source = "endDateTime")
     @Mapping(target = "sportsReservationReports", source = "reservationReportDataList")
     SportsFieldReservationsSummary mapToSportsFieldReservationsSummary(
         SportsFieldReservationsSummaryData sportsFieldReservationsSummaryData

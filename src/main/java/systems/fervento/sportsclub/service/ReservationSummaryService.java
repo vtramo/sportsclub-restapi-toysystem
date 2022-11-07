@@ -1,5 +1,9 @@
 package systems.fervento.sportsclub.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import systems.fervento.sportsclub.data.ReservationsSummaryData;
 import systems.fervento.sportsclub.data.SportsFieldReservationsSummaryData;
@@ -7,6 +11,7 @@ import systems.fervento.sportsclub.data.SportsReservationReportData;
 import systems.fervento.sportsclub.entity.*;
 import systems.fervento.sportsclub.exception.PreconditionViolationException;
 import systems.fervento.sportsclub.exception.ResourceNotFoundException;
+import systems.fervento.sportsclub.mapper.ReservationSummaryDataMapper;
 import systems.fervento.sportsclub.mapper.SportsReservationReportDataMapper;
 import systems.fervento.sportsclub.mapper.SportsReservationReportEntityMapper;
 import systems.fervento.sportsclub.repository.ReservationRepository;
@@ -29,6 +34,9 @@ public class ReservationSummaryService {
     private final SportsFieldRepository sportsFieldRepository;
     private final SportsReservationReportDataMapper sportsReservationReportDataMapper = SportsReservationReportDataMapper.INSTANCE;
     private final SportsReservationReportEntityMapper sportsReservationReportEntityMapper = SportsReservationReportEntityMapper.INSTANCE;
+
+    private final ReservationSummaryDataMapper reservationSummaryDataMapper = ReservationSummaryDataMapper.INSTANCE;
+
     private final ReservationRepository reservationRepository;
     private final ReservationsSummaryEntityRepository reservationsSummaryEntityRepository;
 
@@ -187,6 +195,44 @@ public class ReservationSummaryService {
         reservationsSummaryEntity.setDescription("Reservations summary of the " + sportsFacilityEntity.getName() + " sports facility.");
 
         return reservationsSummaryEntity;
+    }
+
+    public Page<ReservationsSummaryData> getMonthlyReservationsSummaries(
+        final int pageNo,
+        final int pageSize,
+        final Long sportsFacilityId,
+        final Integer month,
+        final String year,
+        final String sortBy
+    ) {
+        final var sortingInfo = sortBy.split("\\.");
+        final var sortProperty = sortingInfo[0];
+        final var sortDirection = sortingInfo[1].equals("desc")
+            ? Sort.Direction.DESC
+            : Sort.Direction.ASC;
+
+        final Sort sort = sortProperty.equals("year_month")
+            ? Sort.by(sortDirection,"year", "month")
+            : Sort.by(sortDirection, sortProperty);
+
+        final Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        return reservationsSummaryEntityRepository
+            .getReservationsSummaries(
+                pageable,
+                sportsFacilityId,
+                month,
+                year
+            ).map(reservationSummaryDataMapper::mapToReservationsSummaryData);
+    }
+
+    public ReservationsSummaryData getMonthlyReservationsSummariesById(
+        final long monthlyReservationSummaryId
+    ) {
+        return reservationsSummaryEntityRepository
+            .findById(monthlyReservationSummaryId)
+            .map(reservationSummaryDataMapper::mapToReservationsSummaryData)
+            .orElseThrow(() -> new ResourceNotFoundException("There are no reservations summary with this ID!"));
     }
 
     private void checkRangeDateTime(

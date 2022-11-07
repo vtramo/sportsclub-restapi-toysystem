@@ -7,7 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -22,7 +23,10 @@ public class ReservationsSummaryEntity {
     private Long id;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
+
+    private Integer month = ZonedDateTime.now().getMonth().getValue();
+    private String year = Year.now().toString();
 
     @NotNull
     private String description;
@@ -39,6 +43,12 @@ public class ReservationsSummaryEntity {
     )
     private Collection<SportsReservationReportEntity> sportsReservationReports = new ArrayList<>();
 
+    private long totalReservations;
+    private long acceptedReservations;
+    private long rejectedReservations;
+    private long pendingReservations;
+    private double totalRevenue;
+
     public void addAllSportsReservationReport(final Iterable<SportsReservationReportEntity> sportsReservationReportEntities) {
         Objects.requireNonNull(sportsReservationReportEntities);
         sportsReservationReportEntities.forEach(this::addSportsReservationReport);
@@ -50,6 +60,15 @@ public class ReservationsSummaryEntity {
             throw new IllegalArgumentException("This sportsReservationReports already has a ReservationsSummaryEntity!");
         }
         sportsReservationReport.setReservationsSummaryEntity(this);
+        updateTotalReservationsSummary(sportsReservationReport);
         sportsReservationReports.add(sportsReservationReport);
+    }
+
+    private void updateTotalReservationsSummary(SportsReservationReportEntity sportsReservationReport) {
+        totalReservations += sportsReservationReport.getTotalReservations();
+        acceptedReservations += sportsReservationReport.getAcceptedReservations();
+        rejectedReservations += sportsReservationReport.getRejectedReservations();
+        pendingReservations += sportsReservationReport.getPendingReservations();
+        totalRevenue += sportsReservationReport.getTotalRevenue();
     }
 }

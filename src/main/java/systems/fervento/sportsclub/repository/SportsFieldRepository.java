@@ -23,4 +23,6 @@ public interface SportsFieldRepository extends JpaRepository<SportsFieldEntity, 
 
     @Query("select coalesce(avg(r.rating.score), 0) from ReservationEntity r where r.sportsField.id = :sportsFieldId and r.rating is not null")
     float getSportsFieldAverageRating(Long sportsFieldId);
+
+    SportsFieldEntity getFirstByOrderById();
 }

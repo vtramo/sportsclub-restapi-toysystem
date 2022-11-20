@@ -9,6 +9,7 @@ import systems.fervento.sportsclub.mapper.SportsFacilityDataMapper;
 import systems.fervento.sportsclub.mapper.SportsFieldDataMapper;
 import systems.fervento.sportsclub.mapper.SportsFieldEntityMapper;
 import systems.fervento.sportsclub.repository.SportsFacilityRepository;
+import systems.fervento.sportsclub.repository.SportsFieldRepository;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,13 +20,15 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 @Service
 public class SportsFacilityService {
     private final SportsFacilityRepository sportsFacilityRepository;
+    private final SportsFieldRepository sportsFieldRepository;
 
     private final SportsFacilityDataMapper sportsFacilityDataMapper = SportsFacilityDataMapper.INSTANCE;
     private final SportsFieldEntityMapper sportsFieldEntityMapper = SportsFieldEntityMapper.INSTANCE;
     private final SportsFieldDataMapper sportsFieldDataMapper = SportsFieldDataMapper.INSTANCE;
 
-    public SportsFacilityService(SportsFacilityRepository sportsFacilityRepository) {
+    public SportsFacilityService(SportsFacilityRepository sportsFacilityRepository, SportsFieldRepository sportsFieldRepository) {
         this.sportsFacilityRepository = sportsFacilityRepository;
+        this.sportsFieldRepository = sportsFieldRepository;
     }
 
     public List<SportsFacilityData> getAllByTotalNumberSportsFieldBetween(
@@ -63,9 +66,13 @@ public class SportsFacilityService {
         final var sportsFacilityEntity = sportsFacilityRepository
             .findById(sportsFacilityId)
             .orElseThrow(() -> new ResourceNotFoundException("There is no sports facility with this id!"));
-        var sportsFieldEntity = sportsFieldEntityMapper.map(sportsFieldData);
+
+        final var sportsFieldEntity = sportsFieldEntityMapper.map(sportsFieldData);
         sportsFacilityEntity.addSportsField(sportsFieldEntity);
         sportsFacilityRepository.save(sportsFacilityEntity);
+
+        var createdSportsField = sportsFieldRepository.getFirstByOrderById();
+        sportsFieldEntity.setId(createdSportsField.getId());
         return sportsFieldDataMapper.mapToSportsFieldData(sportsFieldEntity);
     }
 }

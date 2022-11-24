@@ -14,4 +14,3 @@ docker build -t sports-club-api .
 ~~~~
 docker container run -dp <host-port>:8083 sports-club-api
 ~~~~
-6. Enjoy!

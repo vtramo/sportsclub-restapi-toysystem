@@ -82,11 +82,11 @@ public class SportsFacilityService {
         sportsFieldData.setSportsFacility(sportsFacilityData);
 
         final var sportsFieldEntity = sportsFieldEntityMapper.map(sportsFieldData);
+        sportsFieldRepository.save(sportsFieldEntity);
+
         sportsFacilityEntity.addSportsField(sportsFieldEntity);
         sportsFacilityRepository.save(sportsFacilityEntity);
 
-        var createdSportsField = sportsFieldRepository.getFirstByOrderById();
-        sportsFieldEntity.setId(createdSportsField.getId());
         return sportsFieldDataMapper.mapToSportsFieldData(sportsFieldEntity);
     }
 }

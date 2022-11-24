@@ -67,18 +67,12 @@ public class UserEntity {
 
     public boolean addBillingDetails(BillingDetailsEntity billingDetails) {
         Objects.requireNonNull(billingDetails);
-        if (billingDetails.getOwner() != null) {
-            throw new IllegalStateException("This BillingDetailsEntity is already assigned to an UserEntity!");
-        }
         billingDetails.setOwner(this);
         return allBillingDetails.add(billingDetails);
     }
 
     public boolean addSportsFacility(SportsFacilityEntity sportsFacility) {
         Objects.requireNonNull(sportsFacility);
-        if (sportsFacility.getOwner() != null) {
-            throw new IllegalStateException("This SportFacilityEntity is already assigned to an UserEntity!");
-        }
         sportsFacility.setOwner(this);
         return sportsFacilities.add(sportsFacility);
     }

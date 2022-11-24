@@ -76,6 +76,11 @@ public class SportsFacilityService {
             .findById(sportsFacilityId)
             .orElseThrow(() -> new ResourceNotFoundException("There is no sports facility with this id!"));
 
+        sportsFieldData.setSportsFacilityId(sportsFacilityId);
+        final var sportsFacilityData = sportsFacilityDataMapper
+            .mapToSportsFacilityData(sportsFacilityEntity);
+        sportsFieldData.setSportsFacility(sportsFacilityData);
+
         final var sportsFieldEntity = sportsFieldEntityMapper.map(sportsFieldData);
         sportsFacilityEntity.addSportsField(sportsFieldEntity);
         sportsFacilityRepository.save(sportsFacilityEntity);

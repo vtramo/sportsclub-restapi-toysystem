@@ -98,6 +98,8 @@ public class ReservationSummaryService {
         final ReservationsSummaryData reservationsSummaryData = new ReservationsSummaryData();
         reservationsSummaryData.setReservationReportDataList(reservationReportsDataBySport);
         reservationsSummaryData.setCreatedAt(ZonedDateTime.now());
+        reservationsSummaryData.setStartDateTime(startDateTime);
+        reservationsSummaryData.setEndDateTime(endDateTime);
         reservationsSummaryData.setDescription("Reservations summary of the " + sportsFacilityEntity.getName() + " sports facility.");
         reservationsSummaryData.setSportsFacilityName(sportsFacilityEntity.getName());
         reservationsSummaryData.setSportsFacilityId(sportsFacilityId);

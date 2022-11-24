@@ -94,7 +94,7 @@ public class ReservationController implements ReservationsApi {
             reservationStatusApiMapper.mapToReservationStatus(
                 reservationService.updateReservationStatus(
                     reservationId,
-                    reservationStatus.toString()
+                    reservationStatus.getState().toString()
                 )
             )
         );

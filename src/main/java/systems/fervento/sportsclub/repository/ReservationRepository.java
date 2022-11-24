@@ -31,7 +31,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
     @Modifying
     @Query("update ReservationEntity r set r.reservationStatus = :state where r.id = :reservationId")
-    ReservationEntity updateState(long reservationId, ReservationStatus state);
+    int updateState(long reservationId, ReservationStatus state);
 
     List<SportsReservationReportProjection> generateSportsReservationsReportForSportsFacility(
         long sportsFacilityId,

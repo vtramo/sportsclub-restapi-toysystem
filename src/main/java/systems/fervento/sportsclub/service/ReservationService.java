@@ -15,6 +15,7 @@ import systems.fervento.sportsclub.repository.ReservationRepository;
 import systems.fervento.sportsclub.repository.SportsFieldRepository;
 import systems.fervento.sportsclub.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -121,17 +122,20 @@ public class ReservationService {
             .orElseThrow(() -> new ResourceNotFoundException("A reservation with this ID doesn't exist!"));
     }
 
+    @Transactional
     public ReservationData updateReservationStatus(final long reservationId, final String status) {
         Objects.requireNonNull(status);
         if (!reservationRepository.existsById(reservationId)) {
             throw new ResourceNotFoundException("A reservation with this id doesn't exists");
         }
 
+        reservationRepository.updateState(
+            reservationId,
+            ReservationStatus.valueOf(status.toUpperCase())
+        );
+
         return reservationDataMapper.mapToReservationData(
-            reservationRepository.updateState(
-                reservationId,
-                ReservationStatus.valueOf(status)
-            )
+          reservationRepository.findById(reservationId).orElseThrow()
         );
     }
 

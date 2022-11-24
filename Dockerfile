@@ -1,14 +1,20 @@
-# Build Stage
-FROM maven AS build-stage
+#--- Build Stage ---#
+FROM maven:3.8.6-openjdk-18 AS build-stage
 
 WORKDIR /usr/sports-club-api
+
+# Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
+RUN mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+
+# Compile and package the application
 COPY ./src ./src
+RUN mvn package -Dmaven.test.skip \
+  && mkdir -p target/dependency  \
+  && cd target/dependency \
+  && jar -xf ../*.jar
 
-RUN mvn package -Dmaven.test.skip
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
-
-# Final Stage
+#--- Final Stage ---#
 FROM openjdk:11-jdk-slim
 
 ARG BUILD_STAGE_WORKDIR=/usr/sports-club-api

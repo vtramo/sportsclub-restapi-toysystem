@@ -1,14 +1,11 @@
 package systems.fervento.sportsclub.mapper;
 
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.*;
 import systems.fervento.sportsclub.openapi.model.*;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface SportsFieldApiMapper {
-    SportsFieldApiMapper INSTANCE = Mappers.getMapper(SportsFieldApiMapper.class);
-
     default SportsField mapToSportsFieldApi(SportsFieldData sportsFieldData) {
         if (sportsFieldData instanceof SoccerFieldData) {
             return mapToSportsFieldApi((SoccerFieldData) sportsFieldData);

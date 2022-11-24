@@ -18,12 +18,20 @@ import java.util.Optional;
 @RestController
 public class ReservationController implements ReservationsApi {
     private final ReservationService reservationService;
-    private final ReservationApiMapper reservationApiMapper = ReservationApiMapper.INSTANCE;
-    private final ReservationStatusApiMapper reservationStatusApiMapper = ReservationStatusApiMapper.INSTANCE;
-    private final ReservationRatingApiMapper reservationRatingApiMapper = ReservationRatingApiMapper.INSTANCE;
+    private final ReservationApiMapper reservationApiMapper;
+    private final ReservationStatusApiMapper reservationStatusApiMapper;
+    private final ReservationRatingApiMapper reservationRatingApiMapper;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(
+        ReservationService reservationService,
+        ReservationApiMapper reservationApiMapper,
+        ReservationStatusApiMapper reservationStatusApiMapper,
+        ReservationRatingApiMapper reservationRatingApiMapper
+    ) {
         this.reservationService = reservationService;
+        this.reservationApiMapper = reservationApiMapper;
+        this.reservationStatusApiMapper = reservationStatusApiMapper;
+        this.reservationRatingApiMapper = reservationRatingApiMapper;
     }
 
     @Override

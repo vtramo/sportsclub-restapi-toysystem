@@ -11,10 +11,12 @@ import systems.fervento.sportsclub.repository.NotificationRepository;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final NotificationDataMapper notificationDataMapper = NotificationDataMapper.INSTANCE;
 
-    public NotificationService(NotificationRepository notificationRepository) {
+    private final NotificationDataMapper notificationDataMapper;
+
+    public NotificationService(NotificationRepository notificationRepository, NotificationDataMapper notificationDataMapper) {
         this.notificationRepository = notificationRepository;
+        this.notificationDataMapper = notificationDataMapper;
     }
 
     public NotificationData getNotificationById(final long notificationId) {

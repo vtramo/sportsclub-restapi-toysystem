@@ -24,15 +24,30 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class MapperTest {
-    AddressDataMapper addressDataMapper = AddressDataMapper.INSTANCE;
-    UserDataMapper userDataMapper = UserDataMapper.INSTANCE;
-    SportsFacilityDataMapper sportsFacilityDataMapper = SportsFacilityDataMapper.INSTANCE;
-    SportsFieldDataMapper sportsFieldDataMapper = SportsFieldDataMapper.INSTANCE;
-    SportsFieldApiMapper sportsFieldApiMapper = SportsFieldApiMapper.INSTANCE;
-    SportsFieldPriceListDataMapper sportsFieldPriceListDataMapper = SportsFieldPriceListDataMapper.INSTANCE;
-    BillingDetailsDataMapper billingDetailsDataMapper = BillingDetailsDataMapper.INSTANCE;
 
-    SportsFacilityApiMapper sportsFacilityApiMapper = SportsFacilityApiMapper.INSTANCE;
+    @Autowired
+    AddressDataMapper addressDataMapper;
+
+    @Autowired
+    UserDataMapper userDataMapper;
+
+    @Autowired
+    SportsFacilityDataMapper sportsFacilityDataMapper;
+
+    @Autowired
+    SportsFieldDataMapper sportsFieldDataMapper;
+
+    @Autowired
+    SportsFieldApiMapper sportsFieldApiMapper;
+
+    @Autowired
+    SportsFieldPriceListDataMapper sportsFieldPriceListDataMapper;
+
+    @Autowired
+    BillingDetailsDataMapper billingDetailsDataMapper;
+
+    @Autowired
+    SportsFacilityApiMapper sportsFacilityApiMapper;
 
     @Mock
     UserRepository mockedUserRepository;
@@ -122,13 +137,13 @@ public class MapperTest {
         assertEquals(sportsFieldData.getSportsFacility().getId(), sportsFacilityEntity.getId());
         assertEquals(sportsFieldData.getPriceList().getId(), sportsFieldPriceListEntity.getId());
         assertThat(((SoccerFieldData) sportsFieldData).getSoccerFieldType(), is(equalTo("ELEVEN_A_SIDE")));
-        assertThat(sportsField.getSport(), is(equalTo(SportEnum.SOCCER)));
+        assertThat(sportsField.getSport(), is(equalTo("SoccerField")));
         assertThat(sportsField.getPriceList(), is(notNullValue()));
         assertThat(sportsField.getPriceList().getPricePerHour(), is(equalTo(75.0f)));
 
         SportsFieldData sportsFieldData2 = sportsFieldDataMapper.mapToSportsFieldData(sportsFieldEntity2);
         TennisField sportsField2 = (TennisField) sportsFieldApiMapper.mapToSportsFieldApi(sportsFieldData2);
-        assertThat(sportsField2.getSport(), is(equalTo(SportEnum.TENNIS)));
+        assertThat(sportsField2.getSport(), is(equalTo("TennisField")));
         SportsFieldData sportsFieldDataMappedFromSportsFieldApi = sportsFieldApiMapper.mapToSportsFieldData(sportsField2);
         assertEquals(sportsFieldDataMappedFromSportsFieldApi, sportsFieldData2);
     }

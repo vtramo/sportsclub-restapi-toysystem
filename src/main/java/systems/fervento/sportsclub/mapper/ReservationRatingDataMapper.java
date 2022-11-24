@@ -6,10 +6,8 @@ import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.ReservationRatingData;
 import systems.fervento.sportsclub.entity.ReservationRatingEntity;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ReservationRatingDataMapper {
-    ReservationRatingDataMapper INSTANCE = Mappers.getMapper(ReservationRatingDataMapper.class);
-
     @Mapping(target = "reservationId", source = "reservation.id")
     ReservationRatingData mapToReservationRatingData(ReservationRatingEntity reservationRatingEntity);
 }

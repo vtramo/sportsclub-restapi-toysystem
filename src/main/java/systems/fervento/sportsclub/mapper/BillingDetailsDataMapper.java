@@ -9,10 +9,8 @@ import systems.fervento.sportsclub.data.CreditCardData;
 import systems.fervento.sportsclub.entity.BillingDetailsEntity;
 import systems.fervento.sportsclub.entity.CreditCardEntity;
 
-@Mapper(uses = {UserDataMapper.class, AddressDataMapper.class, SportsFieldDataMapper.class})
+@Mapper(componentModel = "spring", uses = {UserDataMapper.class, AddressDataMapper.class, SportsFieldDataMapper.class})
 public interface BillingDetailsDataMapper {
-    BillingDetailsDataMapper INSTANCE = Mappers.getMapper(BillingDetailsDataMapper.class);
-
     default BillingDetailsData convertToBillingDetailsData(
         BillingDetailsEntity billingDetailsEntity,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext

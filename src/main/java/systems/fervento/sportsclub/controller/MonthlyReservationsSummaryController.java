@@ -13,10 +13,11 @@ public class MonthlyReservationsSummaryController implements MonthlyReservations
 
     private final ReservationSummaryService reservationSummaryService;
 
-    private final MonthlyReservationsSummaryApiMapper monthlyReservationsSummaryApiMapper = MonthlyReservationsSummaryApiMapper.INSTANCE;
+    private final MonthlyReservationsSummaryApiMapper monthlyReservationsSummaryApiMapper;
 
-    public MonthlyReservationsSummaryController(ReservationSummaryService reservationSummaryService) {
+    public MonthlyReservationsSummaryController(ReservationSummaryService reservationSummaryService, MonthlyReservationsSummaryApiMapper monthlyReservationsSummaryApiMapper) {
         this.reservationSummaryService = reservationSummaryService;
+        this.monthlyReservationsSummaryApiMapper = monthlyReservationsSummaryApiMapper;
     }
 
     @Override

@@ -18,10 +18,14 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class SportsFieldService {
     private final SportsFieldRepository sportsFieldRepository;
-    private final SportsFieldDataMapper sportsFieldDataMapper = SportsFieldDataMapper.INSTANCE;
+    private final SportsFieldDataMapper sportsFieldDataMapper;
 
-    public SportsFieldService(SportsFieldRepository sportsFieldRepository) {
+    public SportsFieldService(
+        SportsFieldRepository sportsFieldRepository,
+        SportsFieldDataMapper sportsFieldDataMapper
+    ) {
         this.sportsFieldRepository = sportsFieldRepository;
+        this.sportsFieldDataMapper = sportsFieldDataMapper;
     }
 
     public SportsFieldData getSportsFieldById(final long sportsFieldId) {

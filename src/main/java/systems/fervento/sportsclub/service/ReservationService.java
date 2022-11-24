@@ -25,20 +25,25 @@ public class ReservationService {
     private final ReservationRatingRepository reservationRatingRepository;
     private final UserRepository userRepository;
     private final SportsFieldRepository sportsFieldRepository;
-    private final ReservationDataMapper reservationDataMapper = ReservationDataMapper.INSTANCE;
-    private final ReservationRatingDataMapper reservationRatingDataMapper = ReservationRatingDataMapper.INSTANCE;
+    private final ReservationDataMapper reservationDataMapper;
+    private final ReservationRatingDataMapper reservationRatingDataMapper;
     private final ReservationPriceCalculatorService reservationPriceCalculatorService;
 
     public ReservationService(
         ReservationRepository reservationRepository,
-        ReservationRatingRepository reservationRatingRepository, UserRepository userService,
+        ReservationRatingRepository reservationRatingRepository,
+        UserRepository userService,
         SportsFieldRepository sportsFieldService,
+        ReservationDataMapper reservationDataMapper,
+        ReservationRatingDataMapper reservationRatingDataMapper,
         ReservationPriceCalculatorService reservationPriceCalculatorService
     ) {
         this.reservationRepository = reservationRepository;
         this.reservationRatingRepository = reservationRatingRepository;
         this.userRepository = userService;
         this.sportsFieldRepository = sportsFieldService;
+        this.reservationDataMapper = reservationDataMapper;
+        this.reservationRatingDataMapper = reservationRatingDataMapper;
         this.reservationPriceCalculatorService = reservationPriceCalculatorService;
     }
 

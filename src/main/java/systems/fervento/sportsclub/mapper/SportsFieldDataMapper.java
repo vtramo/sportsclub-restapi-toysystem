@@ -3,14 +3,11 @@ package systems.fervento.sportsclub.mapper;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.*;
 import systems.fervento.sportsclub.entity.*;
 
-@Mapper(uses = {AddressDataMapper.class, SportsFieldPriceListData.class, BillingDetailsDataMapper.class})
+@Mapper(componentModel = "spring", uses = {AddressDataMapper.class, SportsFieldPriceListData.class, BillingDetailsDataMapper.class})
 public interface SportsFieldDataMapper {
-    SportsFieldDataMapper INSTANCE = Mappers.getMapper(SportsFieldDataMapper.class);
-
     default SportsFieldData mapToSportsFieldData(
         SportsFieldEntity sportsFieldEntity,
         @Context CycleAvoidingMappingContext cycleAvoidingMappingContext

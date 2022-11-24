@@ -22,13 +22,22 @@ public class SportsFacilityService {
     private final SportsFacilityRepository sportsFacilityRepository;
     private final SportsFieldRepository sportsFieldRepository;
 
-    private final SportsFacilityDataMapper sportsFacilityDataMapper = SportsFacilityDataMapper.INSTANCE;
-    private final SportsFieldEntityMapper sportsFieldEntityMapper = SportsFieldEntityMapper.INSTANCE;
-    private final SportsFieldDataMapper sportsFieldDataMapper = SportsFieldDataMapper.INSTANCE;
+    private final SportsFacilityDataMapper sportsFacilityDataMapper;
+    private final SportsFieldEntityMapper sportsFieldEntityMapper;
+    private final SportsFieldDataMapper sportsFieldDataMapper;
 
-    public SportsFacilityService(SportsFacilityRepository sportsFacilityRepository, SportsFieldRepository sportsFieldRepository) {
+    public SportsFacilityService(
+        SportsFacilityRepository sportsFacilityRepository,
+        SportsFieldRepository sportsFieldRepository,
+        SportsFacilityDataMapper sportsFacilityDataMapper,
+        SportsFieldEntityMapper sportsFieldEntityMapper,
+        SportsFieldDataMapper sportsFieldDataMapper
+    ) {
         this.sportsFacilityRepository = sportsFacilityRepository;
         this.sportsFieldRepository = sportsFieldRepository;
+        this.sportsFacilityDataMapper = sportsFacilityDataMapper;
+        this.sportsFieldEntityMapper = sportsFieldEntityMapper;
+        this.sportsFieldDataMapper = sportsFieldDataMapper;
     }
 
     public List<SportsFacilityData> getAllByTotalNumberSportsFieldBetween(

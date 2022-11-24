@@ -32,10 +32,10 @@ import static java.util.stream.Collectors.toList;
 public class ReservationSummaryService {
     private final SportsFacilityRepository sportsFacilityRepository;
     private final SportsFieldRepository sportsFieldRepository;
-    private final SportsReservationReportDataMapper sportsReservationReportDataMapper = SportsReservationReportDataMapper.INSTANCE;
-    private final SportsReservationReportEntityMapper sportsReservationReportEntityMapper = SportsReservationReportEntityMapper.INSTANCE;
+    private final SportsReservationReportDataMapper sportsReservationReportDataMapper;
+    private final SportsReservationReportEntityMapper sportsReservationReportEntityMapper;
 
-    private final ReservationSummaryDataMapper reservationSummaryDataMapper = ReservationSummaryDataMapper.INSTANCE;
+    private final ReservationSummaryDataMapper reservationSummaryDataMapper;
 
     private final ReservationRepository reservationRepository;
     private final ReservationsSummaryEntityRepository reservationsSummaryEntityRepository;
@@ -43,11 +43,17 @@ public class ReservationSummaryService {
     public ReservationSummaryService(
         SportsFacilityRepository sportsFacilityRepository,
         SportsFieldRepository sportsFieldRepository,
+        SportsReservationReportDataMapper sportsReservationReportDataMapper,
+        SportsReservationReportEntityMapper sportsReservationReportEntityMapper,
+        ReservationSummaryDataMapper reservationSummaryDataMapper,
         ReservationRepository reservationRepository,
         ReservationsSummaryEntityRepository reservationsSummaryEntityRepository
     ) {
         this.sportsFacilityRepository = sportsFacilityRepository;
         this.sportsFieldRepository = sportsFieldRepository;
+        this.sportsReservationReportDataMapper = sportsReservationReportDataMapper;
+        this.sportsReservationReportEntityMapper = sportsReservationReportEntityMapper;
+        this.reservationSummaryDataMapper = reservationSummaryDataMapper;
         this.reservationRepository = reservationRepository;
         this.reservationsSummaryEntityRepository = reservationsSummaryEntityRepository;
     }

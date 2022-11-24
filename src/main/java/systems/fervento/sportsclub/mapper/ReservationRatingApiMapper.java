@@ -7,10 +7,8 @@ import org.mapstruct.factory.Mappers;
 import systems.fervento.sportsclub.data.ReservationRatingData;
 import systems.fervento.sportsclub.openapi.model.ReservationRating;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ReservationRatingApiMapper {
-    ReservationRatingApiMapper INSTANCE = Mappers.getMapper(ReservationRatingApiMapper.class);
-
     @Mapping(target = "rating", source = "score")
     ReservationRating mapToReservationRatingApi(ReservationRatingData reservationRatingData);
 

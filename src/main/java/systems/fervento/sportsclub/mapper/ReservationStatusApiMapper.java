@@ -9,10 +9,8 @@ import systems.fervento.sportsclub.data.ReservationData;
 import systems.fervento.sportsclub.openapi.model.ReservationStateEnum;
 import systems.fervento.sportsclub.openapi.model.ReservationStatus;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ReservationStatusApiMapper {
-    ReservationStatusApiMapper INSTANCE = Mappers.getMapper(ReservationStatusApiMapper.class);
-
     @AfterMapping
     default void setReservationState(@MappingTarget ReservationStatus reservationStatus, ReservationData reservationData) {
         reservationStatus.setState(ReservationStateEnum.valueOf(reservationData.getState()));

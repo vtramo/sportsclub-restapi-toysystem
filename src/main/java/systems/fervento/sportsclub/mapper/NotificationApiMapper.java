@@ -1,7 +1,6 @@
 package systems.fervento.sportsclub.mapper;
 
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import systems.fervento.sportsclub.data.NotificationData;
 import systems.fervento.sportsclub.openapi.model.Notification;
@@ -9,10 +8,8 @@ import systems.fervento.sportsclub.openapi.model.NotificationPage;
 
 import static java.util.stream.Collectors.toList;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface NotificationApiMapper {
-    NotificationApiMapper INSTANCE = Mappers.getMapper(NotificationApiMapper.class);
-
     default NotificationPage mapToNotificationPage(Page<NotificationData> notificationDataPage) {
         return mapToNotificationPage(1, notificationDataPage);
     }

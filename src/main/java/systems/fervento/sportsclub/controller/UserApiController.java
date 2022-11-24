@@ -15,11 +15,17 @@ import java.util.Optional;
 @RestController
 public class UserApiController implements UsersApi {
     private final UserService userService;
-    private final UserApiMapper userApiMapper = UserApiMapper.INSTANCE;
-    private final NotificationApiMapper notificationApiMapper = NotificationApiMapper.INSTANCE;
+    private final UserApiMapper userApiMapper;
+    private final NotificationApiMapper notificationApiMapper;
 
-    public UserApiController(UserService userService) {
+    public UserApiController(
+        UserService userService,
+        UserApiMapper userApiMapper,
+        NotificationApiMapper notificationApiMapper
+    ) {
         this.userService = userService;
+        this.userApiMapper = userApiMapper;
+        this.notificationApiMapper = notificationApiMapper;
     }
 
     @Override

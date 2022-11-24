@@ -12,10 +12,8 @@ import systems.fervento.sportsclub.openapi.model.MonthlyReservationsSummary;
 
 import static java.util.stream.Collectors.toList;
 
-@Mapper(uses = SportsReservationReportApiMapper.class)
+@Mapper(componentModel = "spring", uses = SportsReservationReportApiMapper.class)
 public interface MonthlyReservationsSummaryApiMapper {
-    MonthlyReservationsSummaryApiMapper INSTANCE = Mappers.getMapper(MonthlyReservationsSummaryApiMapper.class);
-
     default MonthlyReservationsSummariesPage mapToMonthlyReservationsSummary(
         Page<ReservationsSummaryData> reservationsSummaryDataPage
     ) {

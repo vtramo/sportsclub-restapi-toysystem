@@ -8,10 +8,11 @@ import systems.fervento.sportsclub.service.NotificationService;
 
 public class NotificationController implements NotificationsApi {
     private final NotificationService notificationService;
-    private final NotificationApiMapper notificationApiMapper = NotificationApiMapper.INSTANCE;
+    private final NotificationApiMapper notificationApiMapper;
 
-    public NotificationController(NotificationService notificationService) {
+    public NotificationController(NotificationService notificationService, NotificationApiMapper notificationApiMapper) {
         this.notificationService = notificationService;
+        this.notificationApiMapper = notificationApiMapper;
     }
 
     @Override

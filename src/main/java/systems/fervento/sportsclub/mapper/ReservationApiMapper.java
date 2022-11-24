@@ -1,7 +1,6 @@
 package systems.fervento.sportsclub.mapper;
 
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import systems.fervento.sportsclub.data.ReservationData;
 import systems.fervento.sportsclub.openapi.model.DateRange;
@@ -10,10 +9,8 @@ import systems.fervento.sportsclub.openapi.model.ReservationPage;
 
 import static java.util.stream.Collectors.toList;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ReservationApiMapper {
-    ReservationApiMapper INSTANCE = Mappers.getMapper(ReservationApiMapper.class);
-
     @AfterMapping
     default void mapDateRange(@MappingTarget Reservation reservation, ReservationData reservationData) {
         final var dateRange = new DateRange();

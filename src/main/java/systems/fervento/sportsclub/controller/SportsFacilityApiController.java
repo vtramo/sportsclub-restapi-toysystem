@@ -27,16 +27,22 @@ import static java.util.stream.Collectors.toList;
 public class SportsFacilityApiController implements SportsFacilitiesApi {
     private final SportsFacilityService sportsFacilityService;
     private final ReservationSummaryService reservationSummaryService;
-    private final SportsFacilityApiMapper sportsFacilityApiMapper = SportsFacilityApiMapper.INSTANCE;
-    private final SportsFieldApiMapper sportsFieldApiMapper = SportsFieldApiMapper.INSTANCE;
-    private final ReservationSummaryApiMapper reservationSummaryApiMapper = ReservationSummaryApiMapper.INSTANCE;
+    private final SportsFacilityApiMapper sportsFacilityApiMapper;
+    private final SportsFieldApiMapper sportsFieldApiMapper;
+    private final ReservationSummaryApiMapper reservationSummaryApiMapper;
 
     public SportsFacilityApiController(
         SportsFacilityService sportsFacilityService,
-        ReservationSummaryService reservationSummaryService
+        ReservationSummaryService reservationSummaryService,
+        SportsFacilityApiMapper sportsFacilityApiMapper,
+        SportsFieldApiMapper sportsFieldApiMapper,
+        ReservationSummaryApiMapper reservationSummaryApiMapper
     ) {
         this.sportsFacilityService = sportsFacilityService;
         this.reservationSummaryService = reservationSummaryService;
+        this.sportsFacilityApiMapper = sportsFacilityApiMapper;
+        this.sportsFieldApiMapper = sportsFieldApiMapper;
+        this.reservationSummaryApiMapper = reservationSummaryApiMapper;
     }
 
     @Override

@@ -23,13 +23,22 @@ import java.util.function.Supplier;
 public class UserService {
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
-    private final NotificationDataMapper notificationDataMapper = NotificationDataMapper.INSTANCE;
-    private final UserDataMapper userDataMapper = UserDataMapper.INSTANCE;
-    private final UserEntityMapper userEntityMapper = UserEntityMapper.INSTANCE;
+    private final NotificationDataMapper notificationDataMapper;
+    private final UserDataMapper userDataMapper;
+    private final UserEntityMapper userEntityMapper;
 
-    public UserService(UserRepository userRepository, NotificationRepository notificationRepository) {
+    public UserService(
+        UserRepository userRepository,
+        NotificationRepository notificationRepository,
+        NotificationDataMapper notificationDataMapper,
+        UserDataMapper userDataMapper,
+        UserEntityMapper userEntityMapper
+    ) {
         this.userRepository = userRepository;
         this.notificationRepository = notificationRepository;
+        this.notificationDataMapper = notificationDataMapper;
+        this.userDataMapper = userDataMapper;
+        this.userEntityMapper = userEntityMapper;
     }
 
     public UserData registerUser(UserData user) {

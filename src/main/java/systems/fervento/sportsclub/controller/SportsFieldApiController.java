@@ -22,16 +22,19 @@ public class SportsFieldApiController implements SportsFieldsApi {
 
     private final SportsFieldService sportsFieldService;
     private final ReservationSummaryService reservationSummaryService;
-    private final SportsFieldApiMapper sportsFieldApiMapper = SportsFieldApiMapper.INSTANCE;
-    private final SportsFieldReservationsSummaryApiMapper sportsFieldReservationsSummaryApiMapper =
-        SportsFieldReservationsSummaryApiMapper.INSTANCE;
+    private final SportsFieldApiMapper sportsFieldApiMapper;
+    private final SportsFieldReservationsSummaryApiMapper sportsFieldReservationsSummaryApiMapper;
 
     public SportsFieldApiController(
         SportsFieldService sportsFieldService,
-        ReservationSummaryService reservationSummaryService
+        ReservationSummaryService reservationSummaryService,
+        SportsFieldApiMapper sportsFieldApiMapper,
+        SportsFieldReservationsSummaryApiMapper sportsFieldReservationsSummaryApiMapper
     ) {
         this.sportsFieldService = sportsFieldService;
         this.reservationSummaryService = reservationSummaryService;
+        this.sportsFieldApiMapper = sportsFieldApiMapper;
+        this.sportsFieldReservationsSummaryApiMapper = sportsFieldReservationsSummaryApiMapper;
     }
 
     @Override

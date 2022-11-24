@@ -50,9 +50,6 @@ public abstract class SportsFieldEntity {
 
     public void setPriceList(final SportsFieldPriceListEntity priceList) {
         Objects.requireNonNull(priceList);
-        if (priceList.getSportsField() != null) {
-            throw new IllegalStateException("This price list is already assigned to a SportsField!");
-        }
         this.priceList = priceList;
         priceList.setSportsField(this);
     }

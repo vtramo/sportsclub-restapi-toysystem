@@ -32,9 +32,9 @@
                 "where " +
                 "(:state            is null or :state               = r.reservationStatus)               and " +
                 "(:sport            is null or :sport               = r.sportsField.sport)               and " +
-                "(:createdAt        is null or :createdAt           = r.createdAt)                       and " +
-                "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
-                "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      and " +
+                "(cast(:createdAt as date)        is null or :createdAt           = r.createdAt)                       and " +
+                "(cast(:startDate as date)        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
+                "(cast(:endDate as date)          is null or :endDate             >= r.dateTimeRange.endDateTime)      and " +
                 "(:price            is null or :price               = r.price)                           and " +
                 "(:sportsFieldId    is null or :sportsFieldId       = r.sportsField.id)                  and " +
                 "(:sportsFacilityId is null or :sportsFacilityId    = r.sportsField.sportsFacility.id)"
@@ -48,8 +48,8 @@
                 "coalesce(sum(case when (r.reservationStatus = 'PENDING')  then 1 else 0 end), 0)       as pendingReservations,  " +
                 "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then r.price else 0 end), 0) as totalRevenue          " +
                 "from ReservationEntity r where r.sportsField.sportsFacility.id = :sportsFacilityId      and " +
-                "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
-                "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
+                "(cast(:startDate as date)        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
+                "(cast(:endDate as date)          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
                 "group by sport"
     ),
     @NamedQuery(
@@ -61,8 +61,8 @@
                 "coalesce(sum(case when (r.reservationStatus = 'PENDING')  then 1 else 0 end), 0)       as pendingReservations,  " +
                 "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then r.price else 0 end), 0) as totalRevenue          " +
                 "from ReservationEntity r where r.sportsField.id = :sportsFieldId                        and " +
-                "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
-                "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
+                "(cast(:startDate as date)         is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
+                "(cast(:endDate as date)          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
                 "group by sport"
     ),
     @NamedQuery(
@@ -75,8 +75,8 @@
                 "coalesce(sum(case when (r.reservationStatus = 'PENDING')  then 1 else 0 end), 0)       as pendingReservations,  " +
                 "coalesce(sum(case when (r.reservationStatus = 'ACCEPTED') then r.price else 0 end), 0) as totalRevenue          " +
                 "from ReservationEntity r where " +
-                "(:startDate        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
-                "(:endDate          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
+                "(cast(:startDate as date)        is null or :startDate           <= r.dateTimeRange.startDateTime)    and " +
+                "(cast(:endDate as date)          is null or :endDate             >= r.dateTimeRange.endDateTime)      " +
                 "group by sportsFacilityId, sport"
     ),
 

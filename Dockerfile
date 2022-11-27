@@ -23,10 +23,12 @@ COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/META-INF           
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/classes   /app
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/lib       /app/lib
 
-ENTRYPOINT ["java","-cp","/app:/app/lib/*","systems.fervento.sportsclub.SportsClubApp"]
-
 RUN apt-get update \
   && apt-get install -y curl
+
+COPY resources/docker-entrypoint.sh .
+CMD chmod 744 ./docker-entrypoint.sh
+ENTRYPOINT ["./docker-entrypoint.sh", "java", "-cp", "/app:/app/lib/*", "systems.fervento.sportsclub.SportsClubApp"]
 
 EXPOSE 8083
 HEALTHCHECK CMD curl -f http://localhost:8083/api/actuator/health

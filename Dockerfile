@@ -23,5 +23,10 @@ COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/META-INF           
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/classes   /app
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/lib       /app/lib
 
-EXPOSE 8083
 ENTRYPOINT ["java","-cp","/app:/app/lib/*","systems.fervento.sportsclub.SportsClubApp"]
+
+RUN apt-get update \
+  && apt-get install -y curl
+
+EXPOSE 8083
+HEALTHCHECK CMD curl -f http://localhost:8083/api/actuator/health

@@ -12,7 +12,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATA_SOURCE_PASSWORD: postgres
-      DB_URL: http://db:5432/
+      INIT_DATABASE: false
     depends_on:
       db:
         condition: service_healthy

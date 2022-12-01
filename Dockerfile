@@ -5,11 +5,11 @@ WORKDIR /usr/sports-club-api
 
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
-RUN mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+RUN --mount=type=cache,target=/root/.m2 mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
 
 # Compile and package the application
 COPY ./src ./src
-RUN mvn package -Dmaven.test.skip \
+RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip \
   && mkdir -p target/dependency  \
   && cd target/dependency \
   && jar -xf ../*.jar

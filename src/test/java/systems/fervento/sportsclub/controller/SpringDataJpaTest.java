@@ -71,8 +71,11 @@ abstract class SpringDataJpaTest {
         sportsFieldEntity2 = new BasketballFieldEntity("Basket Field", false);
         sportsFieldEntity3 = new TennisFieldEntity("Tennis Field", TennisFieldType.CEMENT, false);
         sportsFieldEntity1.setSportsFacility(sportsFacilityEntity1);
+        sportsFieldEntity1.setPriceList(new SportsFieldPriceListEntity(0, 0));
         sportsFieldEntity2.setSportsFacility(sportsFacilityEntity2);
+        sportsFieldEntity2.setPriceList(new SportsFieldPriceListEntity(0, 0));
         sportsFieldEntity3.setSportsFacility(sportsFacilityEntity2);
+        sportsFieldEntity3.setPriceList(new SportsFieldPriceListEntity(0, 0));
 
         sportsFacilityEntity1.getSportsFields().add(sportsFieldEntity1);
         sportsFacilityEntity2.getSportsFields().add(sportsFieldEntity2);

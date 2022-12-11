@@ -16,7 +16,7 @@ public class SportsFacilityRepositoryTest extends SpringDataJpaTest {
         var sportsFacilities3 = sportsFacilityRepository.findAllByTotalNumberSportsFieldsBetween(0, 0);
         assertAll(
             () -> assertThat(sportsFacilities1, hasSize(2)),
-            () -> assertThat(sportsFacilities2, hasSize(0)),
+            () -> assertThat(sportsFacilities2, hasSize(1)),
             () -> assertThat(sportsFacilities3, hasSize(0))
         );
     }

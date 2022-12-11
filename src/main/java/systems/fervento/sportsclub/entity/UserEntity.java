@@ -1,10 +1,10 @@
 package systems.fervento.sportsclub.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Setter
 @Getter
-@Entity
+@jakarta.persistence.Entity
 public class UserEntity {
     @Id
     @GeneratedValue(generator = "ID_GENERATOR")

@@ -1,11 +1,11 @@
 package systems.fervento.sportsclub.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 

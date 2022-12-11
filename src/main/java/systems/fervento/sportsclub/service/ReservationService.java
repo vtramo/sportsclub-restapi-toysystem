@@ -1,5 +1,6 @@
 package systems.fervento.sportsclub.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,7 +16,6 @@ import systems.fervento.sportsclub.repository.ReservationRepository;
 import systems.fervento.sportsclub.repository.SportsFieldRepository;
 import systems.fervento.sportsclub.repository.UserRepository;
 
-import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;

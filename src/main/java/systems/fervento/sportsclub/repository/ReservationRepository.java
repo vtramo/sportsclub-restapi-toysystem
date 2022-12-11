@@ -14,6 +14,7 @@ import systems.fervento.sportsclub.entity.SportsReservationReportProjection;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
 

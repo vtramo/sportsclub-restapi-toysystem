@@ -1,7 +1,7 @@
 #--- Build Stage ---#
 FROM maven:3.8.6-openjdk-18 AS build-stage
 
-WORKDIR /usr/sports-club-api
+WORKDIR /home/sports-club-api
 
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip \
 #--- Final Stage ---#
 FROM openjdk:11-jdk-slim
 
-ARG BUILD_STAGE_WORKDIR=/usr/sports-club-api
+ARG BUILD_STAGE_WORKDIR=/home/sports-club-api
 ARG DEPENDENCY=target/dependency
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/META-INF           /app/META-INF
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/classes   /app
@@ -26,7 +26,6 @@ COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/lib       
 RUN apt-get update \
   && apt-get install -y curl
 
-COPY resources/docker-entrypoint.sh .
 ENTRYPOINT ["java","-cp","/app:/app/lib/*","systems.fervento.sportsclub.SportsClubApp"]
 
 EXPOSE 8083

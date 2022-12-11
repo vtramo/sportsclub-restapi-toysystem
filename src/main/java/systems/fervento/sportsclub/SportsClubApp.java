@@ -1,6 +1,5 @@
 package systems.fervento.sportsclub;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -21,17 +20,25 @@ import java.util.List;
 )
 @EnableScheduling
 public class SportsClubApp implements ApplicationRunner {
-    @Autowired
-    SportsFacilityRepository sportsFacilityRepository;
-    @Autowired
-    NotificationRepository notificationRepository;
-    @Autowired
-    ReservationRepository reservationRepository;
-    @Autowired
-    UserRepository userRepository;
+    final SportsFacilityRepository sportsFacilityRepository;
+    final NotificationRepository notificationRepository;
+    final ReservationRepository reservationRepository;
+    final UserRepository userRepository;
 
     @Value(value = "${INIT_DATABASE:false}")
     private String initDatabase;
+
+    public SportsClubApp(
+        SportsFacilityRepository sportsFacilityRepository,
+        NotificationRepository notificationRepository,
+        ReservationRepository reservationRepository,
+        UserRepository userRepository
+    ) {
+        this.sportsFacilityRepository = sportsFacilityRepository;
+        this.notificationRepository = notificationRepository;
+        this.reservationRepository = reservationRepository;
+        this.userRepository = userRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(SportsClubApp.class, args);

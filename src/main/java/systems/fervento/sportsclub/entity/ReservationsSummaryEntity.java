@@ -1,11 +1,11 @@
 package systems.fervento.sportsclub.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Year;
 import java.time.ZonedDateTime;
@@ -17,6 +17,15 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @Entity
+@NamedQueries({
+    @NamedQuery(
+        name = "ReservationsSummaryEntity.getReservationsSummaries",
+        query = "select r from ReservationsSummaryEntity r " +
+                "where (:month is null or :month = r.month) and" +
+                "      (:year is null or :year = r.year)    and" +
+                "      (:sportsFacilityId is null or :sportsFacilityId = r.sportsFacility.id)"
+    )
+})
 public class ReservationsSummaryEntity {
     @Id
     @GeneratedValue(generator = "ID_GENERATOR")

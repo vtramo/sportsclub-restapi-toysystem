@@ -1,9 +1,9 @@
 package systems.fervento.sportsclub.entity;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
 
 @NoArgsConstructor
 @Entity

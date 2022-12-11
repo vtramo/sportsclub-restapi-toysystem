@@ -149,6 +149,8 @@ public class ReservationSummaryService {
         sportsFieldReservationsSummaryData.setSportsFacilityName(sportsFacilityEntity.getName());
         sportsFieldReservationsSummaryData.setSportsFacilityId(sportsFacilityEntity.getId());
         sportsFieldReservationsSummaryData.setSportsFieldId(sportsFieldId);
+        sportsFieldReservationsSummaryData.setStartDateTime(startDateTime);
+        sportsFieldReservationsSummaryData.setEndDateTime(endDateTime);
         sportsFieldReservationsSummaryData.setSportsFieldName(sportsFieldEntity.getName());
         return sportsFieldReservationsSummaryData;
     }

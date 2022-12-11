@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.toUnmodifiableList;
-
 @Service
 public class SportsFacilityService {
     private final SportsFacilityRepository sportsFacilityRepository;
@@ -47,8 +45,7 @@ public class SportsFacilityService {
         return sportsFacilityRepository
             .findAllByTotalNumberSportsFieldsBetween(minTotalSportsFields, maxTotalSportsFields)
             .stream()
-            .map(sportsFacilityDataMapper::mapToSportsFacilityData)
-            .collect(toUnmodifiableList());
+            .map(sportsFacilityDataMapper::mapToSportsFacilityData).toList();
     }
 
     public List<SportsFacilityData> getAllByOwnerIdAndTotalNumberSportsFieldBetween(
@@ -59,8 +56,7 @@ public class SportsFacilityService {
         return sportsFacilityRepository
             .findAllByOwnerIdAndTotalNumberSportsFieldsBetween(ownerId, minTotalSportsFields, maxTotalSportsFields)
             .stream()
-            .map(sportsFacilityDataMapper::mapToSportsFacilityData)
-            .collect(toUnmodifiableList());
+            .map(sportsFacilityDataMapper::mapToSportsFacilityData).toList();
     }
 
     public SportsFacilityData getById(Long sportsFacilityId) {

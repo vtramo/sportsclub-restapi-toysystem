@@ -1,0 +1,60 @@
+FROM ubuntu:22.04
+
+WORKDIR /home
+
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
+# Maven Version and Link to download Maven
+ARG MAVEN_VERSION=3.8.6
+ARG MAVEN_DOWNLOAD_LINK=https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+
+# Download and Install Maven
+RUN curl -L -O $MAVEN_DOWNLOAD_LINK
+ARG MAVEN_DIRECTORY_NAME=apache-maven-$MAVEN_VERSION
+ARG MAVEN_TAR_GZ=$MAVEN_DIRECTORY_NAME-bin.tar.gz
+RUN tar -xf $MAVEN_TAR_GZ
+ENV M2_HOME=/home/$MAVEN_DIRECTORY_NAME
+ENV PATH=$M2_HOME/bin:$PATH
+RUN rm $MAVEN_TAR_GZ
+
+# Java Version and GraalVM Version/Platform
+ARG JAVA_VERSION=java17
+ARG GRAALVM_VERSION=22.3.0
+ARG GRAALVM_PLATFORM=linux-amd64
+
+# Link to download GraalVM
+ARG GRAALVM_DOWNLOAD_BASE_LINK=http://github.com/graalvm/graalvm-ce-builds/releases/download
+ARG GRAALVM_DOWNLOAD_LINK=$GRAALVM_DOWNLOAD_BASE_LINK/vm-$GRAALVM_VERSION/graalvm-ce-$JAVA_VERSION-$GRAALVM_PLATFORM-$GRAALVM_VERSION.tar.gz
+
+# Download GraalVM
+RUN curl -L -O $GRAALVM_DOWNLOAD_LINK
+ARG GRAALVM_DIRECTORY_NAME="graalvm-ce-$JAVA_VERSION-$GRAALVM_VERSION"
+ARG GRAALVM_TAR_GZ="graalvm-ce-$JAVA_VERSION-$GRAALVM_PLATFORM-$GRAALVM_VERSION.tar.gz"
+RUN tar -xf $GRAALVM_TAR_GZ
+RUN rm $GRAALVM_TAR_GZ
+
+# GraalVM environment variable settings
+ENV GRAALVM_HOME=/home/$GRAALVM_DIRECTORY_NAME
+ENV PATH=/home/$GRAALVM_DIRECTORY_NAME/bin:$PATH
+ENV JAVA_HOME=/home/$GRAALVM_DIRECTORY_NAME
+
+# Prerequisites for build native image - install native compiler and native image agent
+RUN apt-get install -y build-essential libz-dev zlib1g-dev
+RUN gu install native-image
+
+WORKDIR /home/sports-club-api
+
+# Fetch all application dependencies
+COPY ./pom.xml ./pom.xml
+RUN mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+#--mount=type=cache,target=/root/.m2
+
+# Copy application code
+COPY ./src ./src
+
+# Build native image
+COPY ./target/native-image ./target/native-image
+RUN mvn package -Pnative -Dmaven.test.skip
+
+ENTRYPOINT ["/home/sports-club-api/target/systems.fervento.sportsclub"]

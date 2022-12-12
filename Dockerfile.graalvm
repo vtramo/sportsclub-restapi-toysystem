@@ -1,0 +1,88 @@
+ARG JAVA_VERSION=17
+ARG GRAALVM_VERSION=22.3.0
+ARG GRAALVM_PLATFORM=linux-amd64
+ARG BUILD_STAGE_WORKDIR=/home/sports-club-api
+ARG GRAALVM_DIRECTORY_NAME="graalvm-ce-java$JAVA_VERSION-$GRAALVM_VERSION"
+
+FROM ubuntu:22.04 AS build-stage
+
+WORKDIR /home
+
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
+# Maven Version and Link to download Maven
+ARG MAVEN_VERSION=3.8.6
+ARG MAVEN_DOWNLOAD_LINK=https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+
+# Download and Install Maven
+RUN curl -L -O $MAVEN_DOWNLOAD_LINK
+ARG MAVEN_DIRECTORY_NAME=apache-maven-$MAVEN_VERSION
+ARG MAVEN_TAR_GZ=$MAVEN_DIRECTORY_NAME-bin.tar.gz
+RUN tar -xf $MAVEN_TAR_GZ
+ENV M2_HOME=/home/$MAVEN_DIRECTORY_NAME
+ENV PATH=$M2_HOME/bin:$PATH
+RUN rm $MAVEN_TAR_GZ
+
+# Java Version and GraalVM Version/Platform
+ARG JAVA_VERSION
+ARG GRAALVM_VERSION
+ARG GRAALVM_PLATFORM
+
+# Link to download GraalVM
+ARG GRAALVM_DOWNLOAD_BASE_LINK=https://github.com/graalvm/graalvm-ce-builds/releases/download/
+ARG GRAALVM_DOWNLOAD_LINK=$GRAALVM_DOWNLOAD_BASE_LINK/vm-$GRAALVM_VERSION/graalvm-ce-java$JAVA_VERSION-$GRAALVM_PLATFORM-$GRAALVM_VERSION.tar.gz
+
+# Download GraalVM
+RUN curl -L -O $GRAALVM_DOWNLOAD_LINK
+ARG GRAALVM_DIRECTORY_NAME
+ARG GRAALVM_TAR_GZ="graalvm-ce-java$JAVA_VERSION-$GRAALVM_PLATFORM-$GRAALVM_VERSION.tar.gz"
+RUN tar -xf $GRAALVM_TAR_GZ
+RUN rm $GRAALVM_TAR_GZ
+
+# GraalVM environment variable settings
+ENV GRAALVM_HOME=/home/$GRAALVM_DIRECTORY_NAME
+ENV PATH=/home/$GRAALVM_DIRECTORY_NAME/bin:$PATH
+ENV JAVA_HOME=/home/$GRAALVM_DIRECTORY_NAME
+
+ARG BUILD_STAGE_WORKDIR
+WORKDIR ${BUILD_STAGE_WORKDIR}
+
+# Fetch all application dependencies
+COPY ./pom.xml ./pom.xml
+RUN --mount=type=cache,target=/root/.m2 \
+  mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+
+# Compile and package the application
+COPY ./src ./src
+RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip  \
+  && mkdir -p target/dependency  \
+  && cd target/dependency \
+  && jar -xf ../*.jar
+
+
+#--- Final Stage ---# \
+FROM ubuntu:22.04
+
+# Copy GraalVM JDK from build stage
+ARG GRAALVM_DIRECTORY_NAME
+COPY --from=build-stage /home/${GRAALVM_DIRECTORY_NAME} /home/${GRAALVM_DIRECTORY_NAME}
+
+# GraalVM environment variable settings
+ENV GRAALVM_HOME=/home/${GRAALVM_DIRECTORY_NAME}
+ENV PATH=/home/${GRAALVM_DIRECTORY_NAME}/bin:$PATH
+ENV JAVA_HOME=/home/${GRAALVM_DIRECTORY_NAME}
+
+ARG BUILD_STAGE_WORKDIR
+ARG DEPENDENCY=target/dependency
+COPY --from=build-stage /${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/META-INF           /app/META-INF
+COPY --from=build-stage /${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/classes   /app
+COPY --from=build-stage /${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/lib       /app/lib
+
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
+ENTRYPOINT ["java","-cp","/app:/app/lib/*","systems.fervento.sportsclub.SportsClubApp"]
+
+EXPOSE 8083
+HEALTHCHECK CMD curl -f http://localhost:8083/api/actuator/health

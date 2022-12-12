@@ -2,4 +2,7 @@ version: "3.8"
 
 services:
   app:
-    build: .
+    build:
+      dockerfile: ${DOCKER_FILE:-Dockerfile}
+      args:
+        - JAVA_VERSION=17

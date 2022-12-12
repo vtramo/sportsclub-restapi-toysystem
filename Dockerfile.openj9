@@ -1,0 +1,64 @@
+ARG JAVA_VERSION=17
+ARG BUILD_STAGE_WORKDIR=/home/sports-club-api
+
+#--- Build Stage ---#
+FROM ubuntu:18.04 AS build-stage
+
+# Maven Version and Link to download Maven
+ARG MAVEN_VERSION=3.8.6
+ARG MAVEN_DOWNLOAD_LINK=https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
+# Download and Install Maven
+RUN curl -L -O $MAVEN_DOWNLOAD_LINK
+ARG MAVEN_DIRECTORY_NAME=apache-maven-$MAVEN_VERSION
+ARG MAVEN_TAR_GZ=$MAVEN_DIRECTORY_NAME-bin.tar.gz
+RUN tar -xf $MAVEN_TAR_GZ
+ENV M2_HOME=/$MAVEN_DIRECTORY_NAME
+ENV PATH=$M2_HOME/bin:$PATH
+RUN rm $MAVEN_TAR_GZ
+
+# Copy OpenJ9 JDK from local machine
+ARG JAVA_VERSION
+COPY openj9-jdks/openj9-jdk-${JAVA_VERSION} ./openj9-jdk-${JAVA_VERSION}
+ENV JAVA_HOME=/openj9-jdk-${JAVA_VERSION}
+ENV PATH=${JAVA_HOME}/bin:$PATH
+
+ARG BUILD_STAGE_WORKDIR
+WORKDIR ${BUILD_STAGE_WORKDIR}
+
+# Fetch all application dependencies
+COPY ./pom.xml ./pom.xml
+RUN --mount=type=cache,target=/root/.m2 \
+  mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+
+# Compile and package the application
+COPY ./src ./src
+RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip  \
+  && mkdir -p target/dependency  \
+  && cd target/dependency \
+  && jar -xf ../*.jar
+
+#--- Final Stage ---# \
+FROM ubuntu:18.04
+
+# Copy OpenJ9 JDK from local machine
+COPY openj9-jdks/openj9-jdk-17 ./openj9-jdk-17
+ENV JAVA_HOME=/openj9-jdk-17
+ENV PATH=${JAVA_HOME}/bin:$PATH
+
+ARG BUILD_STAGE_WORKDIR
+ARG DEPENDENCY=target/dependency
+COPY --from=build-stage /${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/META-INF           /app/META-INF
+COPY --from=build-stage /${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/classes   /app
+COPY --from=build-stage /${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/lib       /app/lib
+
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
+ENTRYPOINT ["java","-cp","/app:/app/lib/*","systems.fervento.sportsclub.SportsClubApp"]
+
+EXPOSE 8083
+HEALTHCHECK CMD curl -f http://localhost:8083/api/actuator/health

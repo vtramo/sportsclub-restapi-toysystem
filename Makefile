@@ -118,3 +118,36 @@ _upper:
 	PORT=${_UP_ARGS_PORT} \
 	JAVA_VERSION=${_UP_ARGS_JAVA_VERSION} \
 	docker compose ${_UP_ARGS_COMPOSE_FILE_ORDER} -p ${_UP_ARGS_PROJECT_NAME} up -d
+
+down_%:
+	@if [ $* = "dev" ]; then \
+		$(MAKE) _killer \
+			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openjdk-${JAVA_VERSION}-dev; \
+	elif [ $* = "test" ]; then \
+		$(MAKE) _killer \
+			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openjdk-${JAVA_VERSION}-test; \
+	elif [ $* = "dev_graalvm" ]; then \
+		$(MAKE) _killer \
+			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-graalvm-${JAVA_VERSION}-dev; \
+	elif [ $* = "test_graalvm" ]; then \
+		$(MAKE) _killer \
+			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-graalvm-${JAVA_VERSION}-test; \
+	elif [ $* = "dev_openj9" ]; then \
+		$(MAKE) _killer \
+			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openj9-${JAVA_VERSION}-dev; \
+	elif [ $* = "test_openj9" ]; then \
+		$(MAKE) _killer \
+			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openj9-${JAVA_VERSION}-test; \
+  	elif  [ $* = "dev_native" ]; then \
+		$(MAKE) _killer \
+			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-${JAVA_VERSION}-dev; \
+  	elif [ $* = "test_native" ]; then \
+		$(MAKE) _killer \
+			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-${JAVA_VERSION}-test; \
+	else \
+  		echo "You can only use down_dev, down_test, down_dev_graalvm, down_test_graalvm, down_dev_native or down_test_native!"; \
+  		exit 1; \
+  	fi
+
+_killer:
+	docker compose -p ${_KILLER_ARGS_PROJECT_NAME} down

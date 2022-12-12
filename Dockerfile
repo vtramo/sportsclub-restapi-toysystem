@@ -1,23 +1,41 @@
-#--- Build Stage ---#
-FROM maven:3.8.6-openjdk-18 AS build-stage
+ARG JAVA_VERSION=17
+ARG BUILD_STAGE_WORKDIR=/home/sports-club-api
 
-WORKDIR /home/sports-club-api
+#--- Build Stage ---#
+FROM openjdk:${JAVA_VERSION} AS build-stage
+
+# Maven Version and Link to download Maven
+ARG MAVEN_VERSION=3.8.6
+ARG MAVEN_DOWNLOAD_LINK=https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+
+# Download and Install Maven
+RUN curl -L -O $MAVEN_DOWNLOAD_LINK
+ARG MAVEN_DIRECTORY_NAME=apache-maven-$MAVEN_VERSION
+ARG MAVEN_TAR_GZ=$MAVEN_DIRECTORY_NAME-bin.tar.gz
+RUN tar -xf $MAVEN_TAR_GZ
+ENV M2_HOME=/$MAVEN_DIRECTORY_NAME
+ENV PATH=$M2_HOME/bin:$PATH
+RUN rm $MAVEN_TAR_GZ
+
+ARG BUILD_STAGE_WORKDIR
+WORKDIR ${BUILD_STAGE_WORKDIR}
 
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
-RUN --mount=type=cache,target=/root/.m2 mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+RUN --mount=type=cache,target=/root/.m2 \
+  mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
 
 # Compile and package the application
 COPY ./src ./src
-RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip \
+RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip  \
   && mkdir -p target/dependency  \
   && cd target/dependency \
   && jar -xf ../*.jar
 
 #--- Final Stage ---#
-FROM openjdk:11-jdk-slim
+FROM openjdk:${JAVA_VERSION}-jdk-slim
 
-ARG BUILD_STAGE_WORKDIR=/home/sports-club-api
+ARG BUILD_STAGE_WORKDIR
 ARG DEPENDENCY=target/dependency
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/META-INF           /app/META-INF
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/classes   /app

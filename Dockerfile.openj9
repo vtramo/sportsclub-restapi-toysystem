@@ -32,7 +32,7 @@ WORKDIR ${BUILD_STAGE_WORKDIR}
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
 RUN --mount=type=cache,target=/root/.m2 \
-  mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+  mvn '-Djava.version=${JAVA_VERSION}' dependency:go-offline -DexcludeGroupIds=org.openapitools
 
 # Compile and package the application
 COPY ./src ./src
@@ -44,9 +44,11 @@ RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip  \
 #--- Final Stage ---# \
 FROM ubuntu:18.04
 
+ARG JAVA_VERSION
+
 # Copy OpenJ9 JDK from local machine
-COPY openj9-jdks/openj9-jdk-17 ./openj9-jdk-17
-ENV JAVA_HOME=/openj9-jdk-17
+COPY openj9-jdks/openj9-jdk-${JAVA_VERSION} ./openj9-jdk-${JAVA_VERSION}
+ENV JAVA_HOME=/openj9-jdk-${JAVA_VERSION}
 ENV PATH=${JAVA_HOME}/bin:$PATH
 
 ARG BUILD_STAGE_WORKDIR

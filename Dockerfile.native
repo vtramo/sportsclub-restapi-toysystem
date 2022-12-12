@@ -51,14 +51,14 @@ WORKDIR /home/sports-club-api
 
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
-RUN mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
-#--mount=type=cache,target=/root/.m2
+RUN --mount=type=cache,target=/root/.m2 \
+  mvn '-Djava.version=${JAVA_VERSION}' dependency:go-offline -DexcludeGroupIds=org.openapitools
 
 # Copy application code
 COPY ./src ./src
 
 # Build native image
 COPY ./target/native-image ./target/native-image
-RUN mvn package -Pnative -Dmaven.test.skip
+RUN mvn '-Djava.version=${JAVA_VERSION}' package -Pnative -Dmaven.test.skip
 
 ENTRYPOINT ["/home/sports-club-api/target/systems.fervento.sportsclub"]

@@ -20,14 +20,15 @@ RUN rm $MAVEN_TAR_GZ
 ARG BUILD_STAGE_WORKDIR
 WORKDIR ${BUILD_STAGE_WORKDIR}
 
+ARG JAVA_VERSION
+
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
-RUN --mount=type=cache,target=/root/.m2 \
-  mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+RUN mvn '-Djava.version=${JAVA_VERSION}' dependency:go-offline -DexcludeGroupIds=org.openapitools
 
 # Compile and package the application
 COPY ./src ./src
-RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip  \
+RUN --mount=type=cache,target=/root/.m2 mvn '-Djava.version=${JAVA_VERSION}' -Dmaven.test.skip package   \
   && mkdir -p target/dependency  \
   && cd target/dependency \
   && jar -xf ../*.jar

@@ -51,11 +51,12 @@ WORKDIR ${BUILD_STAGE_WORKDIR}
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
 RUN --mount=type=cache,target=/root/.m2 \
-  mvn dependency:go-offline -DexcludeGroupIds=org.openapitools
+  mvn '-Djava.version=${JAVA_VERSION}' dependency:go-offline -DexcludeGroupIds=org.openapitools
 
 # Compile and package the application
 COPY ./src ./src
-RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip  \
+RUN --mount=type=cache,target=/root/.m2 \
+  mvn '-Djava.version=${JAVA_VERSION}' package -Dmaven.test.skip  \
   && mkdir -p target/dependency  \
   && cd target/dependency \
   && jar -xf ../*.jar

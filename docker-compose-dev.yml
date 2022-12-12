@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     ports:
-      - "8085:8080"
+      - "${PORT}:8083"
     environment:
       SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb;MODE=PostgreSQL;NON_KEYWORDS=YEAR,MONTH
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver

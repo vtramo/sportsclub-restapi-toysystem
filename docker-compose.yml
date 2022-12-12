@@ -4,5 +4,6 @@ services:
   app:
     build:
       dockerfile: ${DOCKER_FILE:-Dockerfile}
+      context: .
       args:
-        - JAVA_VERSION=17
+        - JAVA_VERSION=${JAVA_VERSION:-17}

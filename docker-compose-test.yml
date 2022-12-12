@@ -4,7 +4,7 @@ services:
   app:
     restart: unless-stopped
     ports:
-      - "8086:8083"
+      - "${PORT}:8083"
     networks:
       - back-tier-test
     environment:

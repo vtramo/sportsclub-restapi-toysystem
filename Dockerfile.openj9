@@ -2,7 +2,7 @@ ARG JAVA_VERSION=17
 ARG BUILD_STAGE_WORKDIR=/home/sports-club-api
 
 #--- Build Stage ---#
-FROM ubuntu:18.04 AS build-stage
+FROM vtramo/openj9:java-${JAVA_VERSION} AS build-stage
 
 # Maven Version and Link to download Maven
 ARG MAVEN_VERSION=3.8.6
@@ -20,12 +20,6 @@ ENV M2_HOME=/$MAVEN_DIRECTORY_NAME
 ENV PATH=$M2_HOME/bin:$PATH
 RUN rm $MAVEN_TAR_GZ
 
-# Copy OpenJ9 JDK from local machine
-ARG JAVA_VERSION
-COPY openj9-jdks/openj9-jdk-${JAVA_VERSION} ./openj9-jdk-${JAVA_VERSION}
-ENV JAVA_HOME=/openj9-jdk-${JAVA_VERSION}
-ENV PATH=${JAVA_HOME}/bin:$PATH
-
 ARG BUILD_STAGE_WORKDIR
 WORKDIR ${BUILD_STAGE_WORKDIR}
 
@@ -42,14 +36,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn package -Dmaven.test.skip  \
   && jar -xf ../*.jar
 
 #--- Final Stage ---# \
-FROM ubuntu:18.04
-
-ARG JAVA_VERSION
-
-# Copy OpenJ9 JDK from local machine
-COPY openj9-jdks/openj9-jdk-${JAVA_VERSION} ./openj9-jdk-${JAVA_VERSION}
-ENV JAVA_HOME=/openj9-jdk-${JAVA_VERSION}
-ENV PATH=${JAVA_HOME}/bin:$PATH
+FROM vtramo/openj9:java-${JAVA_VERSION}
 
 ARG BUILD_STAGE_WORKDIR
 ARG DEPENDENCY=target/dependency

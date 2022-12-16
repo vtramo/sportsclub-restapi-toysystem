@@ -52,14 +52,14 @@ NATIVE_DEV_PORT=8096
 NATIVE_TEST_PORT=8097
 
 up_%:
-	@if [ $* = "dev" ]; then \
+	@if [ $* = "dev_openjdk" ]; then \
 		$(MAKE) _upper \
 			-e _UP_ARGS_DOCKER_FILE="Dockerfile" \
 			-e _UP_ARGS_COMPOSE_FILE_ORDER=${COMPOSE_FILE_ORDER_DEV} \
 			-e _UP_ARGS_PORT=${OPENJDK_DEV_PORT} \
 			-e _UP_ARGS_JAVA_VERSION=${JAVA_VERSION} \
 			-e _UP_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openjdk-${JAVA_VERSION}-dev; \
-	elif [ $* = "test" ]; then \
+	elif [ $* = "test_openjdk" ]; then \
 		$(MAKE) _upper \
 			-e _UP_ARGS_DOCKER_FILE="Dockerfile" \
 			-e _UP_ARGS_COMPOSE_FILE_ORDER=${COMPOSE_FILE_ORDER_TEST} \
@@ -84,14 +84,14 @@ up_%:
 		$(MAKE) _upper \
 			-e _UP_ARGS_DOCKER_FILE="Dockerfile.openj9" \
 			-e _UP_ARGS_COMPOSE_FILE_ORDER=${COMPOSE_FILE_ORDER_DEV} \
-			-e _UP_ARGS_PORT=${GRAALVM_DEV_PORT} \
+			-e _UP_ARGS_PORT=${OPENJ9_DEV_PORT} \
 			-e _UP_ARGS_JAVA_VERSION=${JAVA_VERSION} \
 			-e _UP_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openj9-${JAVA_VERSION}-dev; \
 	elif [ $* = "test_openj9" ]; then \
 	  	$(MAKE) _upper \
 			-e _UP_ARGS_DOCKER_FILE="Dockerfile.openj9" \
 			-e _UP_ARGS_COMPOSE_FILE_ORDER=${COMPOSE_FILE_ORDER_TEST} \
-			-e _UP_ARGS_PORT=${GRAALVM_TEST_PORT} \
+			-e _UP_ARGS_PORT=${OPENJ9_TEST_PORT} \
 			-e _UP_ARGS_JAVA_VERSION=${JAVA_VERSION} \
 			-e _UP_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openj9-${JAVA_VERSION}-test; \
   	elif  [ $* = "dev_native" ]; then \
@@ -109,7 +109,7 @@ up_%:
 			-e _UP_ARGS_JAVA_VERSION=${JAVA_VERSION} \
 			-e _UP_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-${JAVA_VERSION}-test; \
 	else \
-  		echo "You can only use up_dev, up_test, up_dev_graalvm, up_test_graalvm, up_dev_native or up_test_native!"; \
+  		echo "You can only use up_dev_openjdk, up_test_openjdk, up_dev_graalvm, up_test_graalvm, up_dev_native or up_test_native!"; \
   		exit 1; \
   	fi
 
@@ -120,10 +120,10 @@ _upper:
 	docker compose ${_UP_ARGS_COMPOSE_FILE_ORDER} -p ${_UP_ARGS_PROJECT_NAME} up -d
 
 down_%:
-	@if [ $* = "dev" ]; then \
+	@if [ $* = "dev_openjdk" ]; then \
 		$(MAKE) _killer \
 			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openjdk-${JAVA_VERSION}-dev; \
-	elif [ $* = "test" ]; then \
+	elif [ $* = "test_openjdk" ]; then \
 		$(MAKE) _killer \
 			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-openjdk-${JAVA_VERSION}-test; \
 	elif [ $* = "dev_graalvm" ]; then \
@@ -145,7 +145,7 @@ down_%:
 		$(MAKE) _killer \
 			-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-${JAVA_VERSION}-test; \
 	else \
-  		echo "You can only use down_dev, down_test, down_dev_graalvm, down_test_graalvm, down_dev_native or down_test_native!"; \
+  		echo "You can only use down_dev_openjdk, down_test_openjdk, down_dev_graalvm, down_test_graalvm, down_dev_native or down_test_native!"; \
   		exit 1; \
   	fi
 

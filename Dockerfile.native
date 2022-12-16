@@ -58,7 +58,8 @@ RUN --mount=type=cache,target=/root/.m2 \
 COPY ./src ./src
 
 # Build native image
-COPY ./target/native-image ./target/native-image
 RUN mvn '-Djava.version=${JAVA_VERSION}' package -Pnative -Dmaven.test.skip
 
+EXPOSE 8083
 ENTRYPOINT ["/home/sports-club-api/target/systems.fervento.sportsclub"]
+HEALTHCHECK CMD curl -f http://localhost:8083/api/actuator/health || exit 1

@@ -48,4 +48,4 @@ RUN apt-get update \
 ENTRYPOINT ["java","-cp","/app:/app/lib/*","systems.fervento.sportsclub.SportsClubApp"]
 
 EXPOSE 8083
-HEALTHCHECK CMD curl -f http://localhost:8083/api/actuator/health
+HEALTHCHECK CMD curl -f http://localhost:8083/api/actuator/health || exit 1

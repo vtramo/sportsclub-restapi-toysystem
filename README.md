@@ -13,13 +13,14 @@ JDKs like [OpenJDK](https://openjdk.org/), [OpenJ9](https://www.eclipse.org/open
 [GraalVM](https://www.graalvm.org/latest/docs/getting-started/) or you can compile the code using ahead-of-time 
 compilation thus building a standalone executable, called [native image](https://www.graalvm.org/22.0/reference-manual/native-image/)
 (with GraalVM native image builder). The minimum Java version supported is 17.
-- `make up_dev`: run the app with OpenJDK 17 (`make down_dev` to bring down the project)
+- `make up_dev_openjdk`: run the app with OpenJDK 17 (`make down_dev_openjdk` to bring down the project)
 - `make up_dev_graalvm`: run the app with GraalVM 17 (`make down_dev_graalvm` to bring down the project)
 - `make up_dev_openj9`: run the app with OpenJ9 17 (`make down_dev_openj9` to bring down the project)
 - `make up_dev_native`: run the app as a native image with Java 17 (`make down_dev_native` to bring down the project)
 
-You can also use `make up_test` or `make up_test_${JDK}` for run the app in a test environment (the main difference
-between dev and test is that dev environment use an H2 in-memory db whereas test environment use a PostgreSQL db).
+You can also use `make up_test_openjdk` (in general `make up_test_${JDK}`) for run the app in a test environment 
+(the main difference  between dev and test is that dev environment use an H2 in-memory db whereas test environment 
+use a PostgreSQL db).
 
 You can specify the Java version. For example, you can do this:
 ```

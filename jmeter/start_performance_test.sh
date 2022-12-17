@@ -10,26 +10,26 @@ SSH_USERNAME=
 SSH_PASSWORD=
 SSH_WORKDIR=
 
-function SSH() {
-  local COMMANDS_TO_EXECUTE="$*"
-  sshpass -p $SSH_PASSWORD ssh $SSH_USERNAME@$SSH_HOST ${COMMANDS_TO_EXECUTE}
-}
-
-# App config
-HOST='172.25.5.28'
+# App config - You need to set this variables!
+HOST=
 declare -A port_by_jdk
 port_by_jdk['openjdk']=8091
 port_by_jdk['graalvm']=8093
 port_by_jdk['openj9']=8095
 port_by_jdk['native']=8097
 
+# JDKS config
 JDKS_AVAIABLE='openjdk graalvm openj9 native'
-
 declare -A java_version_supported_by_jdk
 java_version_supported_by_jdk['openjdk']='17 18 19'
 java_version_supported_by_jdk['graalvm']='17 19'
 java_version_supported_by_jdk['openj9']='17'
 java_version_supported_by_jdk['native']='17 19'
+
+function SSH() {
+  local COMMANDS_TO_EXECUTE="$*"
+  sshpass -p $SSH_PASSWORD ssh $SSH_USERNAME@$SSH_HOST ${COMMANDS_TO_EXECUTE}
+}
 
 function start_performance_test {
   local JDK="$1"
@@ -45,8 +45,7 @@ function start_performance_test {
     exit 1
   fi
 
-  # Start app
-  SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION up_test_$JDK"
+  start_app $JDK $JAVA_VERSION
 
   echo "Waiting for the application to be ready..."
   wait_container_healthy_status $JDK $JAVA_VERSION
@@ -56,8 +55,13 @@ function start_performance_test {
   mkdir $JMETER_OUTPUT_DIRECTORY_PATH
   execute_jmeter_script $JMETER_OUTPUT_DIRECTORY_PATH $port_by_jdk["$JDK"]
 
-  # Throw down the app
-  SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION down_test_$JDK"
+  down_app $JDK $JAVA_VERSION
+}
+
+function start_app() {
+  local JDK="$1"
+  local JAVA_VERSION="$2"
+  SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION up_test_$JDK"
 }
 
 function wait_container_healthy_status() {
@@ -71,16 +75,21 @@ function wait_container_healthy_status() {
     count+=1 && sleep 1
     if [[ $count -ge $MAX_ITERATIONS ]]; then
       echo "Timeout - Application Status: $(get_container_status $CONTAINER_NAME)"
-      # Throw down the app
-      SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION down_test_$JDK"
+      down_app $JDK $JAVA_VERSION
     fi
   done
 }
 
+function down_app() {
+  local JDK="$1"
+  local JAVA_VERSION="$2"
+  SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION down_test_$JDK"
+}
+
 function get_container_status() {
-    local CONTAINER_NAME="$1"
-    status=$(SSH "cd $SSH_WORKDIR; sudo -S <<< \"$SSH_PASSWORD\" docker inspect $CONTAINER_NAME -f {{.State.Health.Status}}")
-    echo $status
+  local CONTAINER_NAME="$1"
+  status=$(SSH "cd $SSH_WORKDIR; sudo -S <<< \"$SSH_PASSWORD\" docker inspect $CONTAINER_NAME -f {{.State.Health.Status}}")
+  echo $status
 }
 
 function execute_jmeter_script() {

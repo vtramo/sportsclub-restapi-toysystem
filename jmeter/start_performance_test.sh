@@ -10,8 +10,13 @@ SSH_USERNAME=
 SSH_PASSWORD=
 SSH_WORKDIR=
 
-# App config - You need to set this variables!
-HOST=
+function SSH() {
+  local COMMANDS_TO_EXECUTE="$*"
+  sshpass -p $SSH_PASSWORD ssh $SSH_USERNAME@$SSH_HOST ${COMMANDS_TO_EXECUTE}
+}
+
+# App config
+HOST='172.25.5.28'
 declare -A port_by_jdk
 port_by_jdk['openjdk']=8091
 port_by_jdk['graalvm']=8093

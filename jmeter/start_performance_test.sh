@@ -46,17 +46,41 @@ function start_performance_test {
   fi
 
   # Start app
-  sshpass -p "$SSH_PASSWORD" ssh "$SSH_USERNAME@$SSH_HOST" \
-    "cd ${SSH_WORKDIR}; make JAVA_VERSION=${JAVA_VERSION} up_test_${JDK}" || exit 1
-  echo "Waiting for the application to be ready..." && sleep 5
+  SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION up_test_$JDK"
 
-  local JMETER_OUTPUT_DIRECTORY_PATH="./results-${JDK}-${JAVA_VERSION}"
-  mkdir ${JMETER_OUTPUT_DIRECTORY_PATH}
-  execute_jmeter_script ${JMETER_OUTPUT_DIRECTORY_PATH} ${port_by_jdk["${JDK}"]}
+  echo "Waiting for the application to be ready..."
+  wait_container_healthy_status $JDK $JAVA_VERSION
+  echo "Application ready and healthy."
+
+  local JMETER_OUTPUT_DIRECTORY_PATH="./results-$JDK-$JAVA_VERSION"
+  mkdir $JMETER_OUTPUT_DIRECTORY_PATH
+  execute_jmeter_script $JMETER_OUTPUT_DIRECTORY_PATH $port_by_jdk["$JDK"]
 
   # Throw down the app
-  sshpass -p "$SSH_PASSWORD" ssh "$SSH_USERNAME@$SSH_HOST" \
-    "cd ${SSH_WORKDIR}; make JAVA_VERSION=${JAVA_VERSION} down_test_${JDK}"
+  SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION down_test_$JDK"
+}
+
+function wait_container_healthy_status() {
+  local JDK="$1"
+  local JAVA_VERSION="$2"
+  local CONTAINER_NAME="sportsclub-$JDK-$JAVA_VERSION-test-app-1"
+
+  local MAX_ITERATIONS=60
+  declare -i count=0
+  while [[ $(get_container_status $CONTAINER_NAME) != "healthy" ]]; do
+    count+=1 && sleep 1
+    if [[ $count -ge $MAX_ITERATIONS ]]; then
+      echo "Timeout - Application Status: $(get_container_status $CONTAINER_NAME)"
+      # Throw down the app
+      SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION down_test_$JDK"
+    fi
+  done
+}
+
+function get_container_status() {
+    local CONTAINER_NAME="$1"
+    status=$(SSH "cd $SSH_WORKDIR; sudo -S <<< \"$SSH_PASSWORD\" docker inspect $CONTAINER_NAME -f {{.State.Health.Status}}")
+    echo $status
 }
 
 function execute_jmeter_script() {
@@ -76,9 +100,9 @@ function execute_jmeter_script() {
     -Jport=${PORT}
 }
 
-#start_performance_test 'openjdk' '17'
-#start_performance_test 'openjdk' '18'
-#start_performance_test 'openjdk' '19'
+start_performance_test 'openjdk' '17'
+start_performance_test 'openjdk' '18'
+start_performance_test 'openjdk' '19'
 
 start_performance_test 'graalvm' '17'
 start_performance_test 'graalvm' '19'
@@ -86,4 +110,4 @@ start_performance_test 'graalvm' '19'
 start_performance_test 'openj9' '17'
 
 start_performance_test 'native' '17'
-#start_performance_test 'native' '19'
+start_performance_test 'native' '19'

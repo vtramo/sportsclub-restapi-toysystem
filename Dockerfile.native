@@ -9,18 +9,10 @@ WORKDIR /home
 # Install curl
 RUN apt-get update && apt-get install -y curl
 
-# Maven Version and Link to download Maven
-ARG MAVEN_VERSION=3.8.6
-ARG MAVEN_DOWNLOAD_LINK=https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-
-# Download and Install Maven
-RUN curl -L -O $MAVEN_DOWNLOAD_LINK
-ARG MAVEN_DIRECTORY_NAME=apache-maven-$MAVEN_VERSION
-ARG MAVEN_TAR_GZ=$MAVEN_DIRECTORY_NAME-bin.tar.gz
-RUN tar -xf $MAVEN_TAR_GZ
-ENV M2_HOME=/home/$MAVEN_DIRECTORY_NAME
-ENV PATH=$M2_HOME/bin:$PATH
-RUN rm $MAVEN_TAR_GZ
+# Copy Maven Wrapper
+COPY ./.mvn ./.mvn
+COPY ./mvnw .
+RUN chmod 744 ./mvnw
 
 # Java Version and GraalVM Version/Platform
 ARG JAVA_VERSION
@@ -29,7 +21,7 @@ ARG GRAALVM_PLATFORM
 
 # Link to download GraalVM
 ARG GRAALVM_DOWNLOAD_BASE_LINK=https://github.com/graalvm/graalvm-ce-builds/releases/download/
-ARG GRAALVM_DOWNLOAD_LINK=$GRAALVM_DOWNLOAD_BASE_LINK/vm-$GRAALVM_VERSION/graalvm-ce-java$JAVA_VERSION-$GRAALVM_PLATFORM-$GRAALVM_VERSION.tar.gz
+ARG GRAALVM_DOWNLOAD_LINK="$GRAALVM_DOWNLOAD_BASE_LINK/vm-$GRAALVM_VERSION/graalvm-ce-java$JAVA_VERSION-$GRAALVM_PLATFORM-$GRAALVM_VERSION.tar.gz"
 
 # Download GraalVM
 RUN curl -L -O $GRAALVM_DOWNLOAD_LINK
@@ -53,13 +45,13 @@ WORKDIR /home/sports-club-api
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
 RUN --mount=type=cache,target=/root/.m2 \
-  mvn '-Djava.version=${JAVA_VERSION}' dependency:go-offline -DexcludeGroupIds=org.openapitools
+  ./mvnw '-Djava.version=${JAVA_VERSION}' dependency:go-offline -DexcludeGroupIds=org.openapitools
 
 # Copy application code
 COPY ./src ./src
 
 # Build native image
-RUN mvn '-Djava.version=${JAVA_VERSION}' package -Pnative -Dmaven.test.skip
+RUN ./mvnw '-Djava.version=${JAVA_VERSION}' package -Pnative -Dmaven.test.skip
 
 EXPOSE 8083
 ENTRYPOINT ["/home/sports-club-api/target/systems.fervento.sportsclub"]

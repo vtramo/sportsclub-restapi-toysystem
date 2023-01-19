@@ -122,7 +122,6 @@ public class ReservationService {
             .orElseThrow(() -> new ResourceNotFoundException("A reservation with this ID doesn't exist!"));
     }
 
-    @Transactional
     public ReservationData updateReservationStatus(final long reservationId, final String status) {
         Objects.requireNonNull(status);
         if (!reservationRepository.existsById(reservationId)) {

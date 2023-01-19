@@ -23,7 +23,8 @@ public class RuntimeHintsConfiguration {
                 systems.fervento.sportsclub.openapi.model.SoccerFieldAllOf.class,
                 systems.fervento.sportsclub.openapi.model.BasketballField.class,
                 systems.fervento.sportsclub.openapi.model.VolleyballField.class,
-                systems.fervento.sportsclub.openapi.model.SportsFieldPriceList.class
+                systems.fervento.sportsclub.openapi.model.SportsFieldPriceList.class,
+                com.zaxxer.hikari.HikariConfig.class
             ).forEach(type -> hints.reflection().registerType(type, MemberCategory.values()));
         }
     }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import systems.fervento.sportsclub.entity.ReservationEntity;
 import systems.fervento.sportsclub.entity.ReservationStatus;
 import systems.fervento.sportsclub.entity.SportsFacilityReservationReportProjection;
@@ -16,6 +17,7 @@ import java.util.List;
 
 
 @Repository
+@Transactional(readOnly = true)
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
 
     Page<ReservationEntity> findAll(
@@ -31,6 +33,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     );
 
     @Modifying
+    @Transactional
     @Query("update ReservationEntity r set r.reservationStatus = :state where r.id = :reservationId")
     int updateState(long reservationId, ReservationStatus state);
 

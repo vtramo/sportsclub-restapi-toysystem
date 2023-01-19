@@ -103,4 +103,16 @@ public interface SportsFieldApiMapper {
     @Mapping(target = "sportsFields", ignore = true)
     @DoIgnore
     SportsFieldsPage mapToSportsFieldsPage(Integer dummy, Page<SportsFieldData> sportsFieldDataPage);
+
+    @AfterMapping
+    default void setPageContentToSportsFieldsPage(
+        @MappingTarget SportsFieldsPage sportsFieldsPage,
+        Page<SportsFieldData> sportsFieldsDataPage
+    ) {
+        sportsFieldsPage.setSportsFields(sportsFieldsDataPage
+            .stream()
+            .map(this::mapToSportsFieldApi)
+            .toList()
+        );
+    }
 }

@@ -9,13 +9,11 @@ import systems.fervento.sportsclub.openapi.api.SportsFieldsApi;
 import systems.fervento.sportsclub.openapi.model.SportEnum;
 import systems.fervento.sportsclub.openapi.model.SportsField;
 import systems.fervento.sportsclub.openapi.model.SportsFieldReservationsSummary;
+import systems.fervento.sportsclub.openapi.model.SportsFieldsPage;
 import systems.fervento.sportsclub.service.ReservationSummaryService;
 import systems.fervento.sportsclub.service.SportsFieldService;
 
 import java.time.ZonedDateTime;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 public class SportsFieldApiController implements SportsFieldsApi {
@@ -38,18 +36,18 @@ public class SportsFieldApiController implements SportsFieldsApi {
     }
 
     @Override
-    public ResponseEntity<List<SportsField>> getSportsFields(
+    public ResponseEntity<SportsFieldsPage> getSportsFields(
+        Integer pageNo,
+        Integer pageSize,
         SportEnum filterBySport,
         String sortBy,
         Long filterByOwnerId
     ) {
         final String sport = (filterBySport == null) ? null : filterBySport.toString();
         return ResponseEntity.ok(
-            sportsFieldService
-                .getSportsFields(sortBy, sport, filterByOwnerId)
-                .stream()
-                .map(sportsFieldApiMapper::mapToSportsFieldApi)
-                .collect(toList())
+            sportsFieldApiMapper.mapToSportsFieldsPage(
+                sportsFieldService.getSportsFields(pageNo, pageSize, sortBy, sport, filterByOwnerId)
+            )
         );
     }
 

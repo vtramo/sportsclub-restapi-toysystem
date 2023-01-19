@@ -1,6 +1,7 @@
 package systems.fervento.sportsclub.mapper;
 
 import org.mapstruct.*;
+import org.springframework.data.domain.Page;
 import systems.fervento.sportsclub.data.*;
 import systems.fervento.sportsclub.openapi.model.*;
 
@@ -89,4 +90,17 @@ public interface SportsFieldApiMapper {
     @InheritInverseConfiguration
     @Mapping(target = "sportsFacility", ignore = true)
     BasketballFieldData mapToBasketballFieldData(BasketballField sportsField);
+
+    default SportsFieldsPage mapToSportsFieldsPage(Page<SportsFieldData> sportsFieldsDataPage) {
+        return mapToSportsFieldsPage(1, sportsFieldsDataPage);
+    }
+
+    @Mapping(target = "pageNo", expression = "java(sportsFieldDataPage.getNumber())")
+    @Mapping(target = "pageSize", expression = "java(sportsFieldDataPage.getSize())")
+    @Mapping(target = "totalPages", expression = "java(sportsFieldDataPage.getTotalPages())")
+    @Mapping(target = "totalElements", expression = "java(sportsFieldDataPage.getTotalElements())")
+    @Mapping(target = "last", expression = "java(sportsFieldDataPage.isLast())")
+    @Mapping(target = "sportsFields", ignore = true)
+    @DoIgnore
+    SportsFieldsPage mapToSportsFieldsPage(Integer dummy, Page<SportsFieldData> sportsFieldDataPage);
 }

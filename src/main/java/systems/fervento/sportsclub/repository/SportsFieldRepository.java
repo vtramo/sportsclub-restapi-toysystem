@@ -1,22 +1,24 @@
 package systems.fervento.sportsclub.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import systems.fervento.sportsclub.entity.SportsFieldEntity;
 
-import java.util.List;
-
 @Repository
+@Transactional(readOnly = true)
 public interface SportsFieldRepository extends JpaRepository<SportsFieldEntity, Long> {
     @Query(
         "select s " +
         "from SportsFieldEntity s " +
         "where (:sport is null or :sport = s.sport) and (:ownerId is null or :ownerId = s.sportsFacility.id)"
     )
-    List<SportsFieldEntity> getSportsFields(
-        Sort sort,
+    Page<SportsFieldEntity> getSportsFields(
+        Pageable pageable,
         String sport,
         Long ownerId
     );

@@ -205,6 +205,16 @@ paths:
       tags:
         - Sports Fields
       parameters:
+        - name: page_no
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            default: 10
         - name: filter_by_sport
           in: query
           required: false
@@ -215,7 +225,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: ['rating.asc', 'rating.desc', 'name.asc']
+            enum: ['name.asc', 'name.desc']
             default: 'name.asc'
         - name: filter_by_owner_id
           in: query
@@ -229,9 +239,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SportsField'
+                $ref: '#/components/schemas/SportsFieldsPage'
         '400':
           $ref: '#/components/responses/400BadRequest'
 
@@ -857,6 +865,17 @@ components:
           type: number
           format: float
           minimum: 0
+    SportsFieldsPage:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+      required:
+        - sportsFields
+      properties:
+        sportsFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/SportsField'
     SportsFacility:
       type: object
       required:

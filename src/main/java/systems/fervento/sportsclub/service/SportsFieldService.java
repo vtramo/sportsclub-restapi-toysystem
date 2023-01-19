@@ -1,5 +1,7 @@
 package systems.fervento.sportsclub.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import systems.fervento.sportsclub.data.SportsFieldData;
@@ -35,13 +37,15 @@ public class SportsFieldService {
             .orElseThrow(() -> new ResourceNotFoundException("There is no sports field with this id!"));
     }
 
-    public List<SportsFieldData> getSportsFields(
+    public Page<SportsFieldData> getSportsFields(
+        final int pageNo,
+        final int pageSize,
         String sortBy,
         final String sport,
         final Long ownerId
     ) {
         Objects.requireNonNull(sortBy);
-        final var sortingInfo = sortBy.split("\\."); // example: rating.asc
+        final var sortingInfo = sortBy.split("\\."); // example: name.asc
         final var sortOrder    = sortingInfo[1];
         final var sortProperty = sortingInfo[0];
 
@@ -49,34 +53,12 @@ public class SportsFieldService {
             ? Sort.Direction.DESC
             : Sort.Direction.ASC;
 
-        final Sort sort = (Objects.equals(sortProperty, "rating"))
-            ? Sort.unsorted()
-            : Sort.by(sortDirection, sortProperty);
+        final Sort sort = Sort.by(sortDirection, sortProperty);
 
-        Stream<SportsFieldEntity> sportsFieldEntitiesStream = sportsFieldRepository
-            .getSportsFields(sort, sport, ownerId)
-            .stream();
+        final var pageRequest = PageRequest.of(pageNo, pageSize, sort);
 
-        if ((Objects.equals(sortProperty, "rating"))) {
-            Comparator<SportsFieldEntity> byRating = (sportsFieldEntity1, sportsFieldEntity2) ->
-                Float.compare(
-                    sportsFieldRepository.getSportsFieldAverageRating(sportsFieldEntity1.getId()),
-                    sportsFieldRepository.getSportsFieldAverageRating(sportsFieldEntity2.getId())
-                );
-
-            byRating = Sort.Direction.DESC.equals(sortDirection)
-                ? byRating.reversed()
-                : byRating;
-
-            sportsFieldEntitiesStream = sportsFieldEntitiesStream.parallel().sorted(byRating);
-        }
-
-        final List<SportsFieldData> sportsFieldsData = sportsFieldEntitiesStream
-            .map(sportsFieldDataMapper::mapToSportsFieldData)
-            .collect(toList());
-
-        sportsFieldEntitiesStream.close();
-
-        return sportsFieldsData;
+        return sportsFieldRepository
+            .getSportsFields(pageRequest, sport, ownerId)
+            .map(sportsFieldDataMapper::mapToSportsFieldData);
     }
 }

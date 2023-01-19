@@ -32,5 +32,25 @@ services:
       timeout: 5s
       retries: 5
 
+  prometheus:
+    image: bitnami/prometheus
+    networks:
+      - back-tier-test
+    ports:
+      - "9090:9090"
+    volumes:
+      - type: bind
+        source: ./prometheus/prometheus.yml
+        target: /opt/bitnami/prometheus/conf/prometheus.yml
+
+  grafana:
+    build: ./grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - back-tier-test
+
 networks:
   back-tier-test: {}

@@ -134,7 +134,7 @@ _upper:
 	DOCKER_FILE=${_UP_ARGS_DOCKER_FILE} \
 	PORT=${_UP_ARGS_PORT} \
 	JAVA_VERSION=${_UP_ARGS_JAVA_VERSION} \
-	docker compose ${_UP_ARGS_COMPOSE_FILE_ORDER} -p ${_UP_ARGS_PROJECT_NAME} up -d
+	docker compose ${_UP_ARGS_COMPOSE_FILE_ORDER} -p ${_UP_ARGS_PROJECT_NAME} up -d --build
 
 down_%:
 	@case $* in \
@@ -184,4 +184,4 @@ down_%:
 	esac
 
 _killer:
-	docker compose -p ${_KILLER_ARGS_PROJECT_NAME} down
+	docker compose -p ${_KILLER_ARGS_PROJECT_NAME} down -v --rmi all

@@ -7,15 +7,15 @@ FROM openjdk:${JAVA_VERSION} AS build-stage
 ARG BUILD_STAGE_WORKDIR
 WORKDIR ${BUILD_STAGE_WORKDIR}
 
-# Copy Maven Wrapper
-COPY ./.mvn ./.mvn
-COPY ./mvnw .
-RUN chmod 744 ./mvnw
-
 ARG JAVA_VERSION
 
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml
+
+# Copy Maven Wrapper
+COPY ./.mvn ./.mvn
+COPY ./mvnw .
+RUN chmod 744 ./mvnw
 
 RUN ./mvnw '-Djava.version=${JAVA_VERSION}' dependency:go-offline -DexcludeGroupIds=org.openapitools
 
@@ -35,8 +35,7 @@ COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/META-INF           
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/classes   /app
 COPY --from=build-stage ${BUILD_STAGE_WORKDIR}/${DEPENDENCY}/BOOT-INF/lib       /app/lib
 
-RUN apt-get update \
-  && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl
 
 ENTRYPOINT ["java","-cp","/app:/app/lib/*","systems.fervento.sportsclub.SportsClubApp"]
 

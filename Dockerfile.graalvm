@@ -11,11 +11,6 @@ WORKDIR /home
 # Install curl
 RUN apt-get update && apt-get install -y curl
 
-# Copy Maven Wrapper
-COPY ./.mvn ./.mvn
-COPY ./mvnw .
-RUN chmod 744 ./mvnw
-
 # Java Version and GraalVM Version/Platform
 ARG JAVA_VERSION
 ARG GRAALVM_VERSION
@@ -39,6 +34,11 @@ ENV JAVA_HOME=/home/$GRAALVM_DIRECTORY_NAME
 
 ARG BUILD_STAGE_WORKDIR
 WORKDIR ${BUILD_STAGE_WORKDIR}
+
+# Copy Maven Wrapper
+COPY ./.mvn ./.mvn
+COPY ./mvnw .
+RUN chmod 744 ./mvnw
 
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml

@@ -9,11 +9,6 @@ WORKDIR /home
 # Install curl
 RUN apt-get update && apt-get install -y curl
 
-# Copy Maven Wrapper
-COPY ./.mvn ./.mvn
-COPY ./mvnw .
-RUN chmod 744 ./mvnw
-
 # Java Version and GraalVM Version/Platform
 ARG JAVA_VERSION
 ARG GRAALVM_VERSION
@@ -37,10 +32,15 @@ ENV JAVA_HOME=/home/$GRAALVM_DIRECTORY_NAME
 
 # Prerequisites for build native image - install native compiler and native image agent
 # libfreetype6-dev required for Java 19
-RUN apt-get install -y build-essential libz-dev zlib1g-dev libfreetype6-dev
+RUN apt-get update && apt-get install -y build-essential libz-dev zlib1g-dev libfreetype6-dev
 RUN gu install native-image
 
 WORKDIR /home/sports-club-api
+
+# Copy Maven Wrapper
+COPY ./.mvn ./.mvn
+COPY ./mvnw .
+RUN chmod 744 ./mvnw
 
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml

@@ -7,13 +7,13 @@ FROM vtramo/openj9:jdk-${JAVA_VERSION} AS build-stage
 # Install curl
 RUN apt-get update && apt-get install -y curl
 
+ARG BUILD_STAGE_WORKDIR
+WORKDIR ${BUILD_STAGE_WORKDIR}
+
 # Copy Maven Wrapper
 COPY ./.mvn ./.mvn
 COPY ./mvnw .
 RUN chmod 744 ./mvnw
-
-ARG BUILD_STAGE_WORKDIR
-WORKDIR ${BUILD_STAGE_WORKDIR}
 
 # Fetch all application dependencies
 COPY ./pom.xml ./pom.xml

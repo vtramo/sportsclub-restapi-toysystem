@@ -26,13 +26,15 @@ run:
 
 run_%:
 	@if [ $* = "native" ]; then \
-		$(MAKE) _runner -e _BUILD_ARGS_RELEASE_TAG="native-java-${JAVA_VERSION}"; \
+		$(MAKE) _runner -e _BUILD_ARGS_RELEASE_TAG="native-${JAVA_VERSION}"; \
 	elif [ $* = "graalvm" ]; then \
 	  	$(MAKE) _runner -e _BUILD_ARGS_RELEASE_TAG="graalvm-${JAVA_VERSION}"; \
   	elif [ $* = "openj9" ]; then \
   	  	$(MAKE) _runner -e _BUILD_ARGS_RELEASE_TAG="openj9-${JAVA_VERSION}"; \
+	elif [ $* = "native_g1" ]; then \
+		$(MAKE) _runner -e _BUILD_ARGS_RELEASE_TAG="native-g1-${JAVA_VERSION}"; \
 	else \
-	  	echo "You can only user run, run_native, run_graalvm or run_openj9"; \
+	  	echo "You can only use run, run_native, run_native_g1, run_graalvm or run_openj9"; \
   	fi
 
 _runner:
@@ -104,8 +106,8 @@ up_%:
 		"dev_native") \
 			$(MAKE) _upper \
 				-e _UP_ARGS_DOCKER_FILE="Dockerfile.native" \
-				-e _UP_ARGS_COMPOSE_FILE_ORDER=${COMPOSE_FILE_ORDER_TEST} \
-				-e _UP_ARGS_PORT=${NATIVE_TEST_PORT} \
+				-e _UP_ARGS_COMPOSE_FILE_ORDER=${COMPOSE_FILE_ORDER_DEV} \
+				-e _UP_ARGS_PORT=${NATIVE_DEV_PORT} \
 				-e _UP_ARGS_JAVA_VERSION=${JAVA_VERSION} \
 				-e _UP_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-${JAVA_VERSION}-dev; \
 			;; \
@@ -117,6 +119,22 @@ up_%:
 				-e _UP_ARGS_JAVA_VERSION=${JAVA_VERSION} \
 				-e _UP_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-${JAVA_VERSION}-test; \
 			;; \
+		"dev_native_g1") \
+			$(MAKE) _upper \
+					-e _UP_ARGS_DOCKER_FILE="Dockerfile.native-g1" \
+					-e _UP_ARGS_COMPOSE_FILE_ORDER=${COMPOSE_FILE_ORDER_DEV} \
+					-e _UP_ARGS_PORT=${NATIVE_DEV_PORT} \
+					-e _UP_ARGS_JAVA_VERSION=${JAVA_VERSION} \
+					-e _UP_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-g1-${JAVA_VERSION}-dev; \
+			;; \
+		"test_native_g1") \
+			$(MAKE) _upper \
+				-e _UP_ARGS_DOCKER_FILE="Dockerfile.native-g1" \
+				-e _UP_ARGS_COMPOSE_FILE_ORDER=${COMPOSE_FILE_ORDER_TEST} \
+				-e _UP_ARGS_PORT=${NATIVE_TEST_PORT} \
+				-e _UP_ARGS_JAVA_VERSION=${JAVA_VERSION} \
+				-e _UP_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-g1-${JAVA_VERSION}-test; \
+			;; \
 		*) \
 			printf '%s' \
 				"You can only use " \
@@ -124,8 +142,10 @@ up_%:
 				"up_test_openjdk, " \
 				"up_dev_graalvm, " \
 				"up_test_graalvm, " \
-				"up_dev_native or " \
-				"up_test_native! "; \
+				"up_dev_native, " \
+				"up_test_native, "
+				"up_dev_native_g1 or " \
+				"up_test_native_g1"; \
 			exit 1; \
 			;; \
 	esac
@@ -134,7 +154,7 @@ _upper:
 	DOCKER_FILE=${_UP_ARGS_DOCKER_FILE} \
 	PORT=${_UP_ARGS_PORT} \
 	JAVA_VERSION=${_UP_ARGS_JAVA_VERSION} \
-	docker compose ${_UP_ARGS_COMPOSE_FILE_ORDER} -p ${_UP_ARGS_PROJECT_NAME} up -d --build
+	docker compose ${_UP_ARGS_COMPOSE_FILE_ORDER} -p ${_UP_ARGS_PROJECT_NAME} up -d
 
 down_%:
 	@case $* in \
@@ -170,6 +190,14 @@ down_%:
 			$(MAKE) _killer \
 				-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-${JAVA_VERSION}-test; \
 			;; \
+		"dev_native_g1") \
+			$(MAKE) _killer \
+				-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-g1-${JAVA_VERSION}-dev; \
+			;; \
+		"test_native_g1") \
+			$(MAKE) _killer \
+				-e _KILLER_ARGS_PROJECT_NAME=${APPLICATION_NAME}-native-g1-${JAVA_VERSION}-test; \
+			;; \
 		*) \
   			printf '%s' \
   				"You can only use " \
@@ -177,11 +205,13 @@ down_%:
 				"down_test_openjdk, " \
 				"down_dev_graalvm, " \
 				"down_test_graalvm, " \
-				"down_dev_native or " \
-				"down_test_native! "; \
+				"down_dev_native, " \
+				"down_test_native, " \
+				"down_dev_native_g1, " \
+				"down_test_native_g1"; \
 			exit 1; \
 			;; \
 	esac
 
 _killer:
-	docker compose -p ${_KILLER_ARGS_PROJECT_NAME} down -v --rmi all
+	docker compose -p ${_KILLER_ARGS_PROJECT_NAME} down -v

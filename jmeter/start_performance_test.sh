@@ -1,37 +1,39 @@
 #!/bin/bash
 
 # JMeter config - You need to set this variables!
-JMETER_HOME=
-JMETER_SCRIPT_PATH=
+JMETER_HOME=/home/bonek/apache-jmeter-5.5
+JMETER_SCRIPT_PATH=/home/bonek/apache-jmeter-5.5/bin/sportsclub-api-test2.jmx
 
 # SSH config - You need to set this variables!
-SSH_HOST=
-SSH_USERNAME=
-SSH_PASSWORD=
-SSH_WORKDIR=
+SSH_HOST=172.25.5.28
+SSH_USERNAME=sergio
+SSH_PASSWORD=password
+SSH_WORKDIR=/home/sergio/sportsclub-rest-api/sports-club-api-spring-boot-3
 
 # App config - You need to set this variables!
-HOST=
+HOST=172.25.5.28
 declare -A port_by_jdk
 port_by_jdk['openjdk']=8091
 port_by_jdk['graalvm']=8093
 port_by_jdk['openj9']=8095
 port_by_jdk['native']=8097
+port_by_jdk['native-g1']=8097
 
 # JDKS config
-JDKS_AVAIABLE='openjdk graalvm openj9 native'
+JDKS_AVAIABLE='openjdk graalvm openj9 native native-g1'
 declare -A java_version_supported_by_jdk
 java_version_supported_by_jdk['openjdk']='17 18 19'
 java_version_supported_by_jdk['graalvm']='17 19'
 java_version_supported_by_jdk['openj9']='17'
 java_version_supported_by_jdk['native']='17 19'
+java_version_supported_by_jdk['native-g1']='17 19'
 
 function SSH() {
   local COMMANDS_TO_EXECUTE="$*"
   sshpass -p $SSH_PASSWORD ssh $SSH_USERNAME@$SSH_HOST ${COMMANDS_TO_EXECUTE}
 }
 
-function start_performance_test {
+function start_performance_test() {
   local JDK="$1"
   if [[ ! "${JDKS_AVAIABLE}" =~ "${JDK}" ]]; then
     echo "${FUNCNAME}(): this JDK (${JDK:-NotSpecified}) is not available!"
@@ -51,15 +53,22 @@ function start_performance_test {
   wait_container_healthy_status $JDK $JAVA_VERSION
   echo "Application ready and healthy."
 
-  local JMETER_OUTPUT_DIRECTORY_PATH="./results-$JDK-$JAVA_VERSION"
+  # start docker stats logger
+  local CONTAINER_NAME="sportsclub-$JDK-$JAVA_VERSION-test-app-1"
+  SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD screen -d -m ./docker-stats-logger.sh $CONTAINER_NAME"
+
+  local JMETER_OUTPUT_DIRECTORY_PATH="./test2/results-$JDK-$JAVA_VERSION"
   mkdir $JMETER_OUTPUT_DIRECTORY_PATH
-  execute_jmeter_script $JMETER_OUTPUT_DIRECTORY_PATH $port_by_jdk["$JDK"]
+  execute_jmeter_script $JMETER_OUTPUT_DIRECTORY_PATH ${port_by_jdk[$JDK]}
 
   down_app $JDK $JAVA_VERSION
+
+  # kill docker stats logger
+  SSH "sudo -S <<< $SSH_PASSWORD pkill -F $SSH_WORKDIR/docker-stats-logger-pid.txt; rm $SSH_WORKDIR/docker-stats-logger-pid.txt"
 }
 
 function start_app() {
-  local JDK="$1"
+  local JDK="$(echo $1 | sed 's/-/_/g')"
   local JAVA_VERSION="$2"
   SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION up_test_$JDK"
 }
@@ -81,14 +90,14 @@ function wait_container_healthy_status() {
 }
 
 function down_app() {
-  local JDK="$1"
+  local JDK="$(echo $1 | sed 's/-/_/g')"
   local JAVA_VERSION="$2"
   SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD make JAVA_VERSION=$JAVA_VERSION down_test_$JDK"
 }
 
 function get_container_status() {
   local CONTAINER_NAME="$1"
-  status=$(SSH "cd $SSH_WORKDIR; sudo -S <<< \"$SSH_PASSWORD\" docker inspect $CONTAINER_NAME -f {{.State.Health.Status}}")
+  status=$(SSH "cd $SSH_WORKDIR; sudo -S <<< $SSH_PASSWORD docker inspect $CONTAINER_NAME -f {{.State.Health.Status}}")
   echo $status
 }
 
@@ -109,14 +118,17 @@ function execute_jmeter_script() {
     -Jport=${PORT}
 }
 
-start_performance_test 'openjdk' '17'
-start_performance_test 'openjdk' '18'
-start_performance_test 'openjdk' '19'
+#start_performance_test 'openjdk' '17'
+#start_performance_test 'openjdk' '18'
+#start_performance_test 'openjdk' '19'
 
-start_performance_test 'graalvm' '17'
-start_performance_test 'graalvm' '19'
+#start_performance_test 'graalvm' '17'
+#start_performance_test 'graalvm' '19'
 
-start_performance_test 'openj9' '17'
+#start_performance_test 'openj9' '17'
 
-start_performance_test 'native' '17'
-start_performance_test 'native' '19'
+#start_performance_test 'native' '17'
+#start_performance_test 'native' '19'
+
+start_performance_test 'native-g1' '17'
+start_performance_test 'native-g1' '19'

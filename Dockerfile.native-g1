@@ -1,0 +1,36 @@
+ARG JAVA_VERSION=17
+
+FROM vtramo/graalvm_ee_jdk${JAVA_VERSION}:ubuntu-18.04
+
+WORKDIR /home
+
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
+ARG JAVA_VERSION
+
+# Prerequisites for build native image - install native compiler and native image agent
+# libfreetype6-dev required for Java 19
+RUN apt-get update && apt-get install -y build-essential libz-dev zlib1g-dev libfreetype6-dev
+
+WORKDIR /home/sports-club-api
+
+# Copy Maven Wrapper
+COPY ./.mvn ./.mvn
+COPY ./mvnw .
+RUN chmod 744 ./mvnw
+
+# Fetch all application dependencies
+COPY ./pom.xml ./pom.xml
+RUN ./mvnw '-Djava.version=${JAVA_VERSION}' dependency:go-offline -DexcludeGroupIds=org.openapitools
+
+# Copy application code
+COPY ./src ./src
+
+# Build native image with G1 gc
+RUN ./mvnw '-Djava.version=${JAVA_VERSION}' '-Dnative.image.build.args=--gc=G1' package -Pnative -DskipTests
+
+EXPOSE 8083
+ENTRYPOINT ["/home/sports-club-api/target/systems.fervento.sportsclub"]
+HEALTHCHECK CMD curl -f http://localhost:8083/api/actuator/health || exit 1
+

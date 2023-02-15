@@ -14,6 +14,8 @@ services:
       SPRING_JPA_DATABASE-PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_DATASOURCE_PLATFORM: postgres
+      JAVA_TOOL_OPTIONS: -Xmx16G -Xms16G
+      OPENJ9_JAVA_OPTIONS: -Xverbosegclog:~/verbosegc-openj9.txt
     depends_on:
       db:
         condition: service_healthy

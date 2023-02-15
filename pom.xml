@@ -13,8 +13,11 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>systems.fervento.sportsclub</name>
 	<properties>
-		<java.version>17</java.version>
-		<org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+		<java.version>19</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+        <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+        <native.image.build.args></native.image.build.args>
 		<swagger-codegen-version>6.2.0</swagger-codegen-version>
 		<springfox-version>3.0.0</springfox-version>
 	</properties>
@@ -201,9 +204,10 @@
 							</execution>
 						</executions>
 						<configuration>
-							<buildArgs>
+                            <buildArgs>
+                                ${native.image.build.args}
 								--initialize-at-build-time=org.hibernate.internal.util.ReflectHelper
-								-H:+ReportExceptionStackTraces
+                                -H:+ReportExceptionStackTraces
 							</buildArgs>
 						</configuration>
 					</plugin>

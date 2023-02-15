@@ -78,10 +78,8 @@ public class SportsFacilityService {
         sportsFieldData.setSportsFacility(sportsFacilityData);
 
         final var sportsFieldEntity = sportsFieldEntityMapper.map(sportsFieldData);
+        sportsFieldEntity.setSportsFacility(sportsFacilityEntity);
         sportsFieldRepository.save(sportsFieldEntity);
-
-        sportsFacilityEntity.addSportsField(sportsFieldEntity);
-        sportsFacilityRepository.save(sportsFacilityEntity);
 
         return sportsFieldDataMapper.mapToSportsFieldData(sportsFieldEntity);
     }

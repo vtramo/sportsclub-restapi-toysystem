@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # JMeter config - You need to set this variables!
-JMETER_HOME=/home/bonek/apache-jmeter-5.5
-JMETER_SCRIPT_PATH=/home/bonek/apache-jmeter-5.5/bin/sportsclub-api-test2.jmx
+JMETER_HOME=
+JMETER_SCRIPT_PATH=
 
 # SSH config - You need to set this variables!
-SSH_HOST=172.25.5.28
-SSH_USERNAME=sergio
-SSH_PASSWORD=password
-SSH_WORKDIR=/home/sergio/sportsclub-rest-api/sports-club-api-spring-boot-3
+SSH_HOST=
+SSH_USERNAME=
+SSH_PASSWORD=
+SSH_WORKDIR=
 
 # App config - You need to set this variables!
 HOST=172.25.5.28

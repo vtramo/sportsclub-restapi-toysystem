@@ -11,7 +11,7 @@ SSH_PASSWORD=
 SSH_WORKDIR=
 
 # App config - You need to set this variables!
-HOST=172.25.5.28
+HOST=
 declare -A port_by_jdk
 port_by_jdk['openjdk']=8091
 port_by_jdk['graalvm']=8093
